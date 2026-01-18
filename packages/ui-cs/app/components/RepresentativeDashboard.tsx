@@ -1,67 +1,69 @@
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../lib/supabase';
-import { Send, Users, Clock, CheckCircle, MessageCircle, LogOut } from 'lucide-react';
-import type { Database } from '../lib/database.types';
+import React, { useState, useEffect, useRef } from 'react'
+import { supabase } from '../lib/supabase'
+import { Send, Users, Clock, CheckCircle, MessageCircle, LogOut } from 'lucide-react'
+import type { Database } from '../lib/database.types'
 
-type Message = Database['public']['Tables']['messages']['Row'];
-type Conversation = Database['public']['Tables']['conversations']['Row'];
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Message = Database['public']['Tables']['messages']['Row']
+type Conversation = Database['public']['Tables']['conversations']['Row']
+type Profile = Database['public']['Tables']['profiles']['Row']
 
 interface ConversationWithCustomer extends Conversation {
-  customer: Profile;
+  customer: Profile
 }
 
 interface RepresentativeDashboardProps {
-  profile: Profile;
+  profile: Profile
 }
 
 export default function RepresentativeDashboard({ profile }: RepresentativeDashboardProps) {
-  const [conversations, setConversations] = useState<ConversationWithCustomer[]>([]);
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [conversations, setConversations] = useState<ConversationWithCustomer[]>([])
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [newMessage, setNewMessage] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
-    loadConversations();
-    subscribeToConversations();
-  }, []);
+    loadConversations()
+    subscribeToConversations()
+  }, [])
 
   useEffect(() => {
     if (selectedConversation) {
-      loadMessages();
-      subscribeToMessages();
+      loadMessages()
+      subscribeToMessages()
     }
-  }, [selectedConversation]);
+  }, [selectedConversation])
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom()
+  }, [messages])
 
   async function loadConversations() {
     try {
       const { data, error } = await supabase
         .from('conversations')
-        .select(`
+        .select(
+          `
           *,
           customer:profiles!conversations_customer_id_fkey(*)
-        `)
+        `,
+        )
         .in('status', ['waiting', 'active'])
-        .order('updated_at', { ascending: false });
+        .order('updated_at', { ascending: false })
 
-      if (error) throw error;
-      setConversations(data as ConversationWithCustomer[]);
+      if (error) throw error
+      setConversations(data as ConversationWithCustomer[])
     } catch (error) {
-      console.error('Error loading conversations:', error);
+      console.error('Error loading conversations:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -76,35 +78,35 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
           table: 'conversations',
         },
         () => {
-          loadConversations();
-        }
+          loadConversations()
+        },
       )
-      .subscribe();
+      .subscribe()
 
     return () => {
-      supabase.removeChannel(channel);
-    };
+      supabase.removeChannel(channel)
+    }
   }
 
   async function loadMessages() {
-    if (!selectedConversation) return;
+    if (!selectedConversation) return
 
     try {
       const { data, error } = await supabase
         .from('messages')
         .select('*')
         .eq('conversation_id', selectedConversation)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
 
-      if (error) throw error;
-      setMessages(data || []);
+      if (error) throw error
+      setMessages(data || [])
     } catch (error) {
-      console.error('Error loading messages:', error);
+      console.error('Error loading messages:', error)
     }
   }
 
   function subscribeToMessages() {
-    if (!selectedConversation) return;
+    if (!selectedConversation) return
 
     const channel = supabase
       .channel(`conversation-${selectedConversation}`)
@@ -117,20 +119,20 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
           filter: `conversation_id=eq.${selectedConversation}`,
         },
         (payload) => {
-          const newMessage = payload.new as Message;
+          const newMessage = payload.new as Message
           setMessages((prev) => {
             if (prev.some((msg) => msg.id === newMessage.id)) {
-              return prev;
+              return prev
             }
-            return [...prev, newMessage];
-          });
-        }
+            return [...prev, newMessage]
+          })
+        },
       )
-      .subscribe();
+      .subscribe()
 
     return () => {
-      supabase.removeChannel(channel);
-    };
+      supabase.removeChannel(channel)
+    }
   }
 
   async function assignConversation(conversationId: string) {
@@ -138,26 +140,26 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
       const { error } = await supabase
         .from('conversations')
         .update({ rep_id: profile.id, status: 'active' })
-        .eq('id', conversationId);
+        .eq('id', conversationId)
 
-      if (error) throw error;
-      setSelectedConversation(conversationId);
-      loadConversations();
+      if (error) throw error
+      setSelectedConversation(conversationId)
+      loadConversations()
     } catch (error) {
-      console.error('Error assigning conversation:', error);
+      console.error('Error assigning conversation:', error)
     }
   }
 
   async function sendMessage(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newMessage.trim() || !selectedConversation || sending) return;
+    e.preventDefault()
+    if (!newMessage.trim() || !selectedConversation || sending) return
 
-    const messageContent = newMessage.trim();
-    setNewMessage('');
+    const messageContent = newMessage.trim()
+    setNewMessage('')
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = 'auto'
     }
-    setSending(true);
+    setSending(true)
 
     const tempMessage: Message = {
       id: `temp-${Date.now()}`,
@@ -165,9 +167,9 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
       sender_id: profile.id,
       content: messageContent,
       created_at: new Date().toISOString(),
-    };
+    }
 
-    setMessages((prev) => [...prev, tempMessage]);
+    setMessages((prev) => [...prev, tempMessage])
 
     try {
       const { data, error } = await supabase
@@ -178,48 +180,46 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
           content: messageContent,
         })
         .select()
-        .single();
+        .single()
 
-      if (error) throw error;
+      if (error) throw error
 
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === tempMessage.id ? data : msg))
-      );
+      setMessages((prev) => prev.map((msg) => (msg.id === tempMessage.id ? data : msg)))
     } catch (error) {
-      console.error('Error sending message:', error);
-      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
-      setNewMessage(messageContent);
+      console.error('Error sending message:', error)
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id))
+      setNewMessage(messageContent)
     } finally {
-      setSending(false);
+      setSending(false)
     }
   }
 
   async function closeConversation() {
-    if (!selectedConversation) return;
+    if (!selectedConversation) return
 
     try {
       const { error } = await supabase
         .from('conversations')
         .update({ status: 'closed' })
-        .eq('id', selectedConversation);
+        .eq('id', selectedConversation)
 
-      if (error) throw error;
-      setSelectedConversation(null);
-      setMessages([]);
-      loadConversations();
+      if (error) throw error
+      setSelectedConversation(null)
+      setMessages([])
+      loadConversations()
     } catch (error) {
-      console.error('Error closing conversation:', error);
+      console.error('Error closing conversation:', error)
     }
   }
 
-  const currentConversation = conversations.find((c) => c.id === selectedConversation);
+  const currentConversation = conversations.find((c) => c.id === selectedConversation)
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="text-gray-600">Loading dashboard...</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -245,13 +245,15 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
                 key={conversation.id}
                 onClick={() => {
                   if (conversation.status === 'waiting') {
-                    assignConversation(conversation.id);
+                    assignConversation(conversation.id)
                   } else {
-                    setSelectedConversation(conversation.id);
+                    setSelectedConversation(conversation.id)
                   }
                 }}
                 className={`w-full p-4 text-left border-b hover:bg-slate-50 transition-colors ${
-                  selectedConversation === conversation.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''
+                  selectedConversation === conversation.id
+                    ? 'bg-blue-50 border-l-4 border-l-blue-600'
+                    : ''
                 }`}
               >
                 <div className="flex items-start justify-between mb-2">
@@ -328,7 +330,9 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
                         : 'bg-white text-gray-800'
                     }`}
                   >
-                    <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                     <p
                       className={`text-xs mt-1 ${
                         message.sender_id === profile.id ? 'text-slate-300' : 'text-gray-400'
@@ -356,9 +360,9 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
                   disabled={sending}
                   rows={1}
                   onInput={(e) => {
-                    const target = e.target as HTMLTextAreaElement;
-                    target.style.height = 'auto';
-                    target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+                    const target = e.target as HTMLTextAreaElement
+                    target.style.height = 'auto'
+                    target.style.height = Math.min(target.scrollHeight, 200) + 'px'
                   }}
                 />
                 <button
@@ -398,5 +402,5 @@ export default function RepresentativeDashboard({ profile }: RepresentativeDashb
         )}
       </div>
     </div>
-  );
+  )
 }

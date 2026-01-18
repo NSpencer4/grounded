@@ -10,22 +10,38 @@
     "type": "git",
     "url": "git+https://github.com/NSpencer4/grounded.git"
   },
+  "type": "module",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "clean.deps": "lerna clean && rm -rf node_modules",
+    "clean.reinstall.deps": "npm run clean.deps && npm i",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "lint.fix": "lerna run lint.fix",
+    "format": "prettier --write .",
+    "format.check": "prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
-    "packages/ui-cs",
-    "packages/ui-shared",
-    "packages/schemas"
+    "packages/*"
   ],
   "devDependencies": {
-    "lerna": "^9.0.3"
+    "@eslint/js": "^9.9.1",
+    "@typescript-eslint/utils": "^8.53.0",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "lerna": "^9.0.3",
+    "prettier": "^3.8.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

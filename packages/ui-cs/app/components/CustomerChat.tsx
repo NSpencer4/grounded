@@ -1,46 +1,46 @@
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../lib/supabase';
-import { Send, MessageCircle, User, Menu, X, Plus, LogOut } from 'lucide-react';
-import type { Database } from '../lib/database.types';
+import React, { useState, useEffect, useRef } from 'react'
+import { supabase } from '../lib/supabase'
+import { Send, MessageCircle, User, Menu, X, Plus, LogOut } from 'lucide-react'
+import type { Database } from '../lib/database.types'
 
-type Message = Database['public']['Tables']['messages']['Row'];
-type Profile = Database['public']['Tables']['profiles']['Row'];
-type Conversation = Database['public']['Tables']['conversations']['Row'];
+type Message = Database['public']['Tables']['messages']['Row']
+type Profile = Database['public']['Tables']['profiles']['Row']
+type Conversation = Database['public']['Tables']['conversations']['Row']
 
 interface CustomerChatProps {
-  profile: Profile;
+  profile: Profile
 }
 
 export default function CustomerChat({ profile }: CustomerChatProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [messages, setMessages] = useState<Message[]>([])
+  const [newMessage, setNewMessage] = useState('')
+  const [conversationId, setConversationId] = useState<string | null>(null)
+  const [conversations, setConversations] = useState<Conversation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [sending, setSending] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
-    loadOrCreateConversation();
-    loadConversations();
-  }, [profile.id]);
+    loadOrCreateConversation()
+    loadConversations()
+  }, [profile.id])
 
   useEffect(() => {
     if (conversationId) {
-      loadMessages();
-      subscribeToMessages();
+      loadMessages()
+      subscribeToMessages()
     }
-  }, [conversationId]);
+  }, [conversationId])
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom()
+  }, [messages])
 
   async function loadOrCreateConversation() {
     try {
@@ -50,12 +50,12 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
         .eq('customer_id', profile.id)
         .eq('status', 'active')
         .order('created_at', { ascending: false })
-        .limit(1);
+        .limit(1)
 
-      if (fetchError) throw fetchError;
+      if (fetchError) throw fetchError
 
       if (existingConversations && existingConversations.length > 0) {
-        setConversationId(existingConversations[0].id);
+        setConversationId(existingConversations[0].id)
       } else {
         const { data: waitingConversation, error: waitingError } = await supabase
           .from('conversations')
@@ -63,27 +63,27 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
           .eq('customer_id', profile.id)
           .eq('status', 'waiting')
           .order('created_at', { ascending: false })
-          .limit(1);
+          .limit(1)
 
-        if (waitingError) throw waitingError;
+        if (waitingError) throw waitingError
 
         if (waitingConversation && waitingConversation.length > 0) {
-          setConversationId(waitingConversation[0].id);
+          setConversationId(waitingConversation[0].id)
         } else {
           const { data: newConversation, error: createError } = await supabase
             .from('conversations')
             .insert({ customer_id: profile.id, status: 'waiting' })
             .select()
-            .single();
+            .single()
 
-          if (createError) throw createError;
-          setConversationId(newConversation.id);
+          if (createError) throw createError
+          setConversationId(newConversation.id)
         }
       }
     } catch (error) {
-      console.error('Error loading conversation:', error);
+      console.error('Error loading conversation:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -93,12 +93,12 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
         .from('conversations')
         .select('*')
         .eq('customer_id', profile.id)
-        .order('updated_at', { ascending: false });
+        .order('updated_at', { ascending: false })
 
-      if (error) throw error;
-      setConversations(data || []);
+      if (error) throw error
+      setConversations(data || [])
     } catch (error) {
-      console.error('Error loading conversations:', error);
+      console.error('Error loading conversations:', error)
     }
   }
 
@@ -108,42 +108,42 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
         .from('conversations')
         .insert({ customer_id: profile.id, status: 'waiting' })
         .select()
-        .single();
+        .single()
 
-      if (error) throw error;
+      if (error) throw error
 
-      setConversationId(newConversation.id);
-      await loadConversations();
-      setSidebarOpen(false);
+      setConversationId(newConversation.id)
+      await loadConversations()
+      setSidebarOpen(false)
     } catch (error) {
-      console.error('Error creating conversation:', error);
+      console.error('Error creating conversation:', error)
     }
   }
 
   function switchConversation(id: string) {
-    setConversationId(id);
-    setSidebarOpen(false);
+    setConversationId(id)
+    setSidebarOpen(false)
   }
 
   async function loadMessages() {
-    if (!conversationId) return;
+    if (!conversationId) return
 
     try {
       const { data, error } = await supabase
         .from('messages')
         .select('*')
         .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
 
-      if (error) throw error;
-      setMessages(data || []);
+      if (error) throw error
+      setMessages(data || [])
     } catch (error) {
-      console.error('Error loading messages:', error);
+      console.error('Error loading messages:', error)
     }
   }
 
   function subscribeToMessages() {
-    if (!conversationId) return;
+    if (!conversationId) return
 
     const channel = supabase
       .channel(`conversation-${conversationId}`)
@@ -156,32 +156,32 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          const newMessage = payload.new as Message;
+          const newMessage = payload.new as Message
           setMessages((prev) => {
             if (prev.some((msg) => msg.id === newMessage.id)) {
-              return prev;
+              return prev
             }
-            return [...prev, newMessage];
-          });
-        }
+            return [...prev, newMessage]
+          })
+        },
       )
-      .subscribe();
+      .subscribe()
 
     return () => {
-      supabase.removeChannel(channel);
-    };
+      supabase.removeChannel(channel)
+    }
   }
 
   async function sendMessage(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newMessage.trim() || !conversationId || sending) return;
+    e.preventDefault()
+    if (!newMessage.trim() || !conversationId || sending) return
 
-    const messageContent = newMessage.trim();
-    setNewMessage('');
+    const messageContent = newMessage.trim()
+    setNewMessage('')
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = 'auto'
     }
-    setSending(true);
+    setSending(true)
 
     const tempMessage: Message = {
       id: `temp-${Date.now()}`,
@@ -189,9 +189,9 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
       sender_id: profile.id,
       content: messageContent,
       created_at: new Date().toISOString(),
-    };
+    }
 
-    setMessages((prev) => [...prev, tempMessage]);
+    setMessages((prev) => [...prev, tempMessage])
 
     try {
       const { data, error } = await supabase
@@ -202,19 +202,17 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
           content: messageContent,
         })
         .select()
-        .single();
+        .single()
 
-      if (error) throw error;
+      if (error) throw error
 
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === tempMessage.id ? data : msg))
-      );
+      setMessages((prev) => prev.map((msg) => (msg.id === tempMessage.id ? data : msg)))
     } catch (error) {
-      console.error('Error sending message:', error);
-      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id));
-      setNewMessage(messageContent);
+      console.error('Error sending message:', error)
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempMessage.id))
+      setNewMessage(messageContent)
     } finally {
-      setSending(false);
+      setSending(false)
     }
   }
 
@@ -223,7 +221,7 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-gray-600">Loading chat...</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -278,9 +276,7 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
 
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
-                <div className="p-4 text-center text-gray-500 text-sm">
-                  No conversations yet
-                </div>
+                <div className="p-4 text-center text-gray-500 text-sm">No conversations yet</div>
               ) : (
                 <div className="space-y-1 px-2">
                   {conversations.map((conv) => (
@@ -296,18 +292,20 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
                       <div className="flex items-center gap-2">
                         <MessageCircle className="w-4 h-4 text-gray-600" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-800 truncate">
-                            Conversation
-                          </p>
+                          <p className="text-sm font-medium text-gray-800 truncate">Conversation</p>
                           <p className="text-xs text-gray-500">
                             {new Date(conv.updated_at || conv.created_at).toLocaleDateString()}
                           </p>
                         </div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${
-                          conv.status === 'active' ? 'bg-green-100 text-green-700' :
-                          conv.status === 'waiting' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
+                        <div
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            conv.status === 'active'
+                              ? 'bg-green-100 text-green-700'
+                              : conv.status === 'waiting'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
                           {conv.status}
                         </div>
                       </div>
@@ -327,58 +325,59 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
         )}
 
         <div className="flex flex-col flex-1 min-w-0">
-
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-        {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500">
-              <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <p className="text-lg font-medium">Start a conversation</p>
-              <p className="text-sm">Send a message to connect with a support representative</p>
-            </div>
-          </div>
-        ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${
-                message.sender_id === profile.id ? 'justify-end' : 'justify-start'
-              }`}
-            >
-              <div className="flex flex-col max-w-xs lg:max-w-md">
-                <div className="flex items-center gap-2 mb-1 px-1">
-                  <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
-                    <User className="w-4 h-4 text-gray-600" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700">
-                    {message.sender_id === profile.id ? profile.name : 'Support'}
-                  </span>
-                </div>
-                <div
-                  className={`px-4 py-3 rounded-2xl shadow-sm ${
-                    message.sender_id === profile.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-800'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{message.content}</p>
-                  <p
-                    className={`text-xs mt-1 ${
-                      message.sender_id === profile.id ? 'text-blue-100' : 'text-gray-400'
-                    }`}
-                  >
-                    {new Date(message.created_at).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
+          <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+            {messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center text-gray-500">
+                  <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                  <p className="text-lg font-medium">Start a conversation</p>
+                  <p className="text-sm">Send a message to connect with a support representative</p>
                 </div>
               </div>
-            </div>
-          ))
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+            ) : (
+              messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    message.sender_id === profile.id ? 'justify-end' : 'justify-start'
+                  }`}
+                >
+                  <div className="flex flex-col max-w-xs lg:max-w-md">
+                    <div className="flex items-center gap-2 mb-1 px-1">
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                        <User className="w-4 h-4 text-gray-600" />
+                      </div>
+                      <span className="text-xs font-medium text-gray-700">
+                        {message.sender_id === profile.id ? profile.name : 'Support'}
+                      </span>
+                    </div>
+                    <div
+                      className={`px-4 py-3 rounded-2xl shadow-sm ${
+                        message.sender_id === profile.id
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-gray-800'
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                        {message.content}
+                      </p>
+                      <p
+                        className={`text-xs mt-1 ${
+                          message.sender_id === profile.id ? 'text-blue-100' : 'text-gray-400'
+                        }`}
+                      >
+                        {new Date(message.created_at).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
 
           <form onSubmit={sendMessage} className="bg-white border-t px-6 py-4">
             <div className="flex gap-3 items-end">
@@ -391,9 +390,9 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
                 disabled={sending}
                 rows={1}
                 onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = Math.min(target.scrollHeight, 200) + 'px'
                 }}
               />
               <button
@@ -409,5 +408,5 @@ export default function CustomerChat({ profile }: CustomerChatProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

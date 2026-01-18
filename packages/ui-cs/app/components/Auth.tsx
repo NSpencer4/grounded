@@ -1,37 +1,37 @@
-import { useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { LogIn, UserPlus, MessageCircle } from 'lucide-react';
+import React, { useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { LogIn, UserPlus, MessageCircle } from 'lucide-react'
 
 export default function Auth() {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault()
+    setLoading(true)
+    setError('')
 
     try {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-        });
-        if (error) throw error;
+        })
+        if (error) throw error
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
-        });
-        if (error) throw error;
+        })
+        if (error) throw error
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'An error occurred')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -45,7 +45,9 @@ export default function Auth() {
             </div>
             <h1 className="text-3xl font-bold text-center mb-2">Customer Support</h1>
             <p className="text-blue-100 text-center">
-              {isSignUp ? 'Create your account to get started' : 'Welcome back! Sign in to continue'}
+              {isSignUp
+                ? 'Create your account to get started'
+                : 'Welcome back! Sign in to continue'}
             </p>
           </div>
 
@@ -111,14 +113,12 @@ export default function Auth() {
               <button
                 type="button"
                 onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError('');
+                  setIsSignUp(!isSignUp)
+                  setError('')
                 }}
                 className="text-blue-600 hover:text-blue-700 font-medium text-sm"
               >
-                {isSignUp
-                  ? 'Already have an account? Sign in'
-                  : "Don't have an account? Sign up"}
+                {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
               </button>
             </div>
           </div>
@@ -129,5 +129,5 @@ export default function Auth() {
         </p>
       </div>
     </div>
-  );
+  )
 }

@@ -1,15 +1,10 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+import type { LinksFunction } from '@remix-run/node'
 
-import './index.css';
+import './index.css'
+import React from 'react'
 
-export const links: LinksFunction = () => [];
+export const links: LinksFunction = () => []
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,9 +22,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 export default function App() {
-  return <Outlet />;
+  return <Outlet />
 }
