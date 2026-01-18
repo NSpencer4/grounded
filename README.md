@@ -1,4 +1,5 @@
 # Project Grounded
+![Grounded Project](./docs/grounded-project.jpg "Grounded Project")
 
 **Status:** Proof of Concept (POC)  
 **Focus:** Reliability, Robustness, and Accuracy in Agentic AI  
