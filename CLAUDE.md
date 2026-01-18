@@ -15,14 +15,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Install dependencies (from root)
 npm install
 
-# Development (from packages/ui-cs)
+# Development (from packages/customer-ui)
 npm run dev          # Start Remix dev server with Vite
 
-# Quality checks (from packages/ui-cs)
+# Quality checks (from packages/customer-ui)
 npm run lint         # ESLint
 npm run typecheck    # TypeScript type checking
 
-# Production (from packages/ui-cs)
+# Production (from packages/customer-ui)
 npm run build        # Build for production
 npm run serve        # Run production build
 ```
@@ -33,8 +33,8 @@ Managed by Lerna with npm workspaces:
 
 ```
 packages/
-├── ui-cs/           # Main customer support UI (active)
-├── ui-shared/       # Shared components (placeholder)
+├── customer-ui/           # Main customer support UI (active)
+├── shared-ui/       # Shared components (placeholder)
 └── schemas/         # Shared data schemas (placeholder)
 ```
 
@@ -61,7 +61,7 @@ supabase.channel(`conversation-${id}`)
 
 ## Environment Variables
 
-Required in `packages/ui-cs/.env`:
+Required in `packages/customer-ui/.env`:
 ```
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -69,9 +69,9 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## Key Files
 
-- `packages/ui-cs/src/App.tsx` - Main routing and auth logic
-- `packages/ui-cs/src/lib/database.types.ts` - TypeScript types for Supabase tables
-- `packages/ui-cs/src/lib/supabase.ts` - Supabase client initialization
+- `packages/customer-ui/src/App.tsx` - Main routing and auth logic
+- `packages/customer-ui/src/lib/database.types.ts` - TypeScript types for Supabase tables
+- `packages/customer-ui/src/lib/supabase.ts` - Supabase client initialization
 
 ## Testing
 
