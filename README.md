@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Why "Grounded"? (The Rationale)
+## 1. Why "Grounded"?
 
 The name **Grounded** stems from an electrical engineering metaphor designed to solve a critical problem in Generative AI: **Volatility.**
 
