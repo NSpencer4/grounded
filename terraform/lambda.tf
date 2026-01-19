@@ -13,8 +13,8 @@ module "grounded_actions_orchestrator" {
 
   local_existing_package = "../packages/orchestrators/actions-orchestrator/dist/function.zip"
 
-  vpc_subnet_ids = [aws_subnet.public.id]
-  vpc_security_group_ids = [aws_security_group.lambdas.id]
+#   vpc_subnet_ids = [aws_subnet.public.id]
+#   vpc_security_group_ids = [aws_security_group.lambdas.id]
 
   attach_network_policy = true
   attach_policy_statements = true
@@ -34,6 +34,41 @@ module "grounded_actions_orchestrator" {
       ],
       resources = [*]
     },
+
+    receive_messages = {
+      effect: "Allow",
+      actions: [
+        "kafka:DescribeCluster",
+        "kafka:GetBootstrapBrokers",
+        "kafka:ListTopics",
+        "kafka:Consume"
+      ],
+      resources: ["*"],
+#       "Resource": "arn",
+#       "Condition": {
+#         "StringEquals": {
+#           "kafka:TopicName": "conversation-commands"
+#         }
+#       }
+    }
+
+    send_messages = {
+      effect: "Allow",
+      actions: [
+        "kafka:DescribeCluster",
+        "kafka:GetBootstrapBrokers",
+        "kafka:ListTopics",
+        "kafka:Produce"
+      ],
+      resources: ["*"],
+      #       "Resource": "arn",
+      #       "Condition": {
+      #         "StringEquals": {
+      #           "kafka:TopicName": "conversation-evaluation"
+      #         }
+      #       }
+    }
+
     fetch_secrets = {
       effect = "Allow",
       actions = [
