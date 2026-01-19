@@ -54,11 +54,50 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+resource "aws_nat_gateway" "main" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public.id # public subnet for egress
+
+  tags = {
+    Name        = "grounded-nat-gateway"
+    Environment = var.environment
+  }
+
+  # To ensure proper ordering
+  depends_on = [aws_internet_gateway.public]
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.main.id
+  }
+
+  tags = {
+    Name = "grounded-private-subnet-route-table"
+    Environment = var.environment
+  }
+}
+
+# NAT Gateway requires an Elastic IP
+resource "aws_eip" "nat" {
+  domain = "vpc"
+  tags = {
+    Name        = "grounded-nat-eip"
+    Environment = var.environment
+  }
+}
+
+
+
 resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.10.0/24"
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = false
+
 
   tags = {
     Name = "grounded-private-subnet"
@@ -69,10 +108,7 @@ resource "aws_subnet" "private" {
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
-  route {
-    cidr_block = "10.0.0.0/16"
-    gateway_id = "local"  # default for local VPC routing
-  }
+  # Local routing is implicit no need to explicitly define
 
   tags = {
     Name = "grounded-private-subnet-route-table"
@@ -80,7 +116,7 @@ resource "aws_route_table" "private" {
   }
 }
 
-resource "aws_route_table_association" "private_assoc" {
+resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.private.id
 }
@@ -172,14 +208,28 @@ resource "aws_security_group" "grounded_msk_sg" {
     from_port   = 2181
     to_port     = 2181
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.10/16"]
+    cidr_blocks = [aws_vpc.main.cidr_block]
   }
 
   ingress {
     from_port   = 9092
     to_port     = 9092
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.10/16"]
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  ingress {
+    from_port   = 9094
+    to_port     = 9094
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+  }
+
+  ingress {
+    from_port   = 9096
+    to_port     = 9096
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
   }
 
   egress {
