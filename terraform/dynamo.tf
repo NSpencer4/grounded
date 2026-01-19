@@ -24,15 +24,14 @@ resource "aws_dynamodb_table" "dynamo" {
     type = "S"
   }
 
-#   global_secondary_index {
-#     name = "GSI1"
-#     hash_key = "GSI1"
-#     range_key = "SK"
-#     projection_type = "ALL"
-#     non_key_attributes = []
-#   }
+  global_secondary_index {
+    name = "GSI1"
+    hash_key = "GSI1"
+    range_key = "SK"
+    projection_type = "ALL"
+    non_key_attributes = []
+  }
 
-  # Additional optional configurations
   tags = {
     Name = var.ddb_name
     Environment = var.environment
