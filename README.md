@@ -31,6 +31,8 @@ In an electrical system, a high-voltage surge (like a bolt of lightning) represe
 
 **Infrastructure Considerations:** For this POC we are aiming at low cost while maintaining security best practices:
 * Single region deployment for simplicity
+* Single table design for DynamoDB to reduce costs and simplify data management
+* Single PostgreSQL instance for simplicity
 * Self-Hosted Kafka instead of MSK to reduce cost by 80%
 * VPC Endpoints instead of NAT Gateways for outbound traffic
 * AWS Secrets Manager for securely storing API keys and other sensitive data

@@ -20,12 +20,8 @@ variable "actions_orchestrator_fn_name" {
   default = "grounded-actions-orchestrator"
 }
 
-variable "conversation_commands_ddb_name" {
+variable "ddb_name" {
   type = string
-  default = "grounded-conversation-commands"
+  default = "grounded-datastore"
 }
 
-variable "conversation_updates_ddb_name" {
-  type = string
-  default = "grounded-conversation-updates"
-}

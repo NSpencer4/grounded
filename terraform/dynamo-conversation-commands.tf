@@ -1,5 +1,5 @@
-resource "aws_dynamodb_table" "conversation_commands_ddb" {
-  name         = var.conversation_commands_ddb_name
+resource "aws_dynamodb_table" "dynamo" {
+  name         = var.ddb_name
   hash_key = "PK"
   range_key = "SK"
   billing_mode = "PAY_PER_REQUEST"
@@ -34,7 +34,7 @@ resource "aws_dynamodb_table" "conversation_commands_ddb" {
 
   # Additional optional configurations
   tags = {
-    Name = var.conversation_commands_ddb_name
+    Name = var.ddb_name
     Environment = var.environment
   }
 }

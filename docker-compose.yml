@@ -42,3 +42,90 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: grounded-dynamodb
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+
+  # Web UI for DynamoDB
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    container_name: grounded-dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "us-east-1"
+    depends_on:
+      - dynamodb-local
+
+  conversation-commands-api:
+    build:
+      context: ./ruby-apis/conversation-commands
+    container_name: grounded-commands-api
+    ports:
+      - "3001:3000"
+    environment:
+      RAILS_ENV: development
+      DYNAMODB_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+    volumes:
+      - "./ruby-apis/conversation-commands:/rails"
+    depends_on:
+      - dynamodb-local
+    command: "./bin/rails server -b 0.0.0.0"
+
+  conversation-updates-api:
+    build:
+      context: ./ruby-apis/conversation-updates
+    container_name: grounded-updates-api
+    ports:
+      - "3002:3000"
+    environment:
+      RAILS_ENV: development
+      DYNAMODB_ENDPOINT: "http://dynamodb-local:8000"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+    volumes:
+      - "./ruby-apis/conversation-updates:/rails"
+    depends_on:
+      - dynamodb-local
+    command: "./bin/rails server -b 0.0.0.0"
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: grounded-aws-local
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # External services port range
+    environment:
+      - SERVICES=lambda,s3,iam # Lambda requirements
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./docker/localstack:/var/lib/localstack"
+
+  # Optional: If you want to run your specific TS lambda as a standalone container
+  actions-orchestrator-lambda:
+    build:
+      context: .
+      dockerfile: ./packages/server/orchestrators/actions-orchestrator/Dockerfile
+    container_name: grounded-actions-lambda
+    ports:
+      - "9000:8080" # Lambda runtime uses 8080 internally
+    environment:
+      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+      - KAFKA_BROKERS=kafka:29092
+    depends_on:
+      - dynamodb-local
+      - kafka
