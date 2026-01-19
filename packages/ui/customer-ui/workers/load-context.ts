@@ -1,4 +1,5 @@
 import { type PlatformProxy } from 'wrangler'
+import type { IncomingRequestCfProperties } from '@cloudflare/workers-types'
 
 declare module '@remix-run/cloudflare' {
   interface AppLoadContext extends ReturnType<typeof getLoadContext> {

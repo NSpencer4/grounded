@@ -3,7 +3,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import { defineConfig } from 'eslint/config';
 
-import baseConfig from "../../eslint.config.js";
+import baseConfig from "../../../eslint.config.js";
 
 export default defineConfig([
   {
@@ -23,6 +23,7 @@ export default defineConfig([
         'warn',
         {allowConstantExport: true},
       ],
+      'no-undef': 'off',
     },
   }
 ]);
