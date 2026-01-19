@@ -11,11 +11,11 @@ build
 /build
 
 # misc
+.idea
 .terraform
 .wrangler
 .DS_Store
 *.pem
-/.idea
 
 # debug
 npm-debug.log*
