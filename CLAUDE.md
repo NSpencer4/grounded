@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Grounded** is a POC for AI-grounded customer service features. The name comes from an electrical engineering metaphor: like a ground wire protects systems from voltage surges, this architecture "grounds" AI agents with organizational data to prevent hallucinations.
 
 **Status:** Proof of Concept
-**Stack:** Remix + React + TypeScript + Supabase + Tailwind CSS (Frontend) | AWS Lambda + DynamoDB + PostgreSQL + MSK Kafka (Backend)
+**Stack:** Remix + React + TypeScript + Supabase + Tailwind CSS (Frontend) | AWS Lambda + App Runner + DynamoDB + PostgreSQL + EC2 Kafka (Backend)
 
 ## Build & Development Commands
 
@@ -106,14 +106,21 @@ Three user roles with different dashboards:
 
 AWS resources defined in `terraform/`:
 
-| Resource | Purpose |
-|----------|---------|
-| `postgres.tf` | RDS PostgreSQL for conversation evaluations |
-| `dynamo.tf` | DynamoDB tables (conversation-commands, conversation-updates) |
-| `msk.tf` | Managed Streaming Kafka cluster |
-| `lambda.tf` | Actions Orchestrator Lambda function |
-| `secrets.tf` | Secrets Manager for credentials |
-| `networking.tf` | VPC and networking configuration |
+| File | Purpose |
+|------|---------|
+| `providers.tf` | AWS provider configuration (us-east-1) |
+| `variables.tf` | Environment, VPC, and resource name variables |
+| `networking.tf` | VPC, subnets (public/private), security groups, internet gateway, VPC endpoints |
+| `postgres.tf` | RDS PostgreSQL (db.t3.micro) for conversation evaluations |
+| `dynamo-conversation-commands.tf` | DynamoDB table for conversation commands (CQRS writes) |
+| `dynamo-conversation-updates-ddb.tf` | DynamoDB table for conversation updates (CQRS reads) |
+| `ec2-kafka-cluster.tf` | EC2 instance running Kafka via Docker Compose (single-node) |
+| `msk-cluster.tf` | MSK cluster configuration (commented out, not active) |
+| `lambda-actions-orchestrator.tf` | Actions Orchestrator Lambda with Kafka IAM policies |
+| `app-runner-graphql-api.tf` | AWS App Runner service for GraphQL API (public) |
+| `app-runner-conversation-commands-api.tf` | AWS App Runner service for conversation commands API (VPC-only) |
+| `secrets.tf` | Secrets Manager data sources for credentials |
+| `production.tfvars` | Production environment variable values |
 
 ## Environment Variables
 
