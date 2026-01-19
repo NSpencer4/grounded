@@ -2,5 +2,8 @@
   "name": "grounded-server-shared",
   "version": "0.0.1",
   "description": "",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "drizzle-orm": "^0.45.1"
+  }
 }

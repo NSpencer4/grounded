@@ -76,12 +76,42 @@ Project Grounded does not treat AI interactions as simple Request/Response cycle
 ---
 
 ## 6. Repository Structure
-TODO
+```
+packages/
+├── server/                        # Backend infrastructure layer
+│   ├── shared/                    # Shared utilities
+│   │   ├── dynamo/                # DynamoDB client wrapper
+│   │   ├── postgres/              # PostgreSQL connection manager
+│   │   ├── event-producer/        # Kafka producer with connection pooling
+│   │   └── secrets-manager/       # AWS Secrets Manager client
+│   ├── agents/                    # AI agents (placeholder)
+│   │   ├── customer-spend-agent/
+│   │   └── response-recommendation-agent/
+│   ├── orchestrators/             # State machine orchestrators
+│   │   ├── actions-orchestrator/  # Main orchestration Lambda
+│   │   ├── assertions-orchestrator/
+│   │   └── conversation-responder/
+│   └── apis/                      # API implementations
+│       ├── gateway-api/           # GraphQL API (Apollo Server v5)
+│       └── organization-data-api/
+├── ui/
+│   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
+│       ├── app/                   # Application source
+│       │   ├── components/        # React components
+│       │   ├── lib/               # Utilities (supabase, types)
+│       │   └── routes/            # Remix routing
+│       └── workers/               # Cloudflare Workers edge functions
+└── schemas/                       # Shared data schemas (placeholder)
+
+terraform/                         # AWS infrastructure-as-code
+docs/                              # Architecture diagrams
+```
 
 ## 7. Stretch Goals
+- [x] Implement GraphQL layer
+- [ ] Implement GraphQL layer
 - [ ] Implement Outbox Pattern - Postgres w/ Debezium & Dynamo w/ Streams to a Lambda producer
 - [ ] Implement vector DB for embedded customer information to group similar customers for Agent evaluation
-- [ ] Implement GraphQL layer
 - [ ] Storybook Support
 - [ ] Theming engine w/ styled components
 - [ ] Build Admin decision review UI
