@@ -6,6 +6,11 @@ variable "vpc_id" {
   type = string
 }
 
+variable "vpc_name" {
+  type = string
+  default = "main-vpc"
+}
+
 variable "subnet_ids" {
   type = list(string)
 }

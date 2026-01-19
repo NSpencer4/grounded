@@ -13,8 +13,8 @@ module "grounded_actions_orchestrator" {
 
   local_existing_package = "../packages/orchestrators/actions-orchestrator/dist/function.zip"
 
-  vpc_subnet_ids = var.subnet_ids
-  vpc_security_group_ids = []
+  vpc_subnet_ids = [aws_subnet.public.id]
+  vpc_security_group_ids = [aws_security_group.lambdas.id]
 
   attach_network_policy = true
   attach_policy_statements = true
