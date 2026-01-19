@@ -27,6 +27,12 @@ npm run dev          # Start Remix dev server with Vite
 # Production (from packages/ui/customer-ui)
 npm run build        # Build for production
 npm run serve        # Run production build
+
+# GraphQL API (from packages/server/apis/gateway-api)
+npm run dev          # Start dev server with hot reload (port 4000)
+npm run build        # Compile TypeScript
+npm run start        # Run compiled output
+npm run typecheck    # Type check without emitting
 ```
 
 ## Monorepo Structure
@@ -49,6 +55,7 @@ packages/
 │   │   ├── assertions-orchestrator/
 │   │   └── conversation-responder/
 │   └── apis/                      # API implementations
+│       ├── gateway-api/           # GraphQL API (Apollo Server v5)
 │       └── organization-data-api/
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
@@ -133,6 +140,11 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 - `packages/server/shared/event-producer/index.ts` - Kafka producer lifecycle management
 - `packages/server/shared/secrets-manager/index.ts` - AWS Secrets Manager client
 
+**GraphQL API:**
+- `packages/server/apis/gateway-api/src/index.ts` - Apollo Server entry point
+- `packages/server/apis/gateway-api/src/schema.ts` - GraphQL type definitions
+- `packages/server/apis/gateway-api/src/resolvers.ts` - Query/mutation resolvers
+
 **Infrastructure:**
 - `terraform/*.tf` - AWS infrastructure definitions
 - `tsconfig.base.json` - Base TypeScript config with path aliases
@@ -140,6 +152,8 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ## Dependencies
 
 Key runtime dependencies:
+- `@apollo/server` - GraphQL server (v5)
+- `graphql` - GraphQL implementation
 - `@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb` - DynamoDB
 - `@aws-sdk/client-secrets-manager` - Secrets Manager
 - `kafkajs` - Kafka producer/consumer
