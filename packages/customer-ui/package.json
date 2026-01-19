@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "remix vite:dev",
+    "dev.wrangler": "wrangler dev",
     "build": "remix vite:build",
     "serve": "remix-serve ./build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",

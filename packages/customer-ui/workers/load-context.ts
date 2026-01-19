@@ -1,18 +1,25 @@
-import type { AppLoadContext } from '@remix-run/cloudflare'
-import type { PlatformProxy } from 'wrangler'
-
-type Cloudflare = Omit<PlatformProxy<Env>, 'dispose'>
+import { type PlatformProxy } from 'wrangler'
 
 declare module '@remix-run/cloudflare' {
-  interface AppLoadContext {
-    cloudflare: Cloudflare
+  interface AppLoadContext extends ReturnType<typeof getLoadContext> {
+    // This will merge the result of `getLoadContext` into the `AppLoadContext`
   }
 }
 
-type GetLoadContext = (args: { request: Request; context: { cloudflare: Cloudflare } }) => AppLoadContext
-
-export const getLoadContext: GetLoadContext = ({ context }) => {
+export function getLoadContext({
+  context,
+}: {
+  request: Request
+  context: {
+    cloudflare: Omit<PlatformProxy<Env, IncomingRequestCfProperties>, 'dispose' | 'caches'> & {
+      caches: PlatformProxy<Env, IncomingRequestCfProperties>['caches'] | CacheStorage
+    }
+  }
+}) {
   return {
-    cloudflare: context.cloudflare,
+    env: context.cloudflare.env,
+    cf: context.cloudflare.cf,
+    ctx: context.cloudflare.ctx,
+    cache: context.cloudflare.caches,
   }
 }

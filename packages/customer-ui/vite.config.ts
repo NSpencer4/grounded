@@ -1,8 +1,7 @@
-import { cloudflare } from '@cloudflare/vite-plugin'
 import { cloudflareDevProxyVitePlugin, vitePlugin as remix } from '@remix-run/dev'
 import { defineConfig, PluginOption } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import { getLoadContext } from 'my-react-router-app/load-context'
+import { getLoadContext } from './workers/load-context'
 
 export default defineConfig({
   plugins: [
