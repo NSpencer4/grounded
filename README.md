@@ -109,7 +109,7 @@ docs/                              # Architecture diagrams
 
 ## 7. Stretch Goals
 - [x] Implement GraphQL layer
-- [ ] Implement GraphQL layer
+- [ ] Dockerize all infra / allow for local development
 - [ ] Implement Outbox Pattern - Postgres w/ Debezium & Dynamo w/ Streams to a Lambda producer
 - [ ] Implement vector DB for embedded customer information to group similar customers for Agent evaluation
 - [ ] Storybook Support
