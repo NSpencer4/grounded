@@ -29,6 +29,7 @@
   },
   "workspaces": [
     "packages/schemas",
+    "packages/ui/*",
     "packages/server/agents/*",
     "packages/server/apis/*",
     "packages/server/orchestrators/*",
