@@ -1,3 +1,4 @@
+/* eslint-env node */
 import { Kafka as KafkaClient, KafkaConfig, Producer } from 'kafkajs'
 
 // Map to manage multiple producer instances
@@ -27,13 +28,15 @@ const getProducer = async (config: KafkaConfig, clientId: string) => {
 
 export const produceMessage = async (
   clientId: string,
-  config: KafkaClient,
+  config: KafkaConfig,
   topicName: string,
   key: string,
   value: string,
 ) => {
   const producerInstance = await getProducer(config, clientId)
   try {
+    if (!producerInstance) throw new Error('Failed to get producer instance')
+
     await producerInstance.send({
       topic: topicName,
       messages: [

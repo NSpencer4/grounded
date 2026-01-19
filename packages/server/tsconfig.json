@@ -6,6 +6,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2022",
+    "lib": ["ES2022"],
+    "typeRoots": ["../../node_modules/@types"],
+    "types": ["node"],
     "esModuleInterop": true,
     "skipLibCheck": true
   },
