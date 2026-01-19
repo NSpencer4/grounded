@@ -8,24 +8,24 @@ variable "vpc_id" {
 
 variable "vpc_name" {
   type = string
-  default = "main-vpc"
+  default = "grounded-main-vpc"
 }
 
 variable "subnet_ids" {
   type = list(string)
 }
 
-variable "grounded_actions_orchestrator_fn_name" {
+variable "actions_orchestrator_fn_name" {
   type = string
   default = "grounded-actions-orchestrator"
 }
 
-variable "grounded_conversation_commands_ddb_name" {
+variable "conversation_commands_ddb_name" {
   type = string
   default = "grounded-conversation-commands"
 }
 
-variable "grounded_conversation_updates_ddb_name" {
+variable "conversation_updates_ddb_name" {
   type = string
   default = "grounded-conversation-updates"
 }

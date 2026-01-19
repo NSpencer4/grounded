@@ -1,9 +1,9 @@
-module "grounded_actions_orchestrator" {
+module "actions_orchestrator" {
   source = "terraform-aws-modules/lambda/aws"
   version = "8.2.0"
   description = "Responsible for orchestrating actions."
 
-  function_name = var.grounded_actions_orchestrator_fn_name
+  function_name = var.actions_orchestrator_fn_name
   runtime = "nodejs20.x"
   timeout = 60
   memory_size = 128
@@ -13,12 +13,12 @@ module "grounded_actions_orchestrator" {
 
   local_existing_package = "../packages/orchestrators/actions-orchestrator/dist/function.zip"
 
-#   vpc_subnet_ids = [aws_subnet.public.id]
-#   vpc_security_group_ids = [aws_security_group.lambdas.id]
+  vpc_subnet_ids = [aws_subnet.private.id]
+  vpc_security_group_ids = [aws_security_group.private_api_sg.id]
 
   attach_network_policy = true
   attach_policy_statements = true
-  role_name = "${var.grounded_actions_orchestrator_fn_name}-role"
+  role_name = "${var.actions_orchestrator_fn_name}-role"
 
   policy_statements = {
     networking = {
@@ -86,32 +86,32 @@ module "grounded_actions_orchestrator" {
   }
 
   tags = {
-    Name = var.grounded_actions_orchestrator_fn_name
+    Name = var.actions_orchestrator_fn_name
     Environment = var.environment
   }
 }
 
-module "grounded_actions_orchestrator_alias" {
+module "actions_orchestrator_alias" {
   source = "terraform-aws-modules/lambda/aws//modules/alias"
   name = "current"
   description = "Current Version"
 
-  function_name = module.grounded_actions_orchestrator.lambda_function_name
-  function_version = module.grounded_actions_orchestrator.lambda_function_version
+  function_name = module.actions_orchestrator.lambda_function_name
+  function_version = module.actions_orchestrator.lambda_function_version
 }
 
 resource "aws_lambda_provisioned_concurrency_config" "grounded_actions_orchestrator_provisioned_concurrency_config" {
-  function_name = module.grounded_actions_orchestrator.lambda_function_name
+  function_name = module.actions_orchestrator.lambda_function_name
   provisioned_concurrent_executions = 0
-  qualifier                         = module.grounded_actions_orchestrator_alias.lambda_alias_name
+  qualifier                         = module.actions_orchestrator_alias.lambda_alias_name
 }
 
 resource "aws_lambda_function_event_invoke_config" "grounded_actions_orchestrator_event_invoke_config" {
-  function_name = module.grounded_actions_orchestrator.lambda_function_name
+  function_name = module.actions_orchestrator.lambda_function_name
   maximum_retry_attempts = 3
 }
 
-# TODO: Setup MSK
+# TODO: Setup MSK trigger
 # resource "aws_lambda_event_source_mapping" "grounded_actions_orchestrator_event_source_mapping" {
 #   function_name = module.grounded_actions_orchestrator_alias.lambda_alias_arn
 #   topics = ["conversation-commands"]

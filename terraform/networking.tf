@@ -1,18 +1,16 @@
+variable "my_ip" {
+  description = "Tester public IP for whitelisting"
+  default     = "50.43.151.160/32"
+}
+
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   instance_tenancy     = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
+
   tags = {
     Name = var.vpc_name
-    Environment = var.environment
-  }
-}
-
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.main.id
-  tags = {
-    Name = "InternetGateway"
     Environment = var.environment
   }
 }
@@ -21,9 +19,18 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a" # Specify an availability zone
+  availability_zone       = "us-east-1a"
+
   tags = {
-    Name = "public-subnet"
+    Name = "grounded-public-subnet"
+    Environment = var.environment
+  }
+}
+
+resource "aws_internet_gateway" "public" {
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = "grounded-internet-gateway"
     Environment = var.environment
   }
 }
@@ -33,11 +40,11 @@ resource "aws_route_table" "public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+    gateway_id = aws_internet_gateway.public.id
   }
 
   tags = {
-    Name = "public-route-table"
+    Name = "grounded-public-route-table"
     Environment = var.environment
   }
 }
@@ -45,6 +52,147 @@ resource "aws_route_table" "public" {
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
+}
+
+resource "aws_subnet" "private" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.10.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "grounded-private-subnet"
+    Environment = var.environment
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "10.0.0.0/16"
+    gateway_id = "local"  # default for local VPC routing
+  }
+
+  tags = {
+    Name = "grounded-private-subnet-route-table"
+    Environment = var.environment
+  }
+}
+
+resource "aws_route_table_association" "private_assoc" {
+  subnet_id      = aws_subnet.private.id
+  route_table_id = aws_route_table.private.id
+}
+
+# TODO: Testing purposes - remove when complete
+resource "aws_security_group" "private_api_sg" {
+  name        = "api-http-whitelist-external-ip"
+  description = "Allow only my IP for API ingress"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "Allow only my IP for ingress"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "grounded-private-api-security-group"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "graphql_api_sg" {
+  name        = "graphql-api-sg"
+  description = "GraphQL API SG"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # public access
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "grounded-graphql-api-security-group"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "cqrs_api_sg" {
+  name        = "cqrs_api_sg"
+  description = "Only allow GraphQL API ingress"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "Only allow GraphQL API ingress"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    security_groups  = [aws_security_group.graphql_api_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "grounded-cqrs-api-security-group"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "grounded_msk_sg" {
+  name_prefix = "msk-sg-"
+  description = "Security group for Grounded MSK cluster"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 2181
+    to_port     = 2181
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.10/16"]
+  }
+
+  ingress {
+    from_port   = 9092
+    to_port     = 9092
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.10/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "grounded-msk-security-group"
+    Environment = var.environment
+  }
 }
 
 output "vpc_id" {
@@ -55,23 +203,6 @@ output "public_subnet_id" {
   value = aws_subnet.public.id
 }
 
-resource "aws_security_group" "lambdas" {
-  name = "grounded-lambdas"
-  description = "Grounded Lambdas"
-  vpc_id = var.vpc_id
-
-  egress {
-    # All ports
-    from_port = 0
-    to_port = 0
-    # All protocols
-    protocol = "-1"
-    # All IPV4 addreses
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = var.grounded_actions_orchestrator_fn_name
-    Environment = var.environment
-  }
+output "private_subnet_id" {
+  value = aws_subnet.private.id
 }

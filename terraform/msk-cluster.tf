@@ -1,43 +1,3 @@
-data "aws_vpc" "selected" {
-  default = true
-#   filter {
-#     name   = "tag:Name"
-#     values = ["main-vpc"]
-#   }
-}
-
-resource "aws_security_group" "grounded_msk" {
-  name_prefix = "msk-sg-"
-  description = "Security group for MSK cluster"
-  vpc_id      = data.aws_vpc.selected.id
-
-  ingress {
-    from_port   = 2181
-    to_port     = 2181
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.10/16"]
-  }
-
-  ingress {
-    from_port   = 9092
-    to_port     = 9092
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.10/16"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "grounded-msk-security-group"
-    Environment = var.environment
-  }
-}
-
 resource "aws_msk_cluster" "grounded" {
   cluster_name           = "grounded-cluster"
   kafka_version          = "3.4.0" # Specify the Kafka version
@@ -47,7 +7,7 @@ resource "aws_msk_cluster" "grounded" {
     instance_type   = "kafka.t3.small"
     ebs_volume_size = 50
     client_subnets  = var.subnet_ids
-    security_groups = [aws_security_group.msk_sg.id]
+    security_groups = [aws_security_group.grounded_msk_sg.id]
   }
 
   encryption_info {
