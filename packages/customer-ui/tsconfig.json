@@ -1,8 +1,27 @@
 {
-  "extends": "../../tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.cloudflare.json" }
+  ],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "ES2020",
+    "strict": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "types": ["@cloudflare/workers-types", "node", "vite/client", "@types/node", "./worker-configuration.d.ts"],
+    "noEmit": true,
+    "module": "ESNext",
+    "skipLibCheck": true
+  }
 }

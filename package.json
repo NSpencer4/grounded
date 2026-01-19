@@ -18,7 +18,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "clean.deps": "lerna clean && rm -rf node_modules",
+    "clean.deps": "lerna clean -y && rm -rf node_modules",
     "clean.reinstall.deps": "npm run clean.deps && npm i",
     "build": "lerna run build",
     "lint": "lerna run lint",
@@ -32,6 +32,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@types/node": "^25.0.9",
     "@typescript-eslint/utils": "^8.53.0",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^10.1.8",

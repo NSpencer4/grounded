@@ -8,7 +8,7 @@ import baseConfig from "../../eslint.config.js";
 
 export default defineConfig([
   {
-    extends: [baseConfig,],
+    extends: [baseConfig],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
