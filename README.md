@@ -29,6 +29,16 @@ In an electrical system, a high-voltage surge (like a bolt of lightning) represe
 * We are building a simulated interface to show how the **Model Context Protocol (MCP)** bridges the gap between AI agents and existing internal systems.
 * This ensures the AI is grounded in real-time facts rather than static, outdated training data.
 
+**Infrastructure Considerations:** For this POC we are aiming at low cost while maintaining security best practices:
+* Single region deployment for simplicity
+* Self-Hosted Kafka instead of MSK to reduce cost by 80%
+* VPC Endpoints instead of NAT Gateways for outbound traffic
+* AWS Secrets Manager for securely storing API keys and other sensitive data
+* APIs using AppRunner for serverless compute
+* Cloudflare Workers for edge functions
+* GraphQL for a unified API layer to separate frontend and backend concerns
+* DynamoDB for low-latency chat history and state
+* PostgreSQL for query-optimized transactional data
 ---
 
 ## 3. Architecture Overview: The State Machine Workflow

@@ -1,3 +1,4 @@
+# TODO: Testing purposes - remove when complete
 variable "my_ip" {
   description = "Tester public IP for whitelisting"
   default     = "50.43.151.160/32"
@@ -54,75 +55,83 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public.id # public subnet for egress
+# # Uncomment if NAT Gateway is desired in the future for egress
+# # NAT Gateway requires an Elastic IP
+# resource "aws_eip" "nat" {
+#   domain = "vpc"
+#   tags = {
+#     Name        = "grounded-nat-eip"
+#     Environment = var.environment
+#   }
+# }
 
-  tags = {
-    Name        = "grounded-nat-gateway"
-    Environment = var.environment
-  }
+# Uncomment if NAT Gateway is desired in the future
+# resource "aws_nat_gateway" "main" {
+#   allocation_id = aws_eip.nat.id
+#   subnet_id     = aws_subnet.public.id # public subnet for egress
+#
+#   tags = {
+#     Name        = "grounded-nat-gateway"
+#     Environment = var.environment
+#   }
+#
+#   # To ensure proper ordering
+#   depends_on = [aws_internet_gateway.public]
+# }
 
-  # To ensure proper ordering
-  depends_on = [aws_internet_gateway.public]
-}
+# Uncomment if NAT Gateway is desired in the future
+# resource "aws_route_table" "private" {
+#   vpc_id = aws_vpc.main.id
+#
+#   route {
+#     cidr_block     = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.main.id
+#   }
+#
+#   tags = {
+#     Name = "grounded-private-route-table"
+#     Environment = var.environment
+#   }
+# }
 
+# VPC Endpoints routing table for AWS services
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main.id
-  }
-
+  # No 0.0.0.0/0 route needed if we use VPC Endpoints for AWS services
   tags = {
-    Name = "grounded-private-subnet-route-table"
+    Name = "grounded-private-route-table"
     Environment = var.environment
   }
 }
 
-# NAT Gateway requires an Elastic IP
-resource "aws_eip" "nat" {
-  domain = "vpc"
-  tags = {
-    Name        = "grounded-nat-eip"
-    Environment = var.environment
-  }
+resource "aws_subnet" "private_primary" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.10.0/24"
+  availability_zone = "us-east-1a"
+  tags = { Name = "grounded-private-a", Environment = var.environment }
 }
 
-
-
-resource "aws_subnet" "private" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.10.0/24"
-  availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = false
-
-
-  tags = {
-    Name = "grounded-private-subnet"
-    Environment = var.environment
-  }
-}
-
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.main.id
-
-  # Local routing is implicit no need to explicitly define
-
-  tags = {
-    Name = "grounded-private-subnet-route-table"
-    Environment = var.environment
-  }
-}
-
-resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private.id
+resource "aws_route_table_association" "private_primary" {
+  subnet_id      = aws_subnet.private_primary.id
   route_table_id = aws_route_table.private.id
 }
 
+# Two subnets required for MSK uncomment if MSK is enabled
+# resource "aws_subnet" "private_secondary" {
+#   vpc_id            = aws_vpc.main.id
+#   cidr_block        = "10.0.11.0/24"
+#   availability_zone = "us-east-1b"
+#   tags = { Name = "grounded-private-b", Environment = var.environment }
+# }
+#
+# # Two subnets required for MSK
+# resource "aws_route_table_association" "private_secondary" {
+#   subnet_id      = aws_subnet.private_secondary.id
+#   route_table_id = aws_route_table.private.id
+# }
+
 # TODO: Testing purposes - remove when complete
-resource "aws_security_group" "private_api_sg" {
+resource "aws_security_group" "private_primary" {
   name        = "api-http-whitelist-external-ip"
   description = "Allow only my IP for API ingress"
   vpc_id      = aws_vpc.main.id
@@ -173,6 +182,7 @@ resource "aws_security_group" "graphql_api_sg" {
   }
 }
 
+# CQRS API = Ruby APIs - one for taking actions, one for handling reads
 resource "aws_security_group" "cqrs_api_sg" {
   name        = "cqrs_api_sg"
   description = "Only allow GraphQL API ingress"
@@ -183,6 +193,7 @@ resource "aws_security_group" "cqrs_api_sg" {
     from_port        = 443
     to_port          = 443
     protocol         = "tcp"
+    # Only allow GraphQL to ingress
     security_groups  = [aws_security_group.graphql_api_sg.id]
   }
 
@@ -199,37 +210,53 @@ resource "aws_security_group" "cqrs_api_sg" {
   }
 }
 
-resource "aws_security_group" "grounded_msk_sg" {
-  name_prefix = "msk-sg-"
-  description = "Security group for Grounded MSK cluster"
+resource "aws_security_group" "grounded_kafka_cluster_sg" {
+  name = "grounded-kafka-cluster"
+  description = "Security group for Grounded Kafka cluster"
   vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 2181
     to_port     = 2181
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [
+      aws_subnet.private_primary.cidr_block,
+      # Uncomment if MSK is enabled
+      # aws_subnet.private_secondary.cidr_block
+    ]
   }
 
   ingress {
     from_port   = 9092
     to_port     = 9092
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [
+      aws_subnet.private_primary.cidr_block,
+      # Uncomment if MSK is enabled
+      # aws_subnet.private_secondary.cidr_block
+    ]
   }
 
   ingress {
     from_port   = 9094
     to_port     = 9094
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [
+      aws_subnet.private_primary.cidr_block,
+      # Uncomment if MSK is enabled
+      # aws_subnet.private_secondary.cidr_block
+    ]
   }
 
   ingress {
     from_port   = 9096
     to_port     = 9096
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [
+      aws_subnet.private_primary.cidr_block,
+      # Uncomment if MSK is enabled
+      # aws_subnet.private_secondary.cidr_block
+    ]
   }
 
   egress {
@@ -245,6 +272,14 @@ resource "aws_security_group" "grounded_msk_sg" {
   }
 }
 
+resource "aws_vpc_endpoint" "secrets" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.us-east-1.secretsmanager"
+  vpc_endpoint_type = "Interface"
+  subnet_ids        = [aws_subnet.private_primary.id]
+  security_group_ids = [aws_security_group.private_primary.id]
+}
+
 output "vpc_id" {
   value = aws_vpc.main.id
 }
@@ -253,6 +288,36 @@ output "public_subnet_id" {
   value = aws_subnet.public.id
 }
 
-output "private_subnet_id" {
-  value = aws_subnet.private.id
+output "private_primary_subnet_id" {
+  value = aws_subnet.private_primary.id
+}
+
+output "private_secondary_subnet_id" {
+  value = aws_subnet.private_primary.id
+}
+
+output "vpc_cidr_block" {
+  value = aws_vpc.main.cidr_block
+}
+
+# Uncomment if NAT is enabled
+# output "nat_gateway_public_ip" {
+#   value = aws_eip.nat.public_ip
+# }
+
+output "graphql_api_sg_id" {
+  value = aws_security_group.graphql_api_sg.id
+}
+
+output "cqrs_api_sg_id" {
+  value = aws_security_group.cqrs_api_sg.id
+}
+
+# Uncomment if MSK is enabled
+# output "msk_sg_id" {
+#   value = aws_security_group.grounded_kafka_cluster_sg.id
+# }
+
+output "private_primary_sg_id" {
+  value = aws_security_group.private_primary.id
 }

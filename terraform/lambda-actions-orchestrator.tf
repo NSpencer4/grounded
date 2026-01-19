@@ -13,8 +13,12 @@ module "actions_orchestrator" {
 
   local_existing_package = "../packages/orchestrators/actions-orchestrator/dist/function.zip"
 
-  vpc_subnet_ids = [aws_subnet.private.id]
-  vpc_security_group_ids = [aws_security_group.private_api_sg.id]
+  vpc_subnet_ids = [
+    aws_subnet.private_primary.id
+    # uncomment if msk is enabled
+    # aws_subnet.private_b.id
+  ]
+  vpc_security_group_ids = [aws_security_group.private_primary.id]
 
   attach_network_policy = true
   attach_policy_statements = true
