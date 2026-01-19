@@ -28,7 +28,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
-    "packages/**/*"
+    "packages/schemas",
+    "packages/server/agents/*",
+    "packages/server/apis/*",
+    "packages/server/orchestrators/*",
+    "packages/server/shared"
   ],
   "devDependencies": {
     "@eslint/js": "^9.9.1",
