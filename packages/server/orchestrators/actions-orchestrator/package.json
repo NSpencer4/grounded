@@ -10,6 +10,8 @@
     "package": "npm run build && cd dist && zip -r function.zip ."
   },
   "dependencies": {
+    "@grounded/schemas": "*",
+    "@grounded/server-shared": "*",
     "kafkajs": "^2.2.4",
     "uuid": "^11.0.5",
     "zod": "^3.24.2"
