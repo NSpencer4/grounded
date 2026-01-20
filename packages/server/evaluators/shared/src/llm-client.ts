@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { LLMMessage, LLMCompletionOptions } from './types.js'
+import type { LLMCompletionOptions, LLMMessage } from './types.js'
 
 const DEFAULT_MODEL = 'claude-sonnet-4-20250514'
 const DEFAULT_MAX_TOKENS = 1024
@@ -30,7 +30,12 @@ export async function complete(
 ): Promise<CompletionResult> {
   const client = getAnthropicClient()
 
-  const { model = DEFAULT_MODEL, temperature = 0.7, maxTokens = DEFAULT_MAX_TOKENS, systemPrompt } = options
+  const {
+    model = DEFAULT_MODEL,
+    temperature = 0.7,
+    maxTokens = DEFAULT_MAX_TOKENS,
+    systemPrompt,
+  } = options
 
   const anthropicMessages = messages
     .filter((m) => m.role !== 'system')

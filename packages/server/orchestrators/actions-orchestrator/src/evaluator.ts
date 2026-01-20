@@ -34,7 +34,7 @@ function determineEvaluation(event: ConversationCommandEvent): EvaluationDecisio
     messageContent.includes(keyword),
   )
 
-  // Determine agents to trigger
+  // Determine evaluators to trigger
   const agentsToTrigger: AgentType[] = []
 
   if (hasMessage) {

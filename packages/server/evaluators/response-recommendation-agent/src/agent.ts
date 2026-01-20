@@ -1,5 +1,5 @@
-import { completeWithJson } from '@grounded/agents-shared'
 import type { AgentContext, AgentResult } from '@grounded/agents-shared'
+import { completeWithJson } from '@grounded/agents-shared'
 import type {
   ConversationHistory,
   CustomerContext,
@@ -45,7 +45,9 @@ Respond with a JSON object matching this structure:
   "urgencyLevel": "low" | "medium" | "high" | "critical"
 }`
 
-export async function fetchConversationHistory(conversationId: string): Promise<ConversationHistory> {
+export async function fetchConversationHistory(
+  conversationId: string,
+): Promise<ConversationHistory> {
   // TODO: Replace with actual data fetching from DynamoDB
   return {
     messages: [],

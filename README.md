@@ -181,19 +181,18 @@ packages/
 │   │   ├── dynamo/                # DynamoDB client wrapper
 │   │   ├── event-producer/        # Kafka producer with connection pooling
 │   │   └── secrets-manager/       # AWS Secrets Manager client
-│   ├── agents/                    # AI agent Lambdas
+│   ├── evaluators/                # AI agent Lambdas
 │   │   ├── shared/                # Shared agent utilities (@grounded/agents-shared)
 │   │   ├── customer-spend-agent/  # Analyzes customer spending data
 │   │   └── response-recommendation-agent/  # Generates response recommendations
 │   ├── orchestrators/             # State machine orchestrators
 │   │   ├── actions-orchestrator/  # Main orchestration Lambda
-│   │   └── responder/             # Response decision Lambda
+│   │   └── conversation-responder/# Response decision Lambda
 │   ├── mcp/                       # MCP servers
-│   │   ├── state-machine-query-tools/  # DynamoDB query tools for agents
 │   │   └── org-tools/             # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
 │       ├── gateway-api/           # GraphQL API
-│       └── company-data-api/      # Node.js Lambda monolith (PostgreSQL)
+│       └── organization-data-api/ # Node.js Lambda monolith (PostgreSQL)
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
 └── schemas/                       # Shared data schemas (@grounded/schemas)
