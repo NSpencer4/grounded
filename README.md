@@ -192,7 +192,7 @@ packages/
 │   │   └── org-tools/             # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
 │       ├── gateway-api/           # GraphQL API
-│       └── organization-data-api/ # Node.js Lambda monolith (PostgreSQL)
+│       └── organization-api/ # Node.js Lambda monolith (PostgreSQL)
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
 └── schemas/                       # Shared data schemas (@grounded/schemas)

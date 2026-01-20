@@ -23,7 +23,7 @@ Respond with a JSON object matching this structure:
 }`
 
 export async function fetchCustomerSpendData(customerId: string): Promise<CustomerSpendData> {
-  // TODO: Replace with actual data fetching from organization-data-api
+  // TODO: Replace with actual data fetching from organization-api
   // This is mock data for scaffolding purposes
   return {
     customerId,

@@ -56,7 +56,7 @@ export async function fetchConversationHistory(
 }
 
 export async function fetchCustomerContext(customerId: string): Promise<CustomerContext> {
-  // TODO: Replace with actual data fetching from organization-data-api
+  // TODO: Replace with actual data fetching from organization-api
   return {
     name: 'Customer',
     tier: 'professional',
