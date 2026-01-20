@@ -4,15 +4,18 @@ require_relative "base_event"
 
 module Schemas
   class ConversationInitiatedEvent < BaseEvent
-    attr_reader :conversation_id, :customer, :conversation_status
+    attr_reader :conversation_id, :customer, :conversation_status, :message
 
     def initialize(
       conversation_id:,
       customer:,
       action_by:,
+      message: nil,
       conversation_status: ConversationStatus::ACTIVE,
       correlation_id: nil
     )
+      timestamp = Time.now.utc.iso8601
+
       super(
         pk: "conversation##{conversation_id}",
         sk: "event##{EventTypes::CONVERSATION_INITIATED}",
@@ -25,24 +28,46 @@ module Schemas
       @conversation_id = conversation_id
       @customer = customer
       @conversation_status = conversation_status
+      @message = message
+      @timestamp = timestamp
     end
 
     protected
 
     def entity_attributes
-      {
-        "conversation" => {
-          "id" => conversation_id,
-          "customer" => customer,
-          "state" => {
-            "status" => conversation_status
-          }
+      attrs = {
+        "conversation" => build_conversation
+      }
+      attrs["message"] = build_message if message
+      attrs
+    end
+
+    private
+
+    def build_conversation
+      conv = {
+        "id" => conversation_id,
+        "createdAt" => @timestamp,
+        "updatedAt" => @timestamp,
+        "state" => {
+          "status" => conversation_status
         },
-        "message" => {
-          "id" => conversation_id,
-          "state" => {
-            "status" => conversation_status
-          }
+        "customer" => customer
+      }
+      conv
+    end
+
+    def build_message
+      {
+        "id" => message[:id],
+        "conversation" => {
+          "id" => conversation_id
+        },
+        "createdAt" => @timestamp,
+        "updatedAt" => @timestamp,
+        "sender" => message[:sender],
+        "details" => {
+          "content" => message[:content]
         }
       }
     end

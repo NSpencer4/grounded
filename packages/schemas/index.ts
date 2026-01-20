@@ -29,9 +29,11 @@ export const ConversationSchema = z.object({
   customer: z.object({
     user: UserSchema,
   }),
-  assignee: z.object({
-    user: UserSchema,
-  }),
+  assignee: z
+    .object({
+      user: UserSchema,
+    })
+    .optional(),
 })
 
 export type Conversation = z.infer<typeof ConversationSchema>
