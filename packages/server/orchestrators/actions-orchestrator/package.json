@@ -1,6 +1,22 @@
 {
   "name": "actions-orchestrator",
   "version": "0.0.1",
-  "description": "",
-  "type": "module"
+  "description": "Lambda orchestrator for processing conversation command events",
+  "type": "module",
+  "main": "dist/handler.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && cd dist && zip -r function.zip ."
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "uuid": "^11.0.5",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.8.2"
+  }
 }

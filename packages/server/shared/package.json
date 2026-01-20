@@ -1,8 +1,14 @@
 {
-  "name": "grounded-server-shared",
+  "name": "@grounded/server-shared",
   "version": "0.0.1",
-  "description": "",
+  "description": "Shared server utilities",
   "type": "module",
+  "exports": {
+    "./dynamo": "./dynamo/index.ts",
+    "./postgres": "./postgres/index.ts",
+    "./event-producer": "./event-producer/index.ts",
+    "./secrets-manager": "./secrets-manager/index.ts"
+  },
   "dependencies": {
     "drizzle-orm": "^0.45.1"
   }
