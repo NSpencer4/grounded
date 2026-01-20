@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { BaseEventSchema } from './events/base-event'
 
 export const UserRoleSchema = z.enum(['CUSTOMER', 'REPRESENTATIVE', 'ADMIN'])
 
@@ -16,8 +15,8 @@ export const ConversationStatusSchema = z.enum(['WAITING', 'ACTIVE', 'CLOSED'])
 
 export const ConversationSchema = z.object({
   id: z.uuid(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
   state: z.object({
     status: ConversationStatusSchema,
     closedAt: z.date().optional(),
@@ -34,8 +33,8 @@ export type Conversation = z.infer<typeof ConversationSchema>
 
 export const MessageSchema = z.object({
   id: z.uuid(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
   sender: z.object({
     user: UserSchema.pick({ id: true, name: true, role: true }),
   }),

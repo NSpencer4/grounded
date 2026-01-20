@@ -4,11 +4,11 @@ require "securerandom"
 
 module Schemas
   class BaseEvent
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = "1"
 
     attr_reader :pk, :sk, :gsi1, :event, :metadata, :outbox, :action_context
 
-    def initialize(pk:, sk:, event_type:, action:, action_by:, outbox_status: OutboxStatus::PENDING)
+    def initialize(pk:, sk:, event_type:, action:, action_by:, correlation_id: nil, outbox_status: OutboxStatus::PENDING)
       timestamp = Time.now.utc.iso8601
 
       @pk = pk
@@ -16,12 +16,13 @@ module Schemas
       @gsi1 = outbox_status
       @event = {
         "id" => SecureRandom.uuid,
-        "type" => event_type
+        "type" => event_type,
+        "schemaVersion" => SCHEMA_VERSION
       }
       @metadata = {
         "createdAt" => timestamp,
         "updatedAt" => timestamp,
-        "schemaVersion" => SCHEMA_VERSION
+        "correlationId" => correlation_id || SecureRandom.uuid
       }
       @outbox = {
         "status" => outbox_status

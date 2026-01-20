@@ -14,14 +14,9 @@ export const BaseEventSchema = z.object({
     type: z.string(),
     schemaVersion: z.string(),
   }),
-  metadata: EventMetadataSchema,
   actionContext: z.object({
     action: z.string(),
     actionBy: z.string(),
   }),
-  outbox: z
-    .object({
-      status: OutboxStatusSchema,
-    })
-    .optional(),
+  metadata: EventMetadataSchema,
 })

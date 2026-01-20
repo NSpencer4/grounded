@@ -11,6 +11,7 @@ module Schemas
       customer_id:,
       action_by:,
       conversation_status: ConversationStatus::ACTIVE,
+      correlation_id: nil,
       outbox_status: OutboxStatus::PENDING
     )
       super(
@@ -19,6 +20,7 @@ module Schemas
         event_type: EventTypes::CONVERSATION_INITIATED,
         action: "create",
         action_by: action_by,
+        correlation_id: correlation_id,
         outbox_status: outbox_status
       )
 
@@ -38,7 +40,9 @@ module Schemas
         },
         "conversation" => {
           "id" => conversation_id,
-          "status" => conversation_status
+          "state" => {
+            "status" => conversation_status
+          }
         }
       }
     end
