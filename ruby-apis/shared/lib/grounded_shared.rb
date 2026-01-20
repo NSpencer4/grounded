@@ -9,6 +9,7 @@ require_relative "grounded_shared/schemas/conversation_status"
 # Clients
 require_relative "grounded_shared/dynamo_client"
 require_relative "grounded_shared/kafka_producer"
+require_relative "grounded_shared/kafka_consumer"
 
 # Schemas
 require_relative "grounded_shared/schemas/base_event"
