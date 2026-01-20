@@ -6,16 +6,19 @@ export const EventMetadataSchema = z.object({
   correlationId: z.string(),
 })
 export type EventMetadata = z.infer<typeof EventMetadataSchema>
-export enum EventType {
-  CONVERSATION_INITIATED = 'CONVERSATION_INITIATED',
-  MESSAGE_RECEIVED = 'MESSAGE_RECEIVED',
-}
-export const EventTypeSchema = z.enum(EventType)
 
-export enum Action {
-  CREATE = 'CREATE',
-}
-export const ActionSchema = z.enum(Action)
+export const EventTypeSchema = z.enum([
+  // conversation command events
+  'CONVERSATION_INITIATED',
+  'MESSAGE_RECEIVED',
+
+  // conversation evaluation events
+  'CONVERSATION_EVALUATION',
+])
+export type EventType = z.infer<typeof EventTypeSchema>
+
+export const ActionSchema = z.enum(['CREATE'])
+export type Action = z.infer<typeof ActionSchema>
 
 export const EventDetailsSchema = z.object({
   id: z.uuid(),
