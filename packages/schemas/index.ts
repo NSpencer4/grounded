@@ -29,7 +29,7 @@ export const ConversationSchema = z.object({
   customer: z.object({
     user: UserSchema,
   }),
-  representative: z.object({
+  assignee: z.object({
     user: UserSchema,
   }),
 })
