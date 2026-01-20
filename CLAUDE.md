@@ -264,6 +264,15 @@ GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
 3. **API Exposure:** Commands and Updates APIs are HTTPS exposed for CF Worker access. In production, these would be
    VPC-internal with GraphQL in the same VPC
 
+4. **Kafka Producer Connection Pooling:** The event-producer module (`@grounded/server-shared/event-producer`) handles
+   connection pooling for Lambda warm starts with:
+   - Connection state tracking and automatic reconnection
+   - Health checks (5-minute interval)
+   - Idle connection cleanup (10-minute timeout)
+   - Batch message support for throughput
+   - GZIP compression
+   - If latency becomes an issue, consider Kafka REST Proxy or AWS MSK Connect
+
 ## Testing
 
 Not yet configured. Tests are a stretch goal.

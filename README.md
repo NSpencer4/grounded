@@ -220,3 +220,4 @@ docs/                              # Architecture diagrams
 - [ ] Build Admin decision review UI
 - [ ] Build Agent refund requesting - ex. Agent has a limit of $50 they can refund but they can request overage for manual approval
 - [ ] Implement commit-lint, husky, conventional commit and semantic release for versioning
+- [ ] RDS proxy for connection pooling
