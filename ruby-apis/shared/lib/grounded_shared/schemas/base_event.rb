@@ -33,11 +33,18 @@ module Schemas
       }
     end
 
+    # Returns the full item including DynamoDB keys (PK, SK, GSI1)
     def to_item
       {
         "PK" => pk,
         "SK" => sk,
-        "GSI1" => gsi1,
+        "GSI1" => gsi1
+      }.merge(to_message)
+    end
+
+    # Returns the event payload without DynamoDB-specific keys
+    def to_message
+      {
         "event" => event,
         "metadata" => metadata,
         "outbox" => outbox,

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { BaseEventSchema } from './base-event'
+import { UserSchema } from '../index'
 
 export const OutboxStatusSchema = z.enum(['PENDING', 'SENT', 'FAILED'])
 export type OutboxStatus = z.infer<typeof OutboxStatusSchema>
@@ -32,9 +33,7 @@ export const OutboxSchema = z.object({
 })
 
 export const CustomerSchema = z.object({
-  user: z.object({
-    id: z.string(),
-  }),
+  user: UserSchema,
 })
 
 export const ConversationStateSchema = z.object({
