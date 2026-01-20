@@ -1,6 +1,6 @@
-import { completeWithJson } from '@grounded/agents-shared'
 import type { AgentContext, AgentResult } from '@grounded/agents-shared'
-import type { CustomerSpendData, SpendAnalysis, CustomerSpendAgentOutput } from './types.js'
+import { completeWithJson } from '@grounded/agents-shared'
+import type { CustomerSpendAgentOutput, CustomerSpendData, SpendAnalysis } from './types.js'
 
 const SYSTEM_PROMPT = `You are a customer spend analysis agent. Your role is to analyze customer spending data and provide actionable insights for customer service representatives.
 
