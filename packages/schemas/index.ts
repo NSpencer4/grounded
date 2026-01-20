@@ -1,5 +1,10 @@
 import { z } from 'zod'
 
+export const OutboxStatusSchema = z.enum(['PENDING', 'COMPLETED'])
+export type OutboxStatus = z.infer<typeof OutboxStatusSchema>
+export const OutboxSchema = z.object({
+  status: OutboxStatusSchema,
+})
 export const UserRoleSchema = z.enum(['CUSTOMER', 'REPRESENTATIVE', 'ADMIN'])
 
 export const UserSchema = z.object({
@@ -31,13 +36,16 @@ export const ConversationSchema = z.object({
 
 export type Conversation = z.infer<typeof ConversationSchema>
 
+export const MessageSentFromSchema = z.object({
+  user: UserSchema.pick({ id: true, name: true, role: true }),
+})
+
 export const MessageSchema = z.object({
   id: z.uuid(),
+  conversation: ConversationSchema.pick({ id: true }),
   createdAt: z.date(),
   updatedAt: z.date(),
-  sender: z.object({
-    user: UserSchema.pick({ id: true, name: true, role: true }),
-  }),
+  sender: MessageSentFromSchema,
   details: z.object({
     content: z.string().min(1),
   }),

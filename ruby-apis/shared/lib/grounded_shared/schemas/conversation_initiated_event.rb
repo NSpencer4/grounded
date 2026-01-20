@@ -4,15 +4,14 @@ require_relative "base_event"
 
 module Schemas
   class ConversationInitiatedEvent < BaseEvent
-    attr_reader :conversation_id, :customer_id, :conversation_status
+    attr_reader :conversation_id, :customer, :conversation_status
 
     def initialize(
       conversation_id:,
-      customer_id:,
+      customer:,
       action_by:,
       conversation_status: ConversationStatus::ACTIVE,
-      correlation_id: nil,
-      outbox_status: OutboxStatus::PENDING
+      correlation_id: nil
     )
       super(
         pk: "conversation##{conversation_id}",
@@ -20,12 +19,11 @@ module Schemas
         event_type: EventTypes::CONVERSATION_INITIATED,
         action: "create",
         action_by: action_by,
-        correlation_id: correlation_id,
-        outbox_status: outbox_status
+        correlation_id: correlation_id
       )
 
       @conversation_id = conversation_id
-      @customer_id = customer_id
+      @customer = customer
       @conversation_status = conversation_status
     end
 
@@ -33,12 +31,14 @@ module Schemas
 
     def entity_attributes
       {
-        "customer" => {
-          "user" => {
-            "id" => customer_id
+        "conversation" => {
+          "id" => conversation_id,
+          "customer" => customer,
+          "state" => {
+            "status" => conversation_status
           }
         },
-        "conversation" => {
+        "message" => {
           "id" => conversation_id,
           "state" => {
             "status" => conversation_status
