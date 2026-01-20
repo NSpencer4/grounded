@@ -27,12 +27,16 @@ class DynamoClient
     # Put (create or replace) an item
     # @param table_name [String] The DynamoDB table name
     # @param item [Hash] The item to put
+    # @param condition_expression [String, nil] Optional condition expression
     # @return [Aws::DynamoDB::Types::PutItemOutput]
-    def put_item(table_name:, item:)
-      client.put_item(
+    def put_item(table_name:, item:, condition_expression: nil)
+      params = {
         table_name: table_name,
         item: item
-      )
+      }
+      params[:condition_expression] = condition_expression if condition_expression
+
+      client.put_item(params)
     end
 
     # Update an item with an update expression
