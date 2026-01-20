@@ -1,6 +1,23 @@
 {
   "name": "customer-spend-agent",
   "version": "0.0.1",
-  "description": "",
-  "type": "module"
+  "description": "AI agent for analyzing customer spending data",
+  "type": "module",
+  "main": "dist/handler.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && cd dist && zip -r function.zip ."
+  },
+  "dependencies": {
+    "@grounded/agents-shared": "*",
+    "@grounded/schemas": "*",
+    "@grounded/server-shared": "*",
+    "@anthropic-ai/sdk": "^0.39.0",
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "typescript": "^5.8.2"
+  }
 }

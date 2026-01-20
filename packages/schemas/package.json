@@ -1,6 +1,15 @@
 {
-  "name": "grounded-schemas",
+  "name": "@grounded/schemas",
   "version": "0.0.1",
-  "description": "",
-  "type": "module"
+  "description": "Shared schemas for Grounded",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./events": "./events/index.ts",
+    "./events/*": "./events/*.ts"
+  },
+  "dependencies": {
+    "zod": "^3.24.2"
+  }
 }
