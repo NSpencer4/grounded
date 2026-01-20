@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Grounded** is a POC for AI-grounded customer service features. The name comes from an electrical engineering metaphor: like a ground wire protects systems from voltage surges, this architecture "grounds" AI agents with organizational data to prevent hallucinations.
 
 **Status:** Proof of Concept
-**Stack:** Remix + React + TypeScript + Supabase + Tailwind CSS (Frontend) | AWS Lambda + App Runner + DynamoDB + PostgreSQL + EC2 Kafka (Backend)
+**Stack:** Remix + React + TypeScript + Cloudflare Workers/Durable Objects (Frontend) | Ruby on Rails + AWS Lambda +
+DynamoDB + Kafka (Backend)
 
 ## Build & Development Commands
 
@@ -42,29 +43,36 @@ Managed by Lerna with npm workspaces (`packages/**/*`):
 ```
 packages/
 ├── server/                        # Backend infrastructure layer
-│   ├── shared/                    # Shared utilities
+│   ├── shared/                    # Shared utilities (@grounded/server-shared)
 │   │   ├── dynamo/                # DynamoDB client wrapper
 │   │   ├── postgres/              # PostgreSQL connection manager
 │   │   ├── event-producer/        # Kafka producer with connection pooling
 │   │   └── secrets-manager/       # AWS Secrets Manager client
-│   ├── agents/                    # AI agents (placeholder)
-│   │   ├── customer-spend-agent/
-│   │   └── response-recommendation-agent/
+│   ├── agents/                    # AI agent Lambdas
+│   │   ├── shared/                # Shared agent utilities (@grounded/agents-shared)
+│   │   ├── customer-spend-agent/  # Analyzes customer spending data
+│   │   └── response-recommendation-agent/  # Generates response recommendations
 │   ├── orchestrators/             # State machine orchestrators
 │   │   ├── actions-orchestrator/  # Main orchestration Lambda
-│   │   ├── assertions-orchestrator/
-│   │   └── conversation-responder/
+│   │   └── responder/             # Response decision Lambda
+│   ├── mcp/                       # MCP servers
+│   │   └── org-tools/             # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
 │       ├── gateway-api/           # GraphQL API (Apollo Server v5)
-│       └── organization-data-api/
+│       └── company-data-api/      # Node.js Lambda monolith (PostgreSQL)
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
 │       ├── app/                   # Application source
 │       │   ├── components/        # React components
-│       │   ├── lib/               # Utilities (supabase, types)
+│       │   ├── lib/               # Utilities
 │       │   └── routes/            # Remix routing
-│       └── workers/               # Cloudflare Workers edge functions
-└── schemas/                       # Shared data schemas (placeholder)
+│       └── workers/               # Cloudflare Workers + Durable Objects
+└── schemas/                       # Shared data schemas (@grounded/schemas)
+    └── events/                    # Event type definitions
+
+ruby-apis/                         # Ruby on Rails CQRS services
+├── conversation-commands/         # Command side - writes
+└── conversation-updates/          # Query side - reads
 
 terraform/                         # AWS infrastructure-as-code
 docs/                              # Architecture diagrams
@@ -72,74 +80,156 @@ docs/                              # Architecture diagrams
 
 ## Architecture
 
-### Event-Driven Pattern
-User messages flow through an event-driven state machine:
-1. User message → Kafka topic → Actions Orchestrator (Lambda)
-2. Orchestrator → Specialized agents → Assertions Orchestrator
-3. Decision/Response → User
+### CQRS Pattern
 
-### Data Model
-**Supabase (Frontend):**
-- **profiles**: id, email, name, role, created_at
-- **conversations**: id, customer_id, rep_id, status (waiting|active|closed), timestamps
-- **messages**: id, conversation_id, sender_id, content, created_at
+**Command Side (conversation-commands Rails API):**
 
-**AWS (Backend - CQRS pattern):**
-- **DynamoDB**: Fast reads for chat history (`conversation-commands`, `conversation-updates`)
-- **PostgreSQL**: Conversation evaluation writes (`conversation-evaluations`)
+- Receives conversation command requests from GraphQL
+- Hydrates and validates data (decoration)
+- Persists commands to DynamoDB
+- Produces events to `conversation-commands` Kafka topic
 
-### Real-time Pattern (Frontend)
-Components subscribe to Supabase Realtime for live updates:
-```typescript
-supabase.channel(`conversation-${id}`)
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${id}` }, handler)
-  .subscribe();
+**Query Side (conversation-updates Rails API):**
+
+- Consumes from `conversation-commands` topic (for low latency)
+- Adapts command events into conversation update state
+- Persists current conversation state to DynamoDB
+- Serves state for query requests via GraphQL
+- Forwards state updates to Cloudflare Durable Object for SSE streaming
+
+### Real-time Streaming Pattern
+
+```
+[Client] <--SSE-- [CF Durable Object] <-- [Conversation Updates API]
+                         ^
+                         |
+              [CF Worker routes SSE, not GraphQL]
 ```
 
-### Role-Based System
-Three user roles with different dashboards:
-- **customer** → CustomerChat component
-- **representative** → RepresentativeDashboard component
-- **admin** → AdminDashboard component
+- Cloudflare Worker serves Remix React UI
+- Same CF Worker hosts GraphQL for mutations/queries
+- Durable Object handles SSE streaming to clients
+- CF Worker routes SSE connections (not GraphQL)
+
+### Event-Driven Orchestration
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         Kafka Topics                                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│  conversation-commands  │  conversation-evaluation  │  conversation-assertion  │  conversation-decision  │
+└─────────────────────────────────────────────────────────────────────────┘
+         │                          │                          │                    │
+         ▼                          ▼                          ▼                    │
+┌─────────────────┐    ┌─────────────────────┐    ┌──────────────────┐              │
+│ Actions         │───▶│ Evaluator Lambdas   │───▶│ Responder Lambda │──────────────┘
+│ Orchestrator    │    │ (Agent & Non-Agent) │    │                  │
+│                 │◀───┤                     │    │ Produces:        │
+│ Consumes:       │    │ Uses: Org Tools MCP │    │ - Update events  │
+│ - Commands      │    │                     │    │ - Decision events│
+│ - Decisions     │    │ Produces:           │    └──────────────────┘
+│                 │    │ - Assertion events  │
+│ Produces:       │    └─────────────────────┘
+│ - Evaluation    │
+│   events        │
+└─────────────────┘
+```
+
+**Actions Orchestrator Lambda:**
+
+- Consumes `conversation-commands` and `conversation-decision` events
+- Persists state records to DynamoDB
+- Decides what evaluations need to be made based on state
+- Produces `conversation-evaluation` events
+
+**Evaluator Lambdas (Agent & Non-Agent):**
+
+- Consume `conversation-evaluation` events
+- Use Org Tools MCP Server to fetch data from Company Data Lambda
+- Make assertions/recommendations
+- Produce `conversation-assertion` events
+
+**Company Data Lambda (Node.js Monolith):**
+
+- Single Lambda serving as the organizational data source
+- Uses PostgreSQL for company/customer data storage
+- Exposes endpoints for: customer info, billing, orders, subscriptions, etc.
+- Accessed by evaluators via MCP Server tools (simplified POC approach vs. microservices)
+
+**Responder Lambda:**
+
+- Consumes `conversation-assertion` events
+- Decides whether to respond with a conversation update
+- Produces `conversation-update` events (to update client)
+- Produces `conversation-decision` events (for orchestrator to process)
+
+### Data Model
+
+**DynamoDB (Single Table Design):**
+
+- `PK: conversation#<id>`, `SK: state#current` - Current conversation state
+- `PK: conversation#<id>`, `SK: event#<timestamp>#<id>` - Event history
+
+### Key Kafka Topics
+
+| Topic                     | Producer     | Consumer                  | Purpose                |
+|---------------------------|--------------|---------------------------|------------------------|
+| `conversation-commands`   | Commands API | Updates API, Orchestrator | New commands           |
+| `conversation-evaluation` | Orchestrator | Evaluator Lambdas         | Evaluation requests    |
+| `conversation-assertion`  | Evaluators   | Responder                 | Agent assertions       |
+| `conversation-decision`   | Responder    | Orchestrator              | Decision feedback loop |
 
 ## Infrastructure (Terraform)
 
 AWS resources defined in `terraform/`:
 
-| File | Purpose |
-|------|---------|
-| `providers.tf` | AWS provider configuration (us-east-1) |
-| `variables.tf` | Environment, VPC, and resource name variables |
-| `networking.tf` | VPC, subnets (public/private), security groups, internet gateway, VPC endpoints |
-| `postgres.tf` | RDS PostgreSQL (db.t3.micro) for conversation evaluations |
-| `dynamo-conversation-commands.tf` | DynamoDB table for conversation commands (CQRS writes) |
-| `dynamo-conversation-updates-ddb.tf` | DynamoDB table for conversation updates (CQRS reads) |
-| `ec2-kafka-cluster.tf` | EC2 instance running Kafka via Docker Compose (single-node) |
-| `msk-cluster.tf` | MSK cluster configuration (commented out, not active) |
-| `lambda-actions-orchestrator.tf` | Actions Orchestrator Lambda with Kafka IAM policies |
-| `app-runner-graphql-api.tf` | AWS App Runner service for GraphQL API (public) |
-| `app-runner-conversation-commands-api.tf` | AWS App Runner service for conversation commands API (VPC-only) |
-| `secrets.tf` | Secrets Manager data sources for credentials |
-| `production.tfvars` | Production environment variable values |
+| File                             | Purpose                                       |
+|----------------------------------|-----------------------------------------------|
+| `providers.tf`                   | AWS provider configuration (us-east-1)        |
+| `variables.tf`                   | Environment, VPC, and resource name variables |
+| `networking.tf`                  | VPC, subnets, security groups, VPC endpoints  |
+| `dynamo.tf`                      | Single DynamoDB table (grounded-datastore)    |
+| `ec2-kafka-cluster.tf`           | EC2 instance running Kafka via Docker Compose |
+| `lambda-actions-orchestrator.tf` | Actions Orchestrator Lambda                   |
+| `secrets.tf`                     | Secrets Manager data sources                  |
 
 ## Environment Variables
 
 **Frontend** (`packages/ui/customer-ui/.env`):
 ```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
 ```
 
-**Backend** (via AWS Secrets Manager):
-- `supabase-key` - Supabase service key
-- `conversation-evaluation-db-password` - PostgreSQL credentials
+**Backend Lambdas:**
+
+- `KAFKA_BROKER` - Kafka broker address
+- `DYNAMO_TABLE_NAME` - DynamoDB table name
+- `AWS_REGION` - AWS region
+- `ANTHROPIC_API_KEY` - For AI agents
 
 ## Key Files
 
-**Frontend:**
-- `packages/ui/customer-ui/app/root.tsx` - Remix root component
-- `packages/ui/customer-ui/app/lib/supabase.ts` - Supabase client initialization
-- `packages/ui/customer-ui/app/lib/database.types.ts` - TypeScript types for Supabase tables
+**Schemas:**
+
+- `packages/schemas/events/` - Event type definitions (Zod schemas)
+- `packages/schemas/index.ts` - Core entity schemas
+
+**Orchestrators:**
+
+- `packages/server/orchestrators/actions-orchestrator/src/handler.ts` - Main Lambda handler
+- `packages/server/orchestrators/actions-orchestrator/src/evaluator.ts` - Evaluation logic
+- `packages/server/orchestrators/actions-orchestrator/src/state.ts` - DynamoDB persistence
+
+**Agents:**
+
+- `packages/server/agents/shared/src/llm-client.ts` - Anthropic SDK wrapper
+- `packages/server/agents/customer-spend-agent/src/agent.ts` - Spend analysis
+- `packages/server/agents/response-recommendation-agent/src/agent.ts` - Response generation
+
+**MCP Servers:**
+
+- `packages/server/mcp/state-machine-query-tools/src/index.ts` - DynamoDB query tools
+- `packages/server/mcp/org-tools/` - Company Data Lambda integration tools (customer info, billing, orders)
 
 **Backend Utilities:**
 - `packages/server/shared/dynamo/index.ts` - DynamoDB document client wrapper
@@ -156,16 +246,23 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 - `terraform/*.tf` - AWS infrastructure definitions
 - `tsconfig.base.json` - Base TypeScript config with path aliases
 
-## Dependencies
+## Workspace Packages
 
-Key runtime dependencies:
-- `@apollo/server` - GraphQL server (v5)
-- `graphql` - GraphQL implementation
-- `@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb` - DynamoDB
-- `@aws-sdk/client-secrets-manager` - Secrets Manager
-- `kafkajs` - Kafka producer/consumer
-- `pg` - PostgreSQL client
-- `zod` - Schema validation
+| Package                         | Name                      | Purpose            |
+|---------------------------------|---------------------------|--------------------|
+| `packages/schemas`              | `@grounded/schemas`       | Shared Zod schemas |
+| `packages/server/shared`        | `@grounded/server-shared` | Server utilities   |
+| `packages/server/agents/shared` | `@grounded/agents-shared` | Agent utilities    |
+
+## Key Considerations
+
+1. **Latency Optimization:** Conversation Updates API listens directly to conversation-commands topic to quickly persist
+   state for client fetching
+
+2. **SSE Routing:** Cloudflare Worker handles SSE routing to Durable Object, not GraphQL
+
+3. **API Exposure:** Commands and Updates APIs are HTTPS exposed for CF Worker access. In production, these would be
+   VPC-internal with GraphQL in the same VPC
 
 ## Testing
 

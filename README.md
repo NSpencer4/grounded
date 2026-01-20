@@ -1,8 +1,8 @@
 # Project Grounded
 ![Grounded Project](./docs/grounded-project.jpg "Grounded Project")
 
-**Status:** Proof of Concept (POC)  
-**Focus:** Reliability, Robustness, and Accuracy in Agentic AI  
+**Status:** Proof of Concept (POC)
+**Focus:** Reliability, Robustness, and Accuracy in Agentic AI
 **Target:** AI-native Applications and Website Builders
 
 ---
@@ -24,105 +24,196 @@ In an electrical system, a high-voltage surge (like a bolt of lightning) represe
 
 **Primary Objective:** To validate a robust, event-driven agent orchestration pattern. This POC demonstrates how AI app and website creators can integrate "agentic" workflows that are grounded in their specific business data.
 
-**The "Monolith" Abstraction:** In the architecture, you will see a "Company Data & Actions Monolith." For this POC:
-* This represents **Organizational Service Capabilities** (e.g., billing, user settings, order history).
-* We are building a simulated interface to show how the **Model Context Protocol (MCP)** bridges the gap between AI agents and existing internal systems.
-* This ensures the AI is grounded in real-time facts rather than static, outdated training data.
+**The "Monolith" Abstraction:** In the architecture, you will see a "Company Data Lambda Monolith." For this POC:
+
+* A single Node.js Lambda with PostgreSQL serves as the **Organizational Data Source** (billing, usage, subscriptions,
+  customer info).
+* The **Org Tools MCP Server** exposes data-fetching tools that interact with this monolith.
+* This simplified approach avoids building multiple microservices while demonstrating how **Model Context Protocol (MCP)
+  ** bridges AI agents and organizational data.
+* Evaluator Lambdas use MCP tools to fetch the context they need to make assertions.
 
 **Infrastructure Considerations:** For this POC we are aiming at low cost while maintaining security best practices:
 * Single region deployment for simplicity
-* Single table design for DynamoDB to reduce costs and simplify data management
-* Single PostgreSQL instance for simplicity
+* **Single table design** for DynamoDB to reduce costs and simplify data management
 * Self-Hosted Kafka instead of MSK to reduce cost by 80%
 * VPC Endpoints instead of NAT Gateways for outbound traffic
 * AWS Secrets Manager for securely storing API keys and other sensitive data
-* APIs using AppRunner for serverless compute
-* Cloudflare Workers for edge functions
-* GraphQL for a unified API layer to separate frontend and backend concerns
-* DynamoDB for low-latency chat history and state
-* PostgreSQL for query-optimized transactional data
----
-
-## 3. Architecture Overview: The State Machine Workflow
-
-Project Grounded does not treat AI interactions as simple Request/Response cycles. Instead, it implements a **Distributed State Machine** via an event-driven loop.
-
-### Key Patterns
-* **Workflow as State Machine:** Every agent "reporting back" with an assertion or data point is treated as a state transition event. The Orchestrator records these assertions, allowing the system to track the "grounded state" of the conversation before a final decision is ever made.
-* **CQRS (Command Query Responsibility Segregation):** * **Write Side:** Rails (`Conversation Commands`) + PostgreSQL. Optimized for transactional integrity.
-    * **Read Side:** Rails (`Conversation Updates`) + DynamoDB. Optimized for low-latency chat history.
-* **Agentic Orchestration:** Specialized AWS Lambdas (Agents) perform granular tasks (e.g., fetching data, asserting state) rather than one large, monolithic prompt.
-* **Model Context Protocol (MCP):** A standardized interface that allows our AI agents to "plug into" the ground truth of our organizational services.
+* Cloudflare Workers + Durable Objects for edge UI and real-time streaming
+* GraphQL hosted on Cloudflare Worker to separate frontend and backend concerns
+* Ruby on Rails APIs for CQRS command/query services
 
 ---
 
-## 4. System Components
+## 3. Architecture Overview
 
-### Frontend & API Gateway
-* **React / Remix:** Hosted on Cloudflare Workers for global performance and edge delivery.
-* **GraphQL Gateway:** Acts as the unified entry point. It manages real-time data streaming and subscriptions to push AI replies back to the user instantly.
+Project Grounded implements a **CQRS (Command Query Responsibility Segregation)** pattern with **event-driven
+orchestration** for AI agent workflows.
 
-### Core Services (Ruby on Rails)
-* **Users Service:** Manages identity and user context.
-* **Conversation Commands:** The "Write" path. Receives user messages, persists them to Postgres, and triggers the Kafka event chain.
-* **Conversation Updates:** The "Read" path. Serves optimized chat history and state from DynamoDB for rapid UI rendering.
+### Frontend & Edge Layer (Cloudflare)
 
-### The Intelligence Layer (AWS Lambda / Kafka)
-* **Orchestrator (Actions):** The state machine engine. It evaluates user intent and manages the workflow transition by triggering the correct agents.
-* **Specialized Agents:** Lambdas that leverage **MCP Servers** to query organizational data.
-* **Orchestrator (Assertions):** Listens for agent events. Each assertion updates the `Conversation Evaluation States` database, moving the workflow forward.
-* **Decision Agent:** The final state in the machine. It synthesizes all gathered assertions to produce the final, grounded response.
+```
+┌─────────────────────────────────────────────────────────┐
+│                  Cloudflare Worker                       │
+├─────────────────────────────────────────────────────────┤
+│  Remix React UI  │  GraphQL API  │  SSE Router          │
+│                  │  (mutations/  │  (routes to DO)      │
+│                  │   queries)    │                      │
+└─────────────────────────────────────────────────────────┘
+                                            │
+                                            ▼
+                              ┌─────────────────────────┐
+                              │   Durable Object        │
+                              │   (SSE Streaming)       │
+                              │                         │
+                              │   Receives updates from │
+                              │   Conversation Updates  │
+                              └─────────────────────────┘
+```
+
+### CQRS Services (Ruby on Rails)
+
+**Conversation Commands (Write Side):**
+
+1. Receives command requests from GraphQL
+2. Hydrates and validates data
+3. Persists to DynamoDB
+4. Produces events to `conversation-commands` Kafka topic
+
+**Conversation Updates (Read Side):**
+
+1. Consumes `conversation-commands` topic (for low latency)
+2. Adapts command events into conversation update state
+3. Persists current state to DynamoDB
+4. Serves state for GraphQL query requests
+5. Forwards updates to Cloudflare Durable Object for SSE streaming
+
+### Intelligence Layer (AWS Lambda + Kafka)
+
+```
+┌──────────────────┐     ┌─────────────────────┐     ┌──────────────────┐
+│    Actions       │────▶│  Evaluator Lambdas  │────▶│    Responder     │
+│   Orchestrator   │     │  (Agent/Non-Agent)  │     │     Lambda       │
+│                  │◀────│                     │     │                  │
+│ Consumes:        │     │ Uses: Org Tools MCP │     │ Produces:        │
+│ - Commands       │     │                     │     │ - Update events  │
+│ - Decisions      │     │ Produces:           │     │ - Decision events│
+│                  │     │ - Assertion events  │     │                  │
+│ Produces:        │     └─────────────────────┘     └──────────────────┘
+│ - Evaluation     │                                          │
+│   events         │◀─────────────────────────────────────────┘
+└──────────────────┘         (feedback loop)
+```
+
+**Actions Orchestrator Lambda:**
+
+- Consumes `conversation-commands` AND `conversation-decision` events
+- Persists state records to DynamoDB
+- Decides what evaluations need to be made based on accumulated state
+- Produces `conversation-evaluation` events
+
+**Evaluator Lambdas (Agent & Non-Agent):**
+
+- Consume `conversation-evaluation` events
+- Use **Org Tools MCP Server** to fetch data from Company Data Lambda
+- Make assertions/recommendations (with or without LLM)
+- Produce `conversation-assertion` events
+
+**Company Data Lambda (Node.js Monolith):**
+
+- Single Lambda serving as the organizational data source (simplified POC approach)
+- Uses PostgreSQL for company/customer data (billing, orders, subscriptions, etc.)
+- Accessed by evaluators via MCP Server tools instead of building multiple microservices
+- Provides the "ground truth" data that anchors AI agent decisions
+
+**Responder Lambda:**
+
+- Consumes `conversation-assertion` events
+- Decides whether to respond with a conversation update
+- Produces `conversation-update` events (updates client via DO → SSE)
+- Produces `conversation-decision` events (feedback to orchestrator)
+
+---
+
+## 4. Kafka Topics
+
+| Topic                     | Producer     | Consumer                  | Purpose                          |
+|---------------------------|--------------|---------------------------|----------------------------------|
+| `conversation-commands`   | Commands API | Updates API, Orchestrator | New commands/messages            |
+| `conversation-evaluation` | Orchestrator | Evaluator Lambdas         | Request agent evaluation         |
+| `conversation-assertion`  | Evaluators   | Responder                 | Agent assertions/recommendations |
+| `conversation-decision`   | Responder    | Orchestrator              | Decision feedback loop           |
+| `conversation-updates`    | Responder    | Updates API               | State updates for clients        |
 
 ---
 
 ## 5. The "Grounded" Data Flow
 
-1.  **Ingest:** User sends a message via the UI to the **GraphQL Gateway**.
-2.  **Command:** The message is saved to Postgres; a "New Message" event is published to **Kafka**.
-3.  **State Transition:** The **Orchestrator** moves the state to "Evaluating" and triggers specialized agents.
-4.  **Grounding & Assertion:** Agents call **MCP Servers** to retrieve facts. Each agent reports back to Kafka with an **Assertion Event**.
-5.  **State Accumulation:** The **Assertions Orchestrator** records these facts into the State DB. Once all required assertions are met, it triggers the "Decision" state.
-6.  **Respond:** The **Decision Agent** generates the final response based on the accumulated state.
-7.  **Push:** GraphQL pushes the update back to the user via WebSocket/Stream.
+1. **User Action:** User sends a message via the React UI
+2. **Command:** GraphQL mutation → Conversation Commands API → Kafka
+3. **Quick Persist:** Conversation Updates API consumes command, persists state immediately (latency optimization)
+4. **Orchestration:** Actions Orchestrator consumes command, persists state record, determines required evaluations
+5. **Evaluation:** Evaluator Lambdas use MCP Server to fetch org data, make assertions
+6. **Decision:** Responder Lambda synthesizes assertions, decides on response
+7. **Update:** Conversation update sent to Updates API → Durable Object → SSE → Client
 
 ---
 
-## 6. Repository Structure
+## 6. Key Considerations
+
+1. **Latency Optimization:** Conversation Updates API listens directly to `conversation-commands` topic. This ensures
+   new conversations are quickly persisted and available for client fetching.
+
+2. **SSE Routing:** The Cloudflare Worker handles SSE routing to the Durable Object. GraphQL handles mutations/queries
+   only.
+
+3. **API Exposure:** For this POC, Conversation Commands and Updates APIs are HTTPS exposed so the CF Worker can
+   interact with them. In a production application, these would be VPC-internal with the GraphQL layer in the same VPC.
+
+---
+
+## 7. Repository Structure
+
 ```
 packages/
 ├── server/                        # Backend infrastructure layer
-│   ├── shared/                    # Shared utilities
+│   ├── shared/                    # Shared utilities (@grounded/server-shared)
 │   │   ├── dynamo/                # DynamoDB client wrapper
-│   │   ├── postgres/              # PostgreSQL connection manager
 │   │   ├── event-producer/        # Kafka producer with connection pooling
 │   │   └── secrets-manager/       # AWS Secrets Manager client
-│   ├── agents/                    # AI agents (placeholder)
-│   │   ├── customer-spend-agent/
-│   │   └── response-recommendation-agent/
+│   ├── agents/                    # AI agent Lambdas
+│   │   ├── shared/                # Shared agent utilities (@grounded/agents-shared)
+│   │   ├── customer-spend-agent/  # Analyzes customer spending data
+│   │   └── response-recommendation-agent/  # Generates response recommendations
 │   ├── orchestrators/             # State machine orchestrators
 │   │   ├── actions-orchestrator/  # Main orchestration Lambda
-│   │   ├── assertions-orchestrator/
-│   │   └── conversation-responder/
+│   │   └── responder/             # Response decision Lambda
+│   ├── mcp/                       # MCP servers
+│   │   ├── state-machine-query-tools/  # DynamoDB query tools for agents
+│   │   └── org-tools/             # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
-│       ├── gateway-api/           # GraphQL API (Apollo Server v5)
-│       └── organization-data-api/
+│       ├── gateway-api/           # GraphQL API
+│       └── company-data-api/      # Node.js Lambda monolith (PostgreSQL)
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
-│       ├── app/                   # Application source
-│       │   ├── components/        # React components
-│       │   ├── lib/               # Utilities (supabase, types)
-│       │   └── routes/            # Remix routing
-│       └── workers/               # Cloudflare Workers edge functions
-└── schemas/                       # Shared data schemas (placeholder)
+└── schemas/                       # Shared data schemas (@grounded/schemas)
+    └── events/                    # Event type definitions
+
+ruby-apis/                         # Ruby on Rails CQRS services
+├── conversation-commands/         # Command side - writes
+└── conversation-updates/          # Query side - reads
 
 terraform/                         # AWS infrastructure-as-code
 docs/                              # Architecture diagrams
 ```
 
-## 7. Stretch Goals
+---
+
+## 8. Stretch Goals
+
 - [x] Implement GraphQL layer
 - [ ] Dockerize all infra / allow for local development
-- [ ] Implement Outbox Pattern - Postgres w/ Debezium & Dynamo w/ Streams to a Lambda producer
+- [ ] Implement Outbox Pattern - DynamoDB Streams to Lambda producer
 - [ ] Implement vector DB for embedded customer information to group similar customers for Agent evaluation
 - [ ] Storybook Support
 - [ ] Theming engine w/ styled components
