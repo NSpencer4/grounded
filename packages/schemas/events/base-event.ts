@@ -1,11 +1,11 @@
-import { RecordMetadataSchema } from '../index'
 import { z } from 'zod'
 
-export const RecordMetadataSchema = z.object({
+export const EventMetadataSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
+  correlationId: z.string(),
 })
-export type RecordMetadata = z.infer<typeof RecordMetadataSchema>
+export type EventMetadata = z.infer<typeof EventMetadataSchema>
 export const OutboxStatusSchema = z.enum(['PENDING', 'COMPLETED'])
 
 export const BaseEventSchema = z.object({
@@ -14,16 +14,14 @@ export const BaseEventSchema = z.object({
     type: z.string(),
     schemaVersion: z.string(),
   }),
-  metadata: z.object({
-    createdAt: z.date(),
-    updatedAt: z.date(),
-    correlationId: z.string(),
-  }),
+  metadata: EventMetadataSchema,
   actionContext: z.object({
     action: z.string(),
     actionBy: z.string(),
   }),
-  outbox: z.object({
-    status: OutboxStatusSchema,
-  }),
+  outbox: z
+    .object({
+      status: OutboxStatusSchema,
+    })
+    .optional(),
 })
