@@ -1,0 +1,26 @@
+{
+  "name": "state-machine-query-tools",
+  "version": "1.0.0",
+  "description": "MCP server for querying state machine events from DynamoDB",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "state-machine-query-tools": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@grounded/server-shared": "*",
+    "@aws-sdk/client-dynamodb": "^3.712.0",
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.8.2"
+  }
+}
