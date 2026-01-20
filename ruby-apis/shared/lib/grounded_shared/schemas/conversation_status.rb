@@ -5,7 +5,7 @@ module ConversationStatus
   ACTIVE = "ACTIVE"
   CLOSED = "CLOSED"
 
-  ALL = [PENDING, COMPLETED, CLOSED].freeze
+  ALL = [WAITING, ACTIVE, CLOSED].freeze
 
   def self.valid?(status)
     ALL.include?(status)
