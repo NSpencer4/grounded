@@ -12,6 +12,11 @@ export enum EventType {
 }
 export const EventTypeSchema = z.enum(EventType)
 
+export enum Action {
+  CREATE = 'CREATE',
+}
+export const ActionSchema = z.enum(Action)
+
 export const EventDetailsSchema = z.object({
   id: z.uuid(),
   type: EventTypeSchema,
@@ -19,7 +24,7 @@ export const EventDetailsSchema = z.object({
 })
 
 export const ActionContextSchema = z.object({
-  action: z.string(),
+  action: ActionSchema,
   actionBy: z.string(),
 })
 

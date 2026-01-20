@@ -13,14 +13,13 @@ module Schemas
       correlation_id: nil
     )
       conversation_id = conversation[:id] || conversation["id"]
-      message_id = message[:id] || message["id"]
       timestamp = Time.now.utc.iso8601
 
       super(
         pk: "conversation##{conversation_id}",
-        sk: "event##{EventTypes::MESSAGE_RECEIVED}##{message_id}",
+        sk: "commandEvent##{EventTypes::MESSAGE_RECEIVED}",
         event_type: EventTypes::MESSAGE_RECEIVED,
-        action: "message",
+        action: "CREATE",
         action_by: action_by,
         correlation_id: correlation_id
       )

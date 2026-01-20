@@ -18,9 +18,9 @@ module Schemas
 
       super(
         pk: "conversation##{conversation_id}",
-        sk: "event##{EventTypes::CONVERSATION_INITIATED}",
+        sk: "commandEvent##{EventTypes::CONVERSATION_INITIATED}",
         event_type: EventTypes::CONVERSATION_INITIATED,
-        action: "create",
+        action: "CREATE",
         action_by: action_by,
         correlation_id: correlation_id
       )
