@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "../config/environment"
+
+group_id = ENV.fetch("KAFKA_CONSUMER_GROUP_ID", "conversation-updates")
+topics = ENV.fetch("KAFKA_TOPICS", "conversation-commands,conversation-replies").split(",").map(&:strip)
+
+puts "Starting Kafka consumer..."
+puts "  Group ID: #{group_id}"
+puts "  Topics: #{topics.join(', ')}"
+puts "  Brokers: #{ENV.fetch('KAFKA_BROKERS', 'localhost:9092')}"
+puts ""
+
+# Handle graceful shutdown
+running = true
+trap("INT") { running = false }
+trap("TERM") { running = false }
+
+begin
+  KafkaConsumer.consume_with_retry(
+    group_id: group_id,
+    topics: topics
+  ) do |message|
+    break unless running
+
+    puts "[Consumer] Received message: key=#{message[:key]}, topic=#{message[:topic]}"
+
+    ConversationCommandsEventHandler.new(message[:value]).call
+  end
+rescue Interrupt
+  puts "\nShutting down consumer..."
+end
+
+puts "Consumer stopped."
