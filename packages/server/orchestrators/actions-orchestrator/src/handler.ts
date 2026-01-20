@@ -1,21 +1,22 @@
-import type { MSKEvent, MSKRecord, Context } from 'aws-lambda'
-import { produceMessage, shutdownProducers } from '@grounded/server/shared/event-producer'
+import type { Context, MSKEvent, MSKRecord } from 'aws-lambda'
+import { produceMessage, shutdownProducers } from '@grounded/server-shared/event-producer'
 import { ConversationInitiatedEventSchema } from '@grounded/schemas/events/conversation-initiated'
 import { MessageReceivedEventSchema } from '@grounded/schemas/events/message-received'
-import type { ConversationCommandEvent } from '@grounded/schemas/events/conversation-command'
-import type { ConversationEvaluationEvent } from '@grounded/schemas/events/conversation-evaluation'
-import { v4 as uuidv4 } from 'uuid'
+import type { ConversationCommandEvent, ProcessingResult } from './types.js'
+import { evaluateConversation } from './evaluator.js'
+import {
+  createInitialState,
+  getConversationState,
+  saveConversationState,
+  saveEvent,
+  updateConversationState,
+} from './state.js'
 
 const KAFKA_BROKER = process.env.KAFKA_BROKER || 'localhost:9092'
 const EVALUATION_TOPIC = 'conversation-evaluation'
 const CLIENT_ID = 'actions-orchestrator'
 
-interface KafkaConfig {
-  brokers: string[]
-  clientId: string
-}
-
-const kafkaConfig: KafkaConfig = {
+const kafkaConfig = {
   brokers: [KAFKA_BROKER],
   clientId: CLIENT_ID,
 }
@@ -48,77 +49,100 @@ function parseConversationCommandEvent(record: MSKRecord): ConversationCommandEv
   }
 }
 
-function evaluateConversation(event: ConversationCommandEvent): ConversationEvaluationEvent {
-  const now = new Date()
-
-  // Determine evaluation type based on event characteristics
-  const hasMessage = 'message' in event && event.message
-  const evaluationType = hasMessage ? 'RESPONSE_RECOMMENDATION' : 'NO_ACTION'
-
-  const evaluation: ConversationEvaluationEvent = {
-    event: {
-      id: uuidv4(),
-      type: 'CONVERSATION_EVALUATION',
-      schemaVersion: '1.0.0',
-    },
-    actionContext: {
-      action: 'CREATE',
-      actionBy: 'actions-orchestrator',
-    },
-    metadata: {
-      createdAt: now,
-      updatedAt: now,
-      correlationId: event.metadata.correlationId,
-    },
-    conversation: event.conversation,
-    message: hasMessage ? event.message : undefined,
-    evaluation: {
-      type: evaluationType,
-      reasoning: hasMessage
-        ? 'New message received - generating response recommendation'
-        : 'Conversation initiated - no immediate action required',
-      suggestedActions: hasMessage ? ['generate_response', 'analyze_sentiment'] : [],
-    },
-  }
-
-  return evaluation
-}
-
-async function processRecord(record: MSKRecord): Promise<void> {
+async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
+  const startTime = Date.now()
   const event = parseConversationCommandEvent(record)
 
   if (!event) {
-    console.warn('Skipping invalid record')
-    return
+    return {
+      success: false,
+      conversationId: 'unknown',
+      evaluationType: 'unknown',
+      agentsTriggered: [],
+      processingTimeMs: Date.now() - startTime,
+      error: 'Failed to parse event',
+    }
   }
 
-  console.log('Processing conversation command event:', {
-    eventType: event.event.type,
-    conversationId: event.conversation.id,
-    correlationId: event.metadata.correlationId,
-  })
+  const conversationId = event.conversation.id
 
-  const evaluationEvent = evaluateConversation(event)
+  try {
+    console.log('Processing conversation command event:', {
+      eventType: event.event.type,
+      conversationId,
+      correlationId: event.metadata.correlationId,
+    })
 
-  await produceMessage(
-    CLIENT_ID,
-    kafkaConfig,
-    EVALUATION_TOPIC,
-    event.conversation.id,
-    JSON.stringify(evaluationEvent),
-  )
+    // Persist the incoming event
+    await saveEvent(conversationId, event)
 
-  console.log('Produced evaluation event:', {
-    evaluationType: evaluationEvent.evaluation.type,
-    conversationId: evaluationEvent.conversation.id,
-  })
+    // Get or create conversation state
+    let state = await getConversationState(conversationId)
+    if (!state) {
+      state = createInitialState(event)
+      await saveConversationState(state)
+      console.log('Created new conversation state:', { conversationId })
+    } else {
+      // Update existing state
+      const hasMessage = 'message' in event && event.message
+      await updateConversationState(conversationId, {
+        status: event.conversation.state.status,
+        messageCount: hasMessage ? state.messageCount + 1 : state.messageCount,
+        lastEventType: event.event.type,
+        lastUpdated: new Date().toISOString(),
+      })
+    }
+
+    // Evaluate the conversation and determine next actions
+    const evaluationResult = evaluateConversation(event)
+
+    // Produce evaluation event to Kafka
+    await produceMessage(
+      CLIENT_ID,
+      kafkaConfig,
+      EVALUATION_TOPIC,
+      conversationId,
+      JSON.stringify(evaluationResult.event),
+    )
+
+    console.log('Produced evaluation event:', {
+      evaluationType: evaluationResult.event.evaluation.type,
+      conversationId,
+      shouldTriggerAgents: evaluationResult.shouldTriggerAgents,
+      agentsToTrigger: evaluationResult.agentsToTrigger,
+    })
+
+    return {
+      success: true,
+      conversationId,
+      evaluationType: evaluationResult.event.evaluation.type,
+      agentsTriggered: evaluationResult.agentsToTrigger,
+      processingTimeMs: Date.now() - startTime,
+    }
+  } catch (error) {
+    console.error('Error processing record:', { conversationId, error })
+    return {
+      success: false,
+      conversationId,
+      evaluationType: 'unknown',
+      agentsTriggered: [],
+      processingTimeMs: Date.now() - startTime,
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
 }
 
 export async function handler(event: MSKEvent, context: Context): Promise<void> {
+  const startTime = Date.now()
+  const totalRecords = Object.values(event.records).flat().length
+
   console.log('Actions Orchestrator Lambda invoked', {
     requestId: context.awsRequestId,
-    recordCount: Object.values(event.records).flat().length,
+    recordCount: totalRecords,
+    remainingTimeMs: context.getRemainingTimeInMillis(),
   })
+
+  const results: ProcessingResult[] = []
 
   try {
     // Process all records from all topic partitions
@@ -126,13 +150,29 @@ export async function handler(event: MSKEvent, context: Context): Promise<void> 
       console.log(`Processing ${records.length} records from ${topicPartition}`)
 
       for (const record of records) {
-        await processRecord(record)
+        const result = await processRecord(record)
+        results.push(result)
       }
     }
 
-    console.log('Successfully processed all records')
+    const successful = results.filter((r) => r.success).length
+    const failed = results.filter((r) => !r.success).length
+
+    console.log('Processing complete', {
+      totalRecords,
+      successful,
+      failed,
+      totalProcessingTimeMs: Date.now() - startTime,
+    })
+
+    if (failed > 0) {
+      const errors = results.filter((r) => !r.success).map((r) => r.error)
+      console.error('Some records failed to process:', { errors })
+      // Don't throw - let Lambda report partial success
+      // Failed records will be retried by MSK
+    }
   } catch (error) {
-    console.error('Error processing Kafka event:', error)
+    console.error('Fatal error processing Kafka event:', error)
     throw error
   }
 }
