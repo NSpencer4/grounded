@@ -77,16 +77,13 @@ orchestration** for AI agent workflows.
 
 1. Receives command requests from GraphQL
 2. Hydrates and validates data
-3. Persists to DynamoDB
-4. Produces events to `conversation-commands` Kafka topic
+3. Produces events to `conversation-commands` Kafka topic
 
 **Conversation Updates (Read Side):**
 
-1. Consumes `conversation-commands` topic (for low latency)
-2. Adapts command events into conversation update state
-3. Persists current state to DynamoDB
-4. Serves state for GraphQL query requests
-5. Forwards updates to Cloudflare Durable Object for SSE streaming
+1. Serves conversation state for GraphQL query requests
+2. Read-only service (no Kafka consumer)
+3. State is persisted by Responder Lambda
 
 ### Intelligence Layer (AWS Lambda + Kafka)
 
@@ -130,20 +127,20 @@ orchestration** for AI agent workflows.
 
 - Consumes `conversation-assertion` events
 - Decides whether to respond with a conversation update
-- Produces `conversation-update` events (updates client via DO → SSE)
+- Persists conversation state to DynamoDB (for query side reads)
+- Forwards state updates to Cloudflare Durable Object for SSE streaming
 - Produces `conversation-decision` events (feedback to orchestrator)
 
 ---
 
 ## 4. Kafka Topics
 
-| Topic                     | Producer     | Consumer                  | Purpose                          |
-|---------------------------|--------------|---------------------------|----------------------------------|
-| `conversation-commands`   | Commands API | Updates API, Orchestrator | New commands/messages            |
-| `conversation-evaluation` | Orchestrator | Evaluator Lambdas         | Request agent evaluation         |
-| `conversation-assertion`  | Evaluators   | Responder                 | Agent assertions/recommendations |
-| `conversation-decision`   | Responder    | Orchestrator              | Decision feedback loop           |
-| `conversation-updates`    | Responder    | Updates API               | State updates for clients        |
+| Topic                     | Producer     | Consumer          | Purpose                          |
+|---------------------------|--------------|-------------------|----------------------------------|
+| `conversation-commands`   | Commands API | Orchestrator      | New commands/messages            |
+| `conversation-evaluation` | Orchestrator | Evaluator Lambdas | Request agent evaluation         |
+| `conversation-assertion`  | Evaluators   | Responder         | Agent assertions/recommendations |
+| `conversation-decision`   | Responder    | Orchestrator      | Decision feedback loop           |
 
 ---
 
@@ -151,18 +148,18 @@ orchestration** for AI agent workflows.
 
 1. **User Action:** User sends a message via the React UI
 2. **Command:** GraphQL mutation → Conversation Commands API → Kafka
-3. **Quick Persist:** Conversation Updates API consumes command, persists state immediately (latency optimization)
-4. **Orchestration:** Actions Orchestrator consumes command, persists state record, determines required evaluations
-5. **Evaluation:** Evaluator Lambdas use MCP Server to fetch org data, make assertions
-6. **Decision:** Responder Lambda synthesizes assertions, decides on response
-7. **Update:** Conversation update sent to Updates API → Durable Object → SSE → Client
+3. **Orchestration:** Actions Orchestrator consumes command, persists state record, determines required evaluations
+4. **Evaluation:** Evaluator Lambdas use MCP Server to fetch org data, make assertions
+5. **Decision:** Responder Lambda synthesizes assertions, decides on response
+6. **Persist & Update:** Responder persists state to DynamoDB → Durable Object → SSE → Client
+7. **Query:** Conversation Updates API serves persisted state for GraphQL queries
 
 ---
 
 ## 6. Key Considerations
 
-1. **Latency Optimization:** Conversation Updates API listens directly to `conversation-commands` topic. This ensures
-   new conversations are quickly persisted and available for client fetching.
+1. **Read/Write Separation:** Conversation Updates API is purely read-only. Responder Lambda handles all state
+   persistence and SSE updates, keeping the query side simple and stateless.
 
 2. **SSE Routing:** The Cloudflare Worker handles SSE routing to the Durable Object. GraphQL handles mutations/queries
    only.
@@ -212,7 +209,7 @@ docs/                              # Architecture diagrams
 
 - [x] Implement GraphQL layer
 - [ ] Dockerize all infra / allow for local development
-- [ ] Implement Outbox Pattern - DynamoDB Streams to Lambda producer
+- [ ] Implement Outbox Pattern to ensure idempotent commands and robustness - use DynamoDB Streams to Lambda producer
 - [ ] Implement vector DB for embedded customer information to group similar customers for Agent evaluation
 - [ ] Storybook Support
 - [ ] Theming engine w/ styled components

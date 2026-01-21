@@ -85,17 +85,14 @@ docs/                              # Architecture diagrams
 **Command Side (conversation-commands Rails API):**
 
 - Receives conversation command requests from GraphQL
-- Hydrates and validates data (decoration)
-- Persists commands to DynamoDB
+- Hydrates and validates data
 - Produces events to `conversation-commands` Kafka topic
 
 **Query Side (conversation-updates Rails API):**
 
-- Consumes from `conversation-commands` topic (for low latency)
-- Adapts command events into conversation update state
-- Persists current conversation state to DynamoDB
-- Serves state for query requests via GraphQL
-- Forwards state updates to Cloudflare Durable Object for SSE streaming
+- Serves conversation state for query requests via GraphQL
+- Read-only service (no Kafka consumer)
+- State is persisted by Responder Lambda
 
 ### Real-time Streaming Pattern
 
@@ -160,16 +157,18 @@ docs/                              # Architecture diagrams
 
 - Consumes `conversation-assertion` events
 - Decides whether to respond with a conversation update
-- Produces `conversation-update` events (to update client)
+- Persists conversation state to DynamoDB (for query side reads)
+- Forwards state updates to Cloudflare Durable Object for SSE streaming
 - Produces `conversation-decision` events (for orchestrator to process)
 
 ### Key Kafka Topics
-| Topic                     | Producer     | Consumer                  | Purpose                |
-|---------------------------|--------------|---------------------------|------------------------|
-| `conversation-commands`   | Commands API | Updates API, Orchestrator | New commands           |
-| `conversation-evaluation` | Orchestrator | Evaluator Lambdas         | Evaluation requests    |
-| `conversation-assertion`  | Evaluators   | Responder                 | Agent assertions       |
-| `conversation-decision`   | Responder    | Orchestrator              | Decision feedback loop |
+
+| Topic                     | Producer     | Consumer          | Purpose                |
+|---------------------------|--------------|-------------------|------------------------|
+| `conversation-commands`   | Commands API | Orchestrator      | New commands           |
+| `conversation-evaluation` | Orchestrator | Evaluator Lambdas | Evaluation requests    |
+| `conversation-assertion`  | Evaluators   | Responder         | Agent assertions       |
+| `conversation-decision`   | Responder    | Orchestrator      | Decision feedback loop |
 
 ## Data Model
 
@@ -190,11 +189,10 @@ docs/                              # Architecture diagrams
 
 **Persistence Responsibilities:**
 
-- **Conversation Updates API:** Manages the `STATE` record and its `GSI1` attributes to ensure the "Latest" list is
-  accurate.
 - **Conversation Commands API:** Writes the initial `MSG#` record and the initial `STATE` record.
 - **Actions Orchestrator:** Updates `STATE` and appends `PROC#` logs.
-- **Responder Lambda:** Updates `STATE` and appends new `MSG#` (AI responses).
+- **Responder Lambda:** Updates `STATE`, manages `GSI1` attributes, and appends new `MSG#` (AI responses).
+- **Conversation Updates API:** Read-only (no persistence).
 
 ## Infrastructure (Terraform)
 
@@ -273,8 +271,8 @@ GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
 
 ## Key Considerations
 
-1. **Latency Optimization:** Conversation Updates API listens directly to conversation-commands topic to quickly persist
-   state for client fetching
+1. **Read/Write Separation:** Conversation Updates API is purely read-only. Responder Lambda handles all state
+   persistence and SSE updates.
 
 2. **SSE Routing:** Cloudflare Worker handles SSE routing to Durable Object, not GraphQL
 
