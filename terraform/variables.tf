@@ -25,3 +25,23 @@ variable "ddb_name" {
   default = "grounded-datastore"
 }
 
+variable "responder_fn_name" {
+  type    = string
+  default = "grounded-responder"
+}
+
+variable "customer_spend_agent_fn_name" {
+  type    = string
+  default = "grounded-customer-spend-agent"
+}
+
+variable "response_recommendation_agent_fn_name" {
+  type    = string
+  default = "grounded-response-recommendation-agent"
+}
+
+variable "company_data_api_fn_name" {
+  type    = string
+  default = "grounded-company-data-api"
+}
+

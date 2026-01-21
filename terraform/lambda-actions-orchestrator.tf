@@ -26,7 +26,7 @@ module "actions_orchestrator" {
 
   policy_statements = {
     networking = {
-      effect = "Allow",
+      effect = "Allow"
       actions = [
         "ec2:CreateNetworkInterface",
         "ec2:AttachNetworkInterface",
@@ -35,58 +35,62 @@ module "actions_orchestrator" {
         "ec2:DeleteNetworkInterface",
         "ec2:DescribeSubnets",
         "ec2:DescribeSecurityGroups",
-      ],
-      resources = [*]
-    },
+      ]
+      resources = ["*"]
+    }
 
     receive_messages = {
-      effect: "Allow",
-      actions: [
+      effect = "Allow"
+      actions = [
         "kafka:DescribeCluster",
         "kafka:GetBootstrapBrokers",
         "kafka:ListTopics",
         "kafka:Consume"
-      ],
-      resources: ["*"],
-#       "Resource": "arn",
-#       "Condition": {
-#         "StringEquals": {
-#           "kafka:TopicName": "conversation-commands"
-#         }
-#       }
+      ]
+      resources = ["*"]
     }
 
     send_messages = {
-      effect: "Allow",
-      actions: [
+      effect = "Allow"
+      actions = [
         "kafka:DescribeCluster",
         "kafka:GetBootstrapBrokers",
         "kafka:ListTopics",
         "kafka:Produce"
-      ],
-      resources: ["*"],
-      #       "Resource": "arn",
-      #       "Condition": {
-      #         "StringEquals": {
-      #           "kafka:TopicName": "conversation-evaluation"
-      #         }
-      #       }
+      ]
+      resources = ["*"]
     }
 
     fetch_secrets = {
-      effect = "Allow",
+      effect = "Allow"
       actions = [
         "secretsmanager:GetSecretValue"
-      ],
+      ]
       resources = [
-#         TODO: Fix this
         data.aws_secretsmanager_secret.supabase_key.arn
       ]
     }
-  },
+
+    dynamo_access = {
+      effect = "Allow"
+      actions = [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:Query",
+        "dynamodb:BatchWriteItem"
+      ]
+      resources = [
+        aws_dynamodb_table.dynamo.arn,
+        "${aws_dynamodb_table.dynamo.arn}/index/*"
+      ]
+    }
+  }
 
   environment_variables = {
-    ENVIRONMENT = var.environment
+    ENVIRONMENT  = var.environment
+    DYNAMO_TABLE = var.ddb_name
+    KAFKA_BROKER = aws_instance.kafka_cluster.private_ip
   }
 
   tags = {
@@ -104,15 +108,9 @@ module "actions_orchestrator_alias" {
   function_version = module.actions_orchestrator.lambda_function_version
 }
 
-resource "aws_lambda_provisioned_concurrency_config" "grounded_actions_orchestrator_provisioned_concurrency_config" {
-  function_name = module.actions_orchestrator.lambda_function_name
-  provisioned_concurrent_executions = 0
-  qualifier                         = module.actions_orchestrator_alias.lambda_alias_name
-}
-
 resource "aws_lambda_function_event_invoke_config" "grounded_actions_orchestrator_event_invoke_config" {
-  function_name = module.actions_orchestrator.lambda_function_name
-  maximum_retry_attempts = 3
+  function_name          = module.actions_orchestrator.lambda_function_name
+  maximum_retry_attempts = 2
 }
 
 # TODO: Setup MSK trigger

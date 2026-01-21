@@ -1,7 +1,7 @@
 resource "aws_apprunner_vpc_connector" "conversation_commands_api_vpc" {
   vpc_connector_name = "conversation-commands-api-connector"
-  subnets = [aws_subnet.private.id]
-  security_groups    = [aws_security_group.private_api_sg.id, aws_security_group.cqrs_api_sg.id]
+  subnets = [aws_subnet.private_primary.id]
+  security_groups = [aws_security_group.private_primary.id, aws_security_group.cqrs_api_sg.id]
 }
 
 resource "aws_apprunner_service" "conversation_commands_api" {
@@ -13,7 +13,7 @@ resource "aws_apprunner_service" "conversation_commands_api" {
     }
 
     image_repository {
-      image_identifier      = "public.ecr.aws/conversation-commands-api-image:latest"
+      image_identifier = "public.ecr.aws/grounded/conversation-commands-api:latest"
       image_repository_type = "ECR_PUBLIC"
       image_configuration {
         port = "443"

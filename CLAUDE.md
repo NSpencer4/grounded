@@ -174,7 +174,7 @@ docs/                              # Architecture diagrams
 
 **DynamoDB (Single Table Design):**
 
-| Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1-PK          | GSI1-SK         | Purpose                      |
+| Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1PK           | GSI1SK          | Purpose                      |
 |:-------------------------|:-------------------|:-------------------|:-----------------|:----------------|:-----------------------------|
 | **Conversation State**   | `CONV#<id>`        | `STATE`            | `ORG#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
 | **Conversation Message** | `CONV#<id>`        | `MSG#<ts>#<id>`    | `USER#<user_id>` | `2026-01-20...` | Threaded chat + User history |
@@ -183,8 +183,8 @@ docs/                              # Architecture diagrams
 **Primary Access Patterns:**
 
 - **Fetch Conversation by ID:** `GetItem(PK: CONV#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
-- **List Org Conversations by Date:** `Query(GSI1-PK: ORG#<org_id>, ScanIndexForward: false)`.
-- **List User Conversations by Date:** `Query(GSI1-PK: USER#<user_id>, ScanIndexForward: false)`.
+- **List Org Conversations by Date:** `Query(GSI1PK: ORG#<org_id>, ScanIndexForward: false)`.
+- **List User Conversations by Date:** `Query(GSI1PK: USER#<user_id>, ScanIndexForward: false)`.
 - **Fetch Message History:** `Query(PK: CONV#<id>, SK begins_with: MSG#)`.
 
 **Persistence Responsibilities:**
@@ -198,15 +198,22 @@ docs/                              # Architecture diagrams
 
 AWS resources defined in `terraform/`:
 
-| File                             | Purpose                                       |
-|----------------------------------|-----------------------------------------------|
-| `providers.tf`                   | AWS provider configuration (us-east-1)        |
-| `variables.tf`                   | Environment, VPC, and resource name variables |
-| `networking.tf`                  | VPC, subnets, security groups, VPC endpoints  |
-| `dynamo.tf`                      | Single DynamoDB table (grounded-datastore)    |
-| `ec2-kafka-cluster.tf`           | EC2 instance running Kafka via Docker Compose |
-| `lambda-actions-orchestrator.tf` | Actions Orchestrator Lambda                   |
-| `secrets.tf`                     | Secrets Manager data sources                  |
+| File                                      | Purpose                                         |
+|-------------------------------------------|-------------------------------------------------|
+| `providers.tf`                            | AWS provider configuration (us-east-1)          |
+| `variables.tf`                            | Environment, VPC, and resource name variables   |
+| `networking.tf`                           | VPC, subnets, security groups, VPC endpoints    |
+| `dynamo.tf`                               | Single DynamoDB table (grounded-datastore)      |
+| `postgres.tf`                             | PostgreSQL RDS for Company Data Lambda          |
+| `ec2-kafka-cluster.tf`                    | EC2 instance running Kafka via Docker Compose   |
+| `secrets.tf`                              | Secrets Manager data sources                    |
+| `lambda-actions-orchestrator.tf`          | Actions Orchestrator Lambda                     |
+| `lambda-responder.tf`                     | Responder Lambda (state persistence + SSE)      |
+| `lambda-evaluators.tf`                    | Customer Spend & Response Recommendation agents |
+| `lambda-company-data-api.tf`              | Company Data Lambda (PostgreSQL monolith)       |
+| `app-runner-graphql-api.tf`               | GraphQL API App Runner service                  |
+| `app-runner-conversation-commands-api.tf` | Conversation Commands API (Ruby write-side)     |
+| `app-runner-conversation-updates-api.tf`  | Conversation Updates API (Ruby read-side)       |
 
 ## Environment Variables
 
