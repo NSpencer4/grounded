@@ -56,7 +56,7 @@ packages/
 │   │   ├── actions-orchestrator/  # Main orchestration Lambda
 │   │   └── responder/             # Response decision Lambda
 │   ├── mcp/                       # MCP servers
-│   │   └── org-tools/             # Company Data Lambda integration tools
+│   │   └── org-tools/              # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
 │       ├── gateway-api/           # GraphQL API (Apollo Server v5)
 │       └── company-data-api/      # Node.js Lambda monolith (PostgreSQL)
@@ -163,21 +163,38 @@ docs/                              # Architecture diagrams
 - Produces `conversation-update` events (to update client)
 - Produces `conversation-decision` events (for orchestrator to process)
 
-### Data Model
-
-**DynamoDB (Single Table Design):**
-
-- `PK: conversation#<id>`, `SK: state#current` - Current conversation state
-- `PK: conversation#<id>`, `SK: event#<timestamp>#<id>` - Event history
-
 ### Key Kafka Topics
-
 | Topic                     | Producer     | Consumer                  | Purpose                |
 |---------------------------|--------------|---------------------------|------------------------|
 | `conversation-commands`   | Commands API | Updates API, Orchestrator | New commands           |
 | `conversation-evaluation` | Orchestrator | Evaluator Lambdas         | Evaluation requests    |
 | `conversation-assertion`  | Evaluators   | Responder                 | Agent assertions       |
 | `conversation-decision`   | Responder    | Orchestrator              | Decision feedback loop |
+
+## Data Model
+
+**DynamoDB (Single Table Design):**
+
+| Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1-PK          | GSI1-SK         | Purpose                      |
+|:-------------------------|:-------------------|:-------------------|:-----------------|:----------------|:-----------------------------|
+| **Conversation State**   | `CONV#<id>`        | `STATE`            | `ORG#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
+| **Conversation Message** | `CONV#<id>`        | `MSG#<ts>#<id>`    | `USER#<user_id>` | `2026-01-20...` | Threaded chat + User history |
+| **Process State**        | `CONV#<id>`        | `PROC#<ts>#<type>` | -                | -               | State Machine Internal Data  |
+
+**Primary Access Patterns:**
+
+- **Fetch Conversation by ID:** `GetItem(PK: CONV#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
+- **List Org Conversations by Date:** `Query(GSI1-PK: ORG#<org_id>, ScanIndexForward: false)`.
+- **List User Conversations by Date:** `Query(GSI1-PK: USER#<user_id>, ScanIndexForward: false)`.
+- **Fetch Message History:** `Query(PK: CONV#<id>, SK begins_with: MSG#)`.
+
+**Persistence Responsibilities:**
+
+- **Conversation Updates API:** Manages the `STATE` record and its `GSI1` attributes to ensure the "Latest" list is
+  accurate.
+- **Conversation Commands API:** Writes the initial `MSG#` record and the initial `STATE` record.
+- **Actions Orchestrator:** Updates `STATE` and appends `PROC#` logs.
+- **Responder Lambda:** Updates `STATE` and appends new `MSG#` (AI responses).
 
 ## Infrastructure (Terraform)
 
