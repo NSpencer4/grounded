@@ -4,6 +4,10 @@
   "description": "Shared schemas for Grounded",
   "type": "module",
   "main": "./index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
   "exports": {
     ".": "./index.ts",
     "./events": "./events/index.ts",

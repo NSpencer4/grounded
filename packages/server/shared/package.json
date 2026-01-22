@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Shared server utilities",
   "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
   "exports": {
     "./dynamo": "./dynamo/index.ts",
     "./postgres": "./postgres/index.ts",

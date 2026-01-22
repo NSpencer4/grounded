@@ -22,7 +22,7 @@
     "clean.reinstall.deps": "npm run clean.deps && npm i",
     "build": "lerna run build",
     "lint": "lerna run lint",
-    "lint.fix": "lerna run lint.fix",
+    "lint:fix": "lerna run lint:fix",
     "format": "prettier --write .",
     "format.check": "prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,7 +30,7 @@
   "workspaces": [
     "packages/schemas",
     "packages/ui/*",
-    "packages/server/agents/*",
+    "packages/server/evaluators/*",
     "packages/server/apis/*",
     "packages/server/orchestrators/*",
     "packages/server/shared",

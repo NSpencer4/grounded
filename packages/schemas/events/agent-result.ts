@@ -1,10 +1,7 @@
 import { z } from 'zod'
 import { BaseEventSchema, EventDetailsSchema } from './base-event'
 
-export const AgentResultTypeSchema = z.enum([
-  'CUSTOMER_SPEND_ANALYSIS',
-  'RESPONSE_RECOMMENDATION',
-])
+export const AgentResultTypeSchema = z.enum(['CUSTOMER_SPEND_ANALYSIS', 'RESPONSE_RECOMMENDATION'])
 export type AgentResultType = z.infer<typeof AgentResultTypeSchema>
 
 export const AgentMetadataSchema = z.object({
