@@ -112,11 +112,3 @@ resource "aws_lambda_function_event_invoke_config" "grounded_actions_orchestrato
   function_name          = module.actions_orchestrator.lambda_function_name
   maximum_retry_attempts = 2
 }
-
-# TODO: Setup MSK trigger
-# resource "aws_lambda_event_source_mapping" "grounded_actions_orchestrator_event_source_mapping" {
-#   function_name = module.grounded_actions_orchestrator_alias.lambda_alias_arn
-#   topics = ["conversation-commands"]
-#   starting_position = "LATEST"
-#   batch_size = 10
-# }

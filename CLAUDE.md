@@ -114,7 +114,7 @@ docs/                              # Architecture diagrams
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                         Kafka Topics                                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  conversation-commands  │  conversation-evaluation  │  conversation-assertion  │  conversation-decision  │
+│  conversation-commands  │  conversation-evaluations  │  conversation-assertions  │  conversation-decisions  │
 └─────────────────────────────────────────────────────────────────────────┘
          │                          │                          │                    │
          ▼                          ▼                          ▼                    │
@@ -134,17 +134,17 @@ docs/                              # Architecture diagrams
 
 **Actions Orchestrator Lambda:**
 
-- Consumes `conversation-commands` and `conversation-decision` events
+- Consumes `conversation-commands` and `conversation-decisions` events
 - Persists state records to DynamoDB
 - Decides what evaluations need to be made based on state
-- Produces `conversation-evaluation` events
+- Produces `conversation-evaluations` events
 
 **Evaluator Lambdas (Agent & Non-Agent):**
 
-- Consume `conversation-evaluation` events
+- Consume `conversation-evaluations` events
 - Use Org Tools MCP Server to fetch data from Company Data Lambda
 - Make assertions/recommendations
-- Produce `conversation-assertion` events
+- Produce `conversation-assertions` events
 
 **Company Data Lambda (Node.js Monolith):**
 
@@ -155,20 +155,20 @@ docs/                              # Architecture diagrams
 
 **Responder Lambda:**
 
-- Consumes `conversation-assertion` events
+- Consumes `conversation-assertions` events
 - Decides whether to respond with a conversation update
 - Persists conversation state to DynamoDB (for query side reads)
 - Forwards state updates to Cloudflare Durable Object for SSE streaming
-- Produces `conversation-decision` events (for orchestrator to process)
+- Produces `conversation-decisions` events (for orchestrator to process)
 
 ### Key Kafka Topics
 
-| Topic                     | Producer     | Consumer          | Purpose                |
-|---------------------------|--------------|-------------------|------------------------|
-| `conversation-commands`   | Commands API | Orchestrator      | New commands           |
-| `conversation-evaluation` | Orchestrator | Evaluator Lambdas | Evaluation requests    |
-| `conversation-assertion`  | Evaluators   | Responder         | Agent assertions       |
-| `conversation-decision`   | Responder    | Orchestrator      | Decision feedback loop |
+| Topic                      | Producer     | Consumer          | Purpose                |
+|----------------------------|--------------|-------------------|------------------------|
+| `conversation-commands`    | Commands API | Orchestrator      | New commands           |
+| `conversation-evaluations` | Orchestrator | Evaluator Lambdas | Evaluation requests    |
+| `conversation-assertions`  | Evaluators   | Responder         | Agent assertions       |
+| `conversation-decisions`   | Responder    | Orchestrator      | Decision feedback loop |
 
 ## Data Model
 

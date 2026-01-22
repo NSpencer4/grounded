@@ -135,12 +135,12 @@ orchestration** for AI agent workflows.
 
 ## 4. Kafka Topics
 
-| Topic                     | Producer     | Consumer          | Purpose                          |
-|---------------------------|--------------|-------------------|----------------------------------|
-| `conversation-commands`   | Commands API | Orchestrator      | New commands/messages            |
-| `conversation-evaluation` | Orchestrator | Evaluator Lambdas | Request agent evaluation         |
-| `conversation-assertion`  | Evaluators   | Responder         | Agent assertions/recommendations |
-| `conversation-decision`   | Responder    | Orchestrator      | Decision feedback loop           |
+| Topic                      | Producer     | Consumer          | Purpose                          |
+|----------------------------|--------------|-------------------|----------------------------------|
+| `conversation-commands`    | Commands API | Orchestrator      | New commands/messages            |
+| `conversation-evaluations` | Orchestrator | Evaluator Lambdas | Request agent evaluation         |
+| `conversation-assertions`  | Evaluators   | Responder         | Agent assertions/recommendations |
+| `conversation-decisions`   | Responder    | Orchestrator      | Decision feedback loop           |
 
 ---
 

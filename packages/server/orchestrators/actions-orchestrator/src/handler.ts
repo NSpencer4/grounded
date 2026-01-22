@@ -13,7 +13,7 @@ import {
 } from './state.js'
 
 const KAFKA_BROKER = process.env.KAFKA_BROKER || 'localhost:9092'
-const EVALUATION_TOPIC = 'conversation-evaluation'
+const EVALUATION_TOPIC = 'conversation-evaluations'
 const CLIENT_ID = 'actions-orchestrator'
 
 const kafkaConfig = {

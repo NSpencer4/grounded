@@ -5,7 +5,7 @@ export const fetchSecrets = async (secretIds: string[]) => {
 
   const promises = await Promise.all(
     secretIds.map(async (secretId) => {
-      const response = await client.send(new GetSecretValueCommand({ secretId }))
+      const response = await client.send(new GetSecretValueCommand({ SecretId: secretId }))
       return { secretId, secretValue: response.SecretString }
     }),
   )

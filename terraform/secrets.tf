@@ -3,7 +3,7 @@ data "aws_secretsmanager_secret" "supabase_key" {
 }
 
 data "aws_secretsmanager_secret" "conversation_evaluation_db_password" {
-  name = "grounded/conversation-evaluation-db-password"
+  name = "grounded/conversation-evaluations-db-password"
 }
 
 data "aws_secretsmanager_secret_version" "conversation_evaluation_db_password_version" {
