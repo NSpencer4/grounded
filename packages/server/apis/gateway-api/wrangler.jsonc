@@ -1,0 +1,39 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "grounded-gateway-api",
+  "compatibility_date": "2025-04-04",
+  "main": "./src/index.ts",
+  "observability": {
+    "enabled": true
+  },
+  /**
+   * Environment variables
+   */
+  "vars": {
+    "CONVERSATION_COMMANDS_API_URL": "",
+    "CONVERSATION_UPDATES_API_URL": ""
+  },
+  /**
+   * Durable Objects for SSE streaming
+   * https://developers.cloudflare.com/durable-objects/
+   */
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CONVERSATION_STREAM",
+        "class_name": "ConversationStream"
+      }
+    ]
+  },
+  /**
+   * Migrations for Durable Objects
+   */
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": [
+        "ConversationStream"
+      ]
+    }
+  ]
+}

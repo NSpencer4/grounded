@@ -3,20 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "typegen": "wrangler types"
   },
   "dependencies": {
-    "@apollo/server": "^5.0.0",
-    "graphql": "^16.9.0"
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.10.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260118.0",
     "@types/node": "^22.10.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "wrangler": "^4.59.2"
   }
 }
