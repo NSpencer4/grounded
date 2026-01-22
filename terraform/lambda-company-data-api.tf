@@ -14,7 +14,7 @@ module "company_data_api" {
   publish        = true
   create_package = false
 
-  local_existing_package = "../packages/server/apis/company-data-api/dist/function.zip"
+  local_existing_package = "../packages/server/apis/organization-api/dist/function.zip"
 
   vpc_subnet_ids = [aws_subnet.private_primary.id]
   vpc_security_group_ids = [aws_security_group.private_primary.id, aws_security_group.rds_security_group.id]
