@@ -1,0 +1,48 @@
+# Base Dockerfile for running Lambda functions locally with AWS RIE
+# Uses multi-stage build to install dependencies and build
+
+ARG NODE_VERSION=20
+
+FROM public.ecr.aws/lambda/nodejs:${NODE_VERSION} AS base
+
+# Install build tools for native dependencies
+RUN dnf install -y make gcc g++ python3
+
+WORKDIR /var/task
+
+# Copy workspace package files for dependency installation
+COPY package.json package-lock.json ./
+COPY packages/schemas/package.json ./packages/schemas/
+COPY packages/server/shared/package.json ./packages/server/shared/
+
+# Lambda-specific package.json (set via build arg)
+ARG LAMBDA_PACKAGE_PATH
+COPY ${LAMBDA_PACKAGE_PATH}/package.json ./${LAMBDA_PACKAGE_PATH}/
+
+# Install all dependencies from root
+RUN npm ci --workspace=${LAMBDA_PACKAGE_PATH}
+
+# Copy source files
+COPY packages/schemas ./packages/schemas/
+COPY packages/server/shared ./packages/server/shared/
+COPY ${LAMBDA_PACKAGE_PATH} ./${LAMBDA_PACKAGE_PATH}/
+
+# Build the lambda
+WORKDIR /var/task/${LAMBDA_PACKAGE_PATH}
+RUN npm run build
+
+# Production stage
+FROM public.ecr.aws/lambda/nodejs:${NODE_VERSION}
+
+ARG LAMBDA_PACKAGE_PATH
+ARG HANDLER=handler.handler
+
+WORKDIR /var/task
+
+# Copy built artifacts and node_modules
+COPY --from=base /var/task/${LAMBDA_PACKAGE_PATH}/dist ./
+COPY --from=base /var/task/node_modules ./node_modules
+
+# Set the handler
+ENV HANDLER=${HANDLER}
+CMD ["handler.handler"]

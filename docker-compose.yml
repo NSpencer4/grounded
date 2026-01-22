@@ -21,7 +21,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      # We define two listeners: 
+      # We define two listeners:
       # 1. INTERNAL: For containers inside the docker network (e.g., for the UI container)
       # 2. EXTERNAL: For code running locally (localhost:9092)
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
@@ -65,6 +65,41 @@ services:
     depends_on:
       - dynamodb-local
 
+  # PostgreSQL for organization-api
+  postgres:
+    image: postgres:16-alpine
+    container_name: grounded-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grounded
+    volumes:
+      - "./docker/postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: grounded-aws-local
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # External services port range
+    environment:
+      - SERVICES=lambda,s3,iam # Lambda requirements
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./docker/localstack:/var/lib/localstack"
+
+  # =============================================================================
+  # Ruby APIs
+  # =============================================================================
   conversation-commands-api:
     build:
       context: ./ruby-apis/conversation-commands
@@ -101,31 +136,114 @@ services:
       - dynamodb-local
     command: "./bin/rails server -b 0.0.0.0"
 
-  localstack:
-    image: localstack/localstack:latest
-    container_name: grounded-aws-local
-    ports:
-      - "4566:4566"            # LocalStack Gateway
-      - "4510-4559:4510-4559"  # External services port range
-    environment:
-      - SERVICES=lambda,s3,iam # Lambda requirements
-      - DEBUG=1
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./docker/localstack:/var/lib/localstack"
+  # =============================================================================
+  # Node.js Lambda Functions (using AWS Lambda RIE)
+  # =============================================================================
 
-  # Optional: If you want to run your specific TS lambda as a standalone container
+  # Actions Orchestrator - Processes conversation commands and decisions
   actions-orchestrator-lambda:
     build:
       context: .
       dockerfile: ./packages/server/orchestrators/actions-orchestrator/Dockerfile
-    container_name: grounded-actions-lambda
+    container_name: grounded-actions-orchestrator
     ports:
-      - "9000:8080" # Lambda runtime uses 8080 internally
+      - "9001:8080"
     environment:
-      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
-      - KAFKA_BROKERS=kafka:29092
+      AWS_LAMBDA_FUNCTION_NAME: actions-orchestrator
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      DYNAMODB_ENDPOINT: http://dynamodb-local:8000
+      DYNAMO_TABLE_NAME: grounded-datastore
+      KAFKA_BROKERS: kafka:29092
     depends_on:
       - dynamodb-local
       - kafka
+
+  # Conversation Responder - Decides responses based on assertions
+  conversation-responder-lambda:
+    build:
+      context: .
+      dockerfile: ./packages/server/orchestrators/conversation-responder/Dockerfile
+    container_name: grounded-conversation-responder
+    ports:
+      - "9002:8080"
+    environment:
+      AWS_LAMBDA_FUNCTION_NAME: conversation-responder
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      DYNAMODB_ENDPOINT: http://dynamodb-local:8000
+      DYNAMO_TABLE_NAME: grounded-datastore
+      KAFKA_BROKERS: kafka:29092
+    depends_on:
+      - dynamodb-local
+      - kafka
+
+  # Customer Spend Agent - AI agent for analyzing customer spending
+  customer-spend-agent-lambda:
+    build:
+      context: .
+      dockerfile: ./packages/server/evaluators/customer-spend-agent/Dockerfile
+    container_name: grounded-customer-spend-agent
+    ports:
+      - "9003:8080"
+    environment:
+      AWS_LAMBDA_FUNCTION_NAME: customer-spend-agent
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      KAFKA_BROKERS: kafka:29092
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ORG_API_ENDPOINT: http://organization-api-lambda:8080
+    depends_on:
+      - kafka
+      - organization-api-lambda
+
+  # Response Recommendation Agent - AI agent for generating response recommendations
+  response-recommendation-agent-lambda:
+    build:
+      context: .
+      dockerfile: ./packages/server/evaluators/response-recommendation-agent/Dockerfile
+    container_name: grounded-response-recommendation-agent
+    ports:
+      - "9004:8080"
+    environment:
+      AWS_LAMBDA_FUNCTION_NAME: response-recommendation-agent
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      KAFKA_BROKERS: kafka:29092
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ORG_API_ENDPOINT: http://organization-api-lambda:8080
+    depends_on:
+      - kafka
+      - organization-api-lambda
+
+  # Organization API - Serves organizational data (customers, users, etc.)
+  organization-api-lambda:
+    build:
+      context: .
+      dockerfile: ./packages/server/apis/organization-api/Dockerfile
+    container_name: grounded-organization-api
+    ports:
+      - "9005:8080"
+    environment:
+      AWS_LAMBDA_FUNCTION_NAME: organization-api
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: grounded
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+# Named volumes for persistent data
+volumes:
+  postgres_data:
+  dynamodb_data:
+  localstack_data:
