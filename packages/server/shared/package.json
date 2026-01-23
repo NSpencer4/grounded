@@ -13,9 +13,5 @@
     "./postgres": "./postgres/index.ts",
     "./event-producer": "./event-producer/index.ts",
     "./secrets-manager": "./secrets-manager/index.ts"
-  },
-  "dependencies": {
-    "drizzle-orm": "^0.45.1",
-    "pg": "^8.17.2"
   }
 }
