@@ -35,9 +35,11 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Copy shared gem (referenced by Gemfile as path: "../shared")
+COPY shared/ /shared/
+
 # Install application gems
-COPY vendor/* ./vendor/
-COPY Gemfile Gemfile.lock ./
+COPY conversation-commands/Gemfile conversation-commands/Gemfile.lock ./
 
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
@@ -45,7 +47,7 @@ RUN bundle install && \
     bundle exec bootsnap precompile -j 1 --gemfile
 
 # Copy application code
-COPY . .
+COPY conversation-commands/ .
 
 # Precompile bootsnap code for faster boot times.
 # -j 1 disable parallel compilation to avoid a QEMU bug: https://github.com/rails/bootsnap/issues/495
@@ -56,6 +58,9 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 
 # Final stage for app image
 FROM base
+
+# Copy shared gem for runtime
+COPY shared/ /shared/
 
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
