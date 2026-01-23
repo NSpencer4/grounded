@@ -31,9 +31,6 @@ export const ActionContextSchema = z.object({
   actionBy: z.string(),
 })
 
-export const ConversationStatusSchema = z.enum(['WAITING', 'ACTIVE', 'CLOSED'])
-export type ConversationStatus = z.infer<typeof ConversationStatusSchema>
-
 export const BaseEventSchema = z.object({
   event: EventDetailsSchema,
   actionContext: ActionContextSchema,

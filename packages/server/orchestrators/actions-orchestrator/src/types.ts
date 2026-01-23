@@ -1,5 +1,4 @@
-import type { ConversationCommandEvent } from '@grounded/schemas/events/conversation-command'
-import type { ConversationEvaluationEvent } from '@grounded/schemas/events/conversation-evaluation'
+import { ConversationEvaluationEvent } from '@grounded/schemas/events/conversation-evaluation'
 
 export interface ProcessingContext {
   correlationId: string
@@ -32,5 +31,3 @@ export interface ProcessingResult {
   processingTimeMs: number
   error?: string
 }
-
-export { ConversationCommandEvent, ConversationEvaluationEvent }
