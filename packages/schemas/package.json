@@ -13,8 +13,5 @@
     ".": "./index.ts",
     "./events": "./events/index.ts",
     "./events/*": "./events/*.ts"
-  },
-  "dependencies": {
-    "zod": "^3.24.2"
   }
 }

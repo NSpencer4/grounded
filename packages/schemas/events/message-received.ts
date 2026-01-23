@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { BaseEventSchema, EventDetailsSchema, EventType } from './base-event'
+import { BaseEventSchema, EventDetailsSchema, EventTypeSchema } from './base-event'
 import { ConversationSchema, MessageSchema } from '../index'
 
 export const MessageReceivedEventSchema = BaseEventSchema.extend(
   z.object({
     event: z.object({
       ...EventDetailsSchema.pick({ id: true, schemaVersion: true }),
-      type: EventType.CONVERSATION_INITIATED,
+      type: EventTypeSchema.CONVERSATION_INITIATED,
     }),
     conversation: ConversationSchema,
     message: MessageSchema,
