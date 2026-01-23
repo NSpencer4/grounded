@@ -1,14 +1,16 @@
-import { Client } from 'pg'
+import { Client, ClientConfig } from 'pg'
 import { drizzle } from 'drizzle-orm/node-postgres'
 
+export type PostgresConfig = Pick<ClientConfig, 'host' | 'user' | 'password' | 'database'>
+
 // TODO: Multi connection handling
-export const getPostgresConnection = async (credentials) => {
+export const getPostgresConnection = async (config: PostgresConfig) => {
   const client = new Client({
-    host: credentials.host,
+    host: config.host,
     port: 5432,
-    user: credentials.username,
-    password: credentials.password,
-    database: credentials.database,
+    user: config.user,
+    password: config.password,
+    database: config.database,
   })
 
   await client.connect()
