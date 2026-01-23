@@ -15,15 +15,13 @@ COPY packages/server/apis/organization-api/package.json ./packages/server/apis/o
 # Install dependencies
 RUN npm ci
 
-# Copy source files
+# Copy source files (node_modules excluded via .dockerignore)
 COPY packages/schemas ./packages/schemas/
 COPY packages/server/shared ./packages/server/shared/
 COPY packages/server/apis/organization-api ./packages/server/apis/organization-api/
 
-# Build packages
-RUN npm run build --workspace=@grounded/schemas && \
-    npm run build --workspace=@grounded/server-shared && \
-    npm run build --workspace=@grounded/organization-api
+# Build organization-api (esbuild bundles all dependencies including TS packages)
+RUN npm run build --workspace=@grounded/organization-api
 
 # Production image
 FROM public.ecr.aws/lambda/nodejs:20

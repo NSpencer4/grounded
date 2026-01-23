@@ -4,6 +4,7 @@
   "description": "Shared server utilities",
   "type": "module",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

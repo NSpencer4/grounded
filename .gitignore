@@ -26,7 +26,7 @@ yarn-error.log*
 .env
 
 # dist directories
-/dist
+dist
 
 # logging
 logs

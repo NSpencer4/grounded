@@ -1,0 +1,34 @@
+# Exclude node_modules to prevent architecture mismatch (Mac ARM vs Linux x86_64)
+**/node_modules
+
+# Build outputs
+**/dist
+**/build
+**/.wrangler
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+
+# Git
+.git
+.gitignore
+
+# Terraform
+terraform/.terraform
+terraform/*.tfstate*
+
+# Docker data volumes
+docker/dynamodb
+docker/postgres
+docker/localstack
+
+# Misc
+*.log
+*.md
+!README.md
+.DS_Store
+.env
+.env.*

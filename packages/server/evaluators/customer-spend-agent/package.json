@@ -1,5 +1,5 @@
 {
-  "name": "customer-spend-agent",
+  "name": "@grounded/customer-spend-agent",
   "version": "0.0.1",
   "description": "AI agent for analyzing customer spending data",
   "type": "module",

@@ -102,7 +102,8 @@ services:
   # =============================================================================
   conversation-commands-api:
     build:
-      context: ./ruby-apis/conversation-commands
+      context: ./ruby-apis
+      dockerfile: conversation-commands/Dockerfile
     container_name: grounded-commands-api
     ports:
       - "3001:3000"
@@ -120,7 +121,8 @@ services:
 
   conversation-updates-api:
     build:
-      context: ./ruby-apis/conversation-updates
+      context: ./ruby-apis
+      dockerfile: conversation-updates/Dockerfile
     container_name: grounded-updates-api
     ports:
       - "3002:3000"
