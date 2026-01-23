@@ -11,7 +11,7 @@ export type EvaluationType = z.infer<typeof EvaluationTypeSchema>
 
 export const ConversationEvaluationEventSchema = BaseEventSchema.extend({
   event: EventDetailsSchema.extend({
-    type: EventTypeSchema.enum.CONVERSATION_EVALUATION,
+    type: z.literal(EventTypeSchema.enum.CONVERSATION_EVALUATION),
   }),
   conversation: ConversationSchema,
   message: MessageSchema.optional(),

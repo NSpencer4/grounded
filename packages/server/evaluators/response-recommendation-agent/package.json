@@ -1,5 +1,5 @@
 {
-  "name": "response-recommendation-agent",
+  "name": "@grounded/response-recommendation-agent",
   "version": "0.0.1",
   "description": "AI agent for generating customer service response recommendations",
   "type": "module",

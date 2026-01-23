@@ -1,5 +1,5 @@
 {
-  "name": "actions-orchestrator",
+  "name": "@grounded/actions-orchestrator",
   "version": "0.0.1",
   "description": "Lambda orchestrator for processing conversation command events",
   "type": "module",

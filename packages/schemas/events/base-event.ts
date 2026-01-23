@@ -21,7 +21,7 @@ export const ActionSchema = z.enum(['CREATE'])
 export type Action = z.infer<typeof ActionSchema>
 
 export const EventDetailsSchema = z.object({
-  id: z.uuid(),
+  id: z.string().uuid(),
   type: EventTypeSchema,
   schemaVersion: z.string(),
 })

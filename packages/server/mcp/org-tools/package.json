@@ -1,5 +1,5 @@
 {
-  "name": "state-machine-query-tools",
+  "name": "@grounded/state-machine-query-tools",
   "version": "1.0.0",
   "description": "MCP server for querying state machine events from DynamoDB",
   "type": "module",

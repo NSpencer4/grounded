@@ -10,7 +10,21 @@
     "typeRoots": ["../../node_modules/@types"],
     "types": ["node"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@grounded/schemas": [
+        "../../packages/schemas/index.ts"
+      ],
+      "@grounded/schemas/*": [
+        "../../packages/schemas/*"
+      ],
+      "@grounded/server-shared/*": [
+        "./shared/*"
+      ],
+      "@grounded/agents-shared": [
+        "./evaluators/shared/src/index.ts"
+      ]
+    }
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist", "**/dist"]
