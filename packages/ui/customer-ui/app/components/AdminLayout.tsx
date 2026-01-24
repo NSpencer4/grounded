@@ -5,7 +5,7 @@ import DashboardContent from './DashboardContent'
 import RefundManagementContent from './RefundManagementContent'
 import UserManagementContent from './UserManagementContent'
 import TeamPerformanceContent from './TeamPerformanceContent'
-import RepChatView from './RepChatView'
+import RepChatViewContent from './RepChatViewContent'
 
 interface AdminLayoutProps {
   onLogout: () => void
@@ -21,21 +21,12 @@ export default function AdminLayout({
   const [activeNav, setActiveNav] = useState<NavItem>('dashboard')
   const [searchQuery, setSearchQuery] = useState('')
 
-  // If chat-history is selected, render the full RepChatView
-  if (activeNav === 'chat-history') {
-    return (
-      <RepChatView
-        onLogout={onLogout}
-        userName={userName}
-        onBack={() => setActiveNav('dashboard')}
-      />
-    )
-  }
-
   const renderContent = () => {
     switch (activeNav) {
       case 'dashboard':
         return <DashboardContent />
+      case 'chat-history':
+        return <RepChatViewContent userName={userName} />
       case 'team-performance':
         return <TeamPerformanceContent />
       case 'user-management':
@@ -103,7 +94,11 @@ export default function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto">{renderContent()}</div>
+        <div
+          className={`flex-1 ${activeNav === 'chat-history' ? 'overflow-hidden flex' : 'overflow-y-auto'}`}
+        >
+          {renderContent()}
+        </div>
       </main>
     </div>
   )
