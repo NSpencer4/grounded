@@ -6,6 +6,7 @@ import RefundManagementContent from './RefundManagementContent'
 import UserManagementContent from './UserManagementContent'
 import TeamPerformanceContent from './TeamPerformanceContent'
 import RepChatViewContent from './RepChatViewContent'
+import AIAgentConfigContent from './AIAgentConfigContent'
 
 interface AdminLayoutProps {
   onLogout: () => void
@@ -33,6 +34,8 @@ export default function AdminLayout({
         return <UserManagementContent />
       case 'refund-management':
         return <RefundManagementContent />
+      case 'ai-agents':
+        return <AIAgentConfigContent />
       case 'settings':
         return (
           <PlaceholderContent

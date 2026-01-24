@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Bot,
   LayoutDashboard,
   MessageSquare,
   Receipt,
@@ -14,6 +15,7 @@ export type NavItem =
   | 'team-performance'
   | 'user-management'
   | 'refund-management'
+  | 'ai-agents'
   | 'settings'
 
 interface SidebarProps {
@@ -30,6 +32,7 @@ const navItems: { id: NavItem; label: string; icon: React.ElementType }[] = [
   { id: 'team-performance', label: 'Team Performance', icon: BarChart3 },
   { id: 'user-management', label: 'User Management', icon: Users },
   { id: 'refund-management', label: 'Refund Analytics', icon: Receipt },
+  { id: 'ai-agents', label: 'AI Agents', icon: Bot },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
