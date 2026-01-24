@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Auth from '../components/Auth'
 import ProfileSetup from '../components/ProfileSetup'
 import CustomerChat from '../components/CustomerChat'
-import RepresentativeDashboard from '../components/RepresentativeDashboard'
-import AdminDashboard from '../components/AdminDashboard'
+import RepChatView from '../components/RepChatView'
+import AdminLayout from '../components/AdminLayout'
 import type { Database } from '../lib/database.types'
 import type { User } from '@supabase/supabase-js'
 
@@ -48,7 +48,9 @@ export default function Index() {
         .eq('user_id', userId)
         .maybeSingle()
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
       setProfile(data)
     } catch (error) {
       console.error('Error loading profile:', error)
@@ -86,7 +88,7 @@ export default function Index() {
   }
 
   if (profile.role === 'admin') {
-    return <AdminDashboard onLogout={handleLogout} />
+    return <AdminLayout onLogout={handleLogout} userName={profile.name} userRole="Admin" />
   }
 
   return (
@@ -94,7 +96,7 @@ export default function Index() {
       {profile.role === 'customer' ? (
         <CustomerChat profile={profile} />
       ) : (
-        <RepresentativeDashboard profile={profile} />
+        <RepChatView onLogout={handleLogout} userName={profile.name} />
       )}
     </>
   )

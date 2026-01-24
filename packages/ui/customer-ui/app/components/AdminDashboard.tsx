@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import {
-  UserPlus,
-  LogOut,
-  Users,
-  Pencil,
-  Trash2,
-  X,
-  Shield,
-  MessageSquare,
-  Eye,
-} from 'lucide-react'
+import { Eye, MessageSquare, Pencil, Shield, Trash2, UserPlus, Users, X } from 'lucide-react'
 import type { Database } from '../lib/database.types'
+import TopNav, { type NavItem } from './TopNav'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Conversation = Database['public']['Tables']['conversations']['Row']
@@ -30,6 +21,7 @@ interface ConversationWithProfiles extends Conversation {
 }
 
 export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
+  const [activeNav, setActiveNav] = useState<NavItem>('dashboard')
   const [activeTab, setActiveTab] = useState<Tab>('representatives')
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -85,7 +77,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       .select('*')
       .order('updated_at', { ascending: false })
 
-    if (error || !convos) return
+    if (error || !convos) {
+      return
+    }
 
     const conversationsWithProfiles = await Promise.all(
       convos.map(async (convo: Conversation) => {
@@ -134,7 +128,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         role: 'representative',
       })
 
-      if (profileError) throw profileError
+      if (profileError) {
+        throw profileError
+      }
 
       setMessage(
         'Representative profile created successfully! They can now sign up with this email.',
@@ -172,7 +168,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         })
         .eq('id', rep.id)
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
 
       setMessage('Representative updated successfully!')
       setEditingRep(null)
@@ -190,7 +188,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     try {
       const { error: profileError } = await supabase.from('profiles').delete().eq('id', rep.id)
 
-      if (profileError) throw profileError
+      if (profileError) {
+        throw profileError
+      }
 
       setMessage('Representative deleted successfully!')
       fetchRepresentatives()
@@ -211,7 +211,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         role: 'admin',
       })
 
-      if (profileError) throw profileError
+      if (profileError) {
+        throw profileError
+      }
 
       setMessage('Admin profile created successfully! They can now sign up with this email.')
       setEmail('')
@@ -247,7 +249,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         })
         .eq('id', admin.id)
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
 
       setMessage('Admin updated successfully!')
       setEditingAdmin(null)
@@ -265,7 +269,9 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     try {
       const { error: profileError } = await supabase.from('profiles').delete().eq('id', admin.id)
 
-      if (profileError) throw profileError
+      if (profileError) {
+        throw profileError
+      }
 
       setMessage('Admin deleted successfully!')
       fetchAdmins()
@@ -291,26 +297,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <TopNav activeItem={activeNav} onNavigate={setActiveNav} onLogout={onLogout} />
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-3">
-            <div className="bg-slate-900 p-3 rounded-xl">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
-              <p className="text-slate-600 text-sm">Manage support representatives</p>
-            </div>
-          </div>
-          <button
-            onClick={onLogout}
-            className="flex items-center space-x-2 px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="border-b border-slate-200">
             <div className="flex">
