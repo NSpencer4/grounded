@@ -2,12 +2,12 @@
   "info": {
     "_postman_id": "de810c7a-94d1-4038-8ef9-0b940aca0937",
     "name": "Conversation Commands Service",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "7696747"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
       "name": "Create Conversation",
+      "id": "66fa255a-c2c6-4753-b1df-38894e6bd18b",
       "request": {
         "method": "POST",
         "header": [
@@ -27,9 +27,9 @@
           }
         },
         "url": {
-          "raw": "{{conversation_commands_url}}/api/v1/conversations",
+          "raw": "{{conversation_commands_base_url}}/api/v1/conversations",
           "host": [
-            "{{conversation_commands_url}}"
+            "{{conversation_commands_base_url}}"
           ],
           "path": [
             "api",
@@ -42,6 +42,7 @@
     },
     {
       "name": "Create Message",
+      "id": "d7b9ad0f-8b78-4111-8f11-3a1ef28bf923",
       "request": {
         "method": "POST",
         "header": [
@@ -61,9 +62,9 @@
           }
         },
         "url": {
-          "raw": "{{conversation_commands_url}}/api/v1/conversations/:conversationId/messages",
+          "raw": "{{conversation_updates_base_url}}/api/v1/conversations/:conversationId/messages",
           "host": [
-            "{{conversation_commands_url}}"
+            "{{conversation_updates_base_url}}"
           ],
           "path": [
             "api",
@@ -83,29 +84,19 @@
       "response": []
     }
   ],
-  "event": [
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
   "variable": [
     {
+      "id": "151338e1-18d5-433e-9421-5b11b0de56e3",
       "key": "conversation_commands_url",
-      "value": ""
+      "value": "http://localhost:3001"
     },
     {
+      "id": "671b5751-4f33-4cf1-a626-683ad5a73ab1",
       "key": "jwt_token",
       "value": ""
     },
     {
+      "id": "f158c905-9a76-43ea-835b-c6b2a84e0505",
       "key": "jwt_secret",
       "value": "",
       "type": "default"

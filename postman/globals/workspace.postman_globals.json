@@ -3,12 +3,6 @@
   "name": "Globals",
   "values": [
     {
-      "key": "conversation_updates_base_url",
-      "value": "http://localhost:3001",
-      "type": "default",
-      "enabled": true
-    },
-    {
       "key": "org_id",
       "value": "org_123",
       "type": "default",
