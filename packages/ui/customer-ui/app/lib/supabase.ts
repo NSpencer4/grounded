@@ -19,8 +19,8 @@ import { createClient } from '@supabase/supabase-js'
  * - See app/routes/ for Remix loaders and actions
  */
 
-const supabaseUrl = import.meta.env.SUPABASE_URL
-const supabaseAnonKey = import.meta.env.SUPABASE_PUBLIC_KEY
+const supabaseUrl = import.meta.env.SUPABASE_URL || process.env.SUPABASE_URL
+const supabaseAnonKey = import.meta.env.SUPABASE_PUBLIC_KEY || process.env.SUPABASE_PUBLIC_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables')
