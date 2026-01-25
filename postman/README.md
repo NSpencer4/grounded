@@ -4,12 +4,31 @@ This directory contains Postman collections for testing the Grounded APIs.
 
 ## Collections
 
-### 1. Conversation Commands Service
+### 1. GraphQL Gateway API ⭐ **Recommended**
+**File:** `collections/graphql-gateway-api.json`  
+**Purpose:** Unified GraphQL API for all Grounded services - integrates Conversation Commands, Conversation Updates, and Organization APIs  
+**Base URL:** `http://localhost:8787` (Wrangler dev server)  
+**Requests:** 55+ queries and mutations covering all resources  
+**Features:**
+- Single endpoint for all operations (`/graphql`)
+- GraphQL queries with variables
+- Comprehensive coverage: conversations, organizations, users, representatives, customers, tickets, escalations, refunds, budgets, agents, decision rules, and performance metrics
+- Real-time SSE streaming support
+
+**Quick Start:**
+```bash
+cd packages/server/apis/gateway-api
+npm run dev
+```
+
+Then open Postman and start making GraphQL queries to `http://localhost:8787/graphql`!
+
+### 2. Conversation Commands Service
 **File:** `collections/conversation-commands-service.json`  
 **Purpose:** Command-side API for creating and updating conversations (write operations)  
 **Base URL:** `http://localhost:3001` (docker-compose port mapping)
 
-### 2. Conversation Updates Service
+### 3. Conversation Updates Service
 **File:** `collections/conversation-updates-service.json`  
 **Purpose:** Query-side API for reading conversation data (read operations)  
 **Base URL:** `http://localhost:3002` (docker-compose port mapping)
@@ -20,7 +39,10 @@ This directory contains Postman collections for testing the Grounded APIs.
 
 1. Open Postman
 2. Click **Import** in the top-left corner
-3. Navigate to `postman/collections/` and select both JSON files
+3. Navigate to `postman/collections/` and select all JSON files:
+   - `graphql-gateway-api.json` ⭐ **Start here**
+   - `conversation-commands-service.json`
+   - `conversation-updates-service.json`
 4. Import the environment file: `postman/environments/local.postman_environment.json`
 5. Import the globals file: `postman/globals/workspace.postman_globals.json`
 6. Select the **Local** environment in Postman (top-right dropdown)
@@ -28,6 +50,11 @@ This directory contains Postman collections for testing the Grounded APIs.
 ### Environment Variables
 
 The following environment variables are configured in the **Local** environment for your local docker-compose setup:
+
+#### GraphQL Gateway API
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| `graphql_gateway_url` | `http://localhost:8787` | GraphQL Gateway API (unified endpoint for all services) |
 
 #### Ruby APIs
 | Variable | Default Value | Description |
@@ -88,14 +115,79 @@ docker-compose up -d --build
 
 ### Individual Service Access
 
-Once docker-compose is running, you can access these web UIs in your browser:
+Once services are running, you can access these endpoints in your browser:
 
+- **GraphQL Gateway API**: http://localhost:8787/graphql (GraphiQL playground)
 - **Kafka UI**: http://localhost:8080
 - **DynamoDB Admin**: http://localhost:8001
 - **Conversation Commands API**: http://localhost:3001
 - **Conversation Updates API**: http://localhost:3002
 
 ## API Endpoints
+
+### GraphQL Gateway API (Unified Endpoint)
+
+The GraphQL Gateway provides a single endpoint for all operations across all services.
+
+**Endpoint:** `POST /graphql`
+
+**Example Query:**
+```graphql
+query {
+  health {
+    status
+    timestamp
+  }
+  
+  conversation(id: "conv_123") {
+    id
+    status
+    messages {
+      id
+      content
+      role
+      timestamp
+    }
+  }
+  
+  users(orgId: "org_123", limit: 10) {
+    id
+    name
+    email
+    role
+  }
+}
+```
+
+**Example Mutation:**
+```graphql
+mutation {
+  createConversation(
+    orgId: "org_123"
+    userId: "user_456"
+    initialMessage: "Hello, I need help"
+  ) {
+    id
+    status
+    messages {
+      id
+      content
+    }
+  }
+}
+```
+
+**Features:**
+- 25+ queries covering all resources
+- 30+ mutations for create/update/delete operations
+- Pagination support (cursor-based and offset-based)
+- Status filters for tickets, escalations, and refunds
+- Date range filters for performance metrics
+- GraphQL variables for dynamic values
+
+**Complete API documentation:** See `packages/server/apis/gateway-api/API-REFERENCE.md`
+
+---
 
 ### Conversation Updates Service (Read-Only)
 
