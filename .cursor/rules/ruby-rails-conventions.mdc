@@ -1,0 +1,57 @@
+---
+description: Ruby on Rails conventions for CQRS APIs
+globs: ruby-apis/**/*.rb
+alwaysApply: false
+---
+
+# Ruby on Rails CQRS Conventions
+
+## Command Side (conversation-commands)
+
+Commands are write-only operations that produce Kafka events:
+
+```ruby
+# ✅ GOOD - Controller
+class ConversationsController < ApplicationController
+  def create
+    # Hydrate and validate
+    conversation = ConversationService.initiate(
+      org_id: params[:org_id],
+      user_id: params[:user_id],
+      message: params[:message]
+    )
+    
+    # Produce event
+    KafkaProducerService.produce('conversation-commands', conversation.to_event)
+    
+    render json: { conversation_id: conversation.id }, status: :created
+  end
+end
+```
+
+## Query Side (conversation-updates)
+
+Queries are read-only operations that serve persisted state:
+
+```ruby
+# ✅ GOOD - Read from DynamoDB
+class ConversationsController < ApplicationController
+  def show
+    conversation = DynamoClient.get_conversation(params[:id])
+    render json: conversation
+  end
+  
+  def index
+    conversations = DynamoClient.list_org_conversations(
+      org_id: params[:org_id]
+    )
+    render json: conversations
+  end
+end
+```
+
+## Key Principles
+
+- **Commands API**: Validates and produces events, never reads state
+- **Updates API**: Reads persisted state, never writes
+- **State Persistence**: Handled by Responder Lambda, not Rails APIs

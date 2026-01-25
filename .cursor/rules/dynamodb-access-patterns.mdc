@@ -1,0 +1,51 @@
+---
+description: DynamoDB single-table design access patterns
+globs: packages/server/**/*.ts
+alwaysApply: false
+---
+
+# DynamoDB Access Patterns
+
+## Key Structure
+
+Follow the single-table design patterns:
+
+| Entity | PK | SK | GSI1PK | GSI1SK |
+|--------|----|----|--------|--------|
+| Conversation State | `CONV#<id>` | `STATE` | `ORG#<org_id>` | ISO timestamp |
+| Message | `CONV#<id>` | `MSG#<ts>#<id>` | `USER#<user_id>` | ISO timestamp |
+| Process State | `CONV#<id>` | `PROC#<ts>#<type>` | - | - |
+
+## Query Examples
+
+```typescript
+// ✅ Fetch conversation state
+const { Item } = await dynamoClient.get({
+  TableName: DYNAMO_TABLE_NAME,
+  Key: {
+    PK: `CONV#${conversationId}`,
+    SK: 'STATE',
+  },
+});
+
+// ✅ List org conversations (newest first)
+const { Items } = await dynamoClient.query({
+  TableName: DYNAMO_TABLE_NAME,
+  IndexName: 'GSI1',
+  KeyConditionExpression: 'GSI1PK = :orgId',
+  ExpressionAttributeValues: {
+    ':orgId': `ORG#${orgId}`,
+  },
+  ScanIndexForward: false, // Descending order
+});
+
+// ✅ Fetch message history
+const { Items } = await dynamoClient.query({
+  TableName: DYNAMO_TABLE_NAME,
+  KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+  ExpressionAttributeValues: {
+    ':pk': `CONV#${conversationId}`,
+    ':prefix': 'MSG#',
+  },
+});
+```

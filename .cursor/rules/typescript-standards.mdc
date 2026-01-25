@@ -1,0 +1,58 @@
+---
+description: TypeScript coding standards for the monorepo
+globs: **/*.ts
+alwaysApply: false
+---
+
+# TypeScript Standards
+
+## Error Handling
+
+Always handle errors explicitly with proper logging and context:
+
+```typescript
+// ❌ BAD - Silent failures
+try {
+  await fetchData();
+} catch (e) {}
+
+// ✅ GOOD - Explicit error handling
+try {
+  await fetchData();
+} catch (error) {
+  console.error('Failed to fetch data:', error);
+  throw new Error('Unable to retrieve data', { cause: error });
+}
+```
+
+## Async/Await
+
+Use async/await instead of promise chains for better readability:
+
+```typescript
+// ❌ BAD
+return fetchUser()
+  .then(user => fetchOrders(user.id))
+  .then(orders => processOrders(orders));
+
+// ✅ GOOD
+const user = await fetchUser();
+const orders = await fetchOrders(user.id);
+return processOrders(orders);
+```
+
+## Type Safety
+
+- Use `unknown` instead of `any` for unknown types
+- Avoid type assertions (`as`) unless absolutely necessary
+- Use Zod schemas for runtime validation (see `@grounded/schemas`)
+
+## Exports
+
+Use named exports for better IDE support and tree-shaking:
+
+```typescript
+// ✅ GOOD
+export const fetchUser = async (id: string) => { ... };
+export type User = { ... };
+```

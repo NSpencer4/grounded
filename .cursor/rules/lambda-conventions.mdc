@@ -1,0 +1,57 @@
+---
+description: AWS Lambda development conventions
+globs: packages/server/**/*.ts
+alwaysApply: false
+---
+
+# Lambda Conventions
+
+## Handler Structure
+
+Keep handlers thin - delegate to domain logic:
+
+```typescript
+// ✅ GOOD
+export const handler = async (event: KafkaEvent) => {
+  try {
+    const messages = parseKafkaEvent(event);
+    
+    for (const message of messages) {
+      await processMessage(message);
+    }
+    
+    return { statusCode: 200 };
+  } catch (error) {
+    console.error('Handler failed:', error);
+    throw error; // Let Lambda retry
+  }
+};
+```
+
+## Connection Pooling
+
+Reuse connections outside the handler for warm starts:
+
+```typescript
+// ✅ GOOD - Module-level initialization
+import { getDynamoClient } from '@grounded/server-shared/dynamo';
+import { getKafkaProducer } from '@grounded/server-shared/event-producer';
+
+const dynamoClient = getDynamoClient();
+const producer = getKafkaProducer();
+
+export const handler = async (event) => {
+  // Use cached clients
+  await dynamoClient.put({ ... });
+  await producer.send({ ... });
+};
+```
+
+## Environment Variables
+
+Validate required env vars at startup:
+
+```typescript
+const KAFKA_BROKER = process.env.KAFKA_BROKER;
+if (!KAFKA_BROKER) throw new Error('KAFKA_BROKER not set');
+```

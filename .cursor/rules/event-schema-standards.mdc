@@ -1,0 +1,51 @@
+---
+description: Kafka event schema standards using Zod
+globs: packages/schemas/events/*.ts
+alwaysApply: false
+---
+
+# Event Schema Standards
+
+## Schema Structure
+
+All events must extend `BaseEventSchema` from `@grounded/schemas`:
+
+```typescript
+// ✅ GOOD
+import { z } from 'zod';
+import { BaseEventSchema } from './base_event';
+
+export const ConversationInitiatedEventSchema = BaseEventSchema.extend({
+  eventType: z.literal('conversation_initiated'),
+  payload: z.object({
+    conversationId: z.string(),
+    orgId: z.string(),
+    userId: z.string(),
+    initialMessage: z.string(),
+  }),
+});
+
+export type ConversationInitiatedEvent = z.infer<typeof ConversationInitiatedEventSchema>;
+```
+
+## Event Naming
+
+- Use past tense: `conversation_initiated`, `message_received`, `assertion_made`
+- Use snake_case for event types
+- Use PascalCase for schema names: `ConversationInitiatedEventSchema`
+
+## Payload Validation
+
+Always validate events before producing to Kafka:
+
+```typescript
+// ✅ GOOD
+const event = ConversationInitiatedEventSchema.parse({
+  eventType: 'conversation_initiated',
+  eventId: generateId(),
+  timestamp: new Date().toISOString(),
+  payload: { conversationId, orgId, userId, initialMessage },
+});
+
+await producer.send({ value: JSON.stringify(event) });
+```

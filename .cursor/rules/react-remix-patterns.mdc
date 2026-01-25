@@ -1,0 +1,58 @@
+---
+description: React and Remix patterns for the customer UI
+globs: packages/ui/**/*.tsx
+alwaysApply: false
+---
+
+# React & Remix Patterns
+
+## Component Structure
+
+Use functional components with TypeScript:
+
+```tsx
+// ✅ GOOD
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
+  return (
+    <button onClick={onClick} className={`btn-${variant}`}>
+      {label}
+    </button>
+  );
+}
+```
+
+## Custom Hooks
+
+Extract reusable logic into custom hooks:
+
+```tsx
+// ✅ GOOD
+function useConversation(id: string) {
+  const [state, setState] = useState<ConversationState>();
+  
+  useEffect(() => {
+    // Subscribe to SSE updates
+    const eventSource = new EventSource(`/api/conversations/${id}/stream`);
+    // ...
+  }, [id]);
+  
+  return { state };
+}
+```
+
+## Remix Loaders
+
+Use loaders for server-side data fetching:
+
+```tsx
+export async function loader({ params }: LoaderFunctionArgs) {
+  const conversation = await fetchConversation(params.id);
+  return json({ conversation });
+}
+```
