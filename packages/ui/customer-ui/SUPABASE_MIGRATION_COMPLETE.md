@@ -195,8 +195,8 @@ packages/ui/customer-ui/
 # Ensure these are set in .env or local.env
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 DEFAULT_ORG_ID=org_123
-SUPABASE_URL=your-supabase-url
-SUPABASE_PUBLIC_KEY=your-anon-key
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### 2. Start Services
@@ -345,8 +345,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 ### "Missing Supabase environment variables"
 Check that `.env` or `local.env` has:
 ```env
-SUPABASE_URL=...
-SUPABASE_PUBLIC_KEY=...
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
 ```
 
 ### "GraphQL endpoint not configured"

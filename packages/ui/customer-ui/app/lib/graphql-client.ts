@@ -5,19 +5,20 @@ import { GraphQLClient } from 'graphql-request'
  * Provides a configured client instance for making GraphQL requests
  */
 
-// Get the GraphQL endpoint from environment variables
-// Default to localhost for development
-const GRAPHQL_ENDPOINT =
-  typeof process !== 'undefined'
-    ? process.env.GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
-    : 'http://localhost:8787/graphql'
-
 /**
  * Create a GraphQL client instance
- * This can be used in loaders and actions on the server side
+ * This should be used in loaders and actions on the server side
+ * 
+ * @param endpoint - Optional GraphQL endpoint (defaults to localhost for development)
+ * @param options - Optional configuration including headers
  */
-export function createGraphQLClient(options?: { headers?: Record<string, string> }) {
-  return new GraphQLClient(GRAPHQL_ENDPOINT, {
+export function createGraphQLClient(
+  endpoint?: string,
+  options?: { headers?: Record<string, string> }
+) {
+  const graphqlEndpoint = endpoint || 'http://localhost:8787/graphql'
+  
+  return new GraphQLClient(graphqlEndpoint, {
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,
@@ -26,7 +27,8 @@ export function createGraphQLClient(options?: { headers?: Record<string, string>
 }
 
 /**
- * Default client instance for basic queries
+ * Default client instance for basic queries (development only)
+ * For production, always pass the endpoint from context.env in loaders/actions
  */
 export const graphqlClient = createGraphQLClient()
 

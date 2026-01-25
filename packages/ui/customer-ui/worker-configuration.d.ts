@@ -13,8 +13,8 @@ declare namespace Cloudflare {
 		JWT_SECRET: string;
 		SUPABASE_POSTGRES_DB_PASSWORD: string;
 		SUPABASE_PRIVATE_API_KEY: string;
-		SUPABASE_URL: string;
-		SUPABASE_PUBLIC_KEY: string;
+		VITE_SUPABASE_URL: string;
+		VITE_SUPABASE_ANON_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}

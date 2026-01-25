@@ -38,8 +38,8 @@ Update `local.env` with your API endpoints:
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 
 # Supabase (for authentication)
-SUPABASE_URL=your-supabase-url
-SUPABASE_PUBLIC_KEY=your-supabase-anon-key
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 # Default organization for development
 DEFAULT_ORG_ID=org_123

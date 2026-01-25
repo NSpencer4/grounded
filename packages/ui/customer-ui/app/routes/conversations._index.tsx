@@ -20,10 +20,12 @@ interface LoaderData {
  * Loader: Fetch all conversations for the user
  */
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const graphqlClient = createGraphQLClient()
+  const env = context.cloudflare?.env as { GRAPHQL_ENDPOINT?: string; DEFAULT_ORG_ID?: string }
+  const endpoint = env?.GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
+  const graphqlClient = createGraphQLClient(endpoint)
 
   // In a real app, get these from session/auth
-  const orgId = context.env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = env?.DEFAULT_ORG_ID || 'org_123'
   const userId = 'user_456' // Would come from authenticated session
 
   try {
@@ -56,7 +58,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
  * Action: Create a new conversation
  */
 export async function action({ request, context }: ActionFunctionArgs) {
-  const graphqlClient = createGraphQLClient()
+  const env = context.cloudflare?.env as { GRAPHQL_ENDPOINT?: string }
+  const endpoint = env?.GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
+  const graphqlClient = createGraphQLClient(endpoint)
   const formData = await request.formData()
   const actionType = formData.get('_action')
 

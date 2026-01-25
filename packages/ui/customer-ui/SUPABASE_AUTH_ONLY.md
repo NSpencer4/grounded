@@ -278,8 +278,8 @@ Configure your Supabase project for **auth only**:
 
 ```env
 # .env or local.env
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_PUBLIC_KEY=your-anon-key
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 DEFAULT_ORG_ID=org_123
 ```
@@ -342,8 +342,8 @@ export const supabase = createClient(url, key, {
 
 Ensure these are set in your `.env` or `local.env`:
 ```env
-SUPABASE_URL=...
-SUPABASE_PUBLIC_KEY=...
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
 ```
 
 ### "User not found" after authentication

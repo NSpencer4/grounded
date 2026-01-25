@@ -260,8 +260,8 @@ GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 DEFAULT_ORG_ID=org_123
 
 # Supabase (auth only)
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_PUBLIC_KEY=your-anon-key
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Supabase Setup
