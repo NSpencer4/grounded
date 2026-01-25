@@ -29,10 +29,10 @@ npm run dev          # Start Remix dev server with Vite
 npm run build        # Build for production
 npm run serve        # Run production build
 
-# GraphQL API (from packages/server/apis/gateway-api)
-npm run dev          # Start dev server with hot reload (port 4000)
-npm run build        # Compile TypeScript
-npm run start        # Run compiled output
+# GraphQL Gateway API (from packages/server/apis/gateway-api)
+npm run dev          # Start Wrangler dev server (port 8787)
+npm run build        # Build for production (dry-run)
+npm run deploy       # Deploy to Cloudflare Workers
 npm run typecheck    # Type check without emitting
 ```
 
@@ -58,8 +58,10 @@ packages/
 │   ├── mcp/                       # MCP servers
 │   │   └── org-tools/              # Company Data Lambda integration tools
 │   └── apis/                      # API implementations
-│       ├── gateway-api/           # GraphQL API (Apollo Server v5)
-│       └── company-data-api/      # Node.js Lambda monolith (PostgreSQL)
+│       ├── gateway-api/           # GraphQL Gateway (GraphQL Yoga + CF Workers)
+│       │                          # Unified API for all services
+│       ├── organization-api/      # Organization data API (Node.js Lambda)
+│       └── company-data-api/      # Company data API (Node.js Lambda)
 ├── ui/
 │   └── customer-ui/               # Remix + React frontend (Cloudflare Workers)
 │       ├── app/                   # Application source
@@ -80,17 +82,41 @@ docs/                              # Architecture diagrams
 
 ## Architecture
 
+### GraphQL Gateway API
+
+The GraphQL Gateway serves as the unified API layer for all Grounded services, deployed on Cloudflare Workers:
+
+**Integrated Services:**
+- **Conversation Commands API** (Ruby on Rails) - Write operations for conversations and messages
+- **Conversation Updates API** (Ruby on Rails) - Read operations for conversations and messages
+- **Organization API** (Node.js Lambda) - All organization data (users, tickets, refunds, budgets, agents, etc.)
+
+**Key Features:**
+- Single GraphQL endpoint (`/graphql`) for all operations
+- Comprehensive type system covering all entities
+- Real-time SSE streaming via Durable Objects (`/sse/:conversationId`)
+- Edge deployment on Cloudflare's global network
+- GraphiQL playground for development
+
+**API Coverage:**
+- 25+ Query operations across conversations, organizations, users, representatives, customers, tickets, escalations, refunds, budgets, agents, decision rules, and performance metrics
+- 30+ Mutation operations for creating, updating, and deleting entities
+- Full pagination support (cursor-based and offset-based)
+- Filter capabilities (status, date ranges, etc.)
+
+See `packages/server/apis/gateway-api/API-REFERENCE.md` for complete documentation.
+
 ### CQRS Pattern
 
 **Command Side (conversation-commands Rails API):**
 
-- Receives conversation command requests from GraphQL
+- Receives conversation command requests from GraphQL Gateway
 - Hydrates and validates data
 - Produces events to `conversation-commands` Kafka topic
 
 **Query Side (conversation-updates Rails API):**
 
-- Serves conversation state for query requests via GraphQL
+- Serves conversation state for query requests via GraphQL Gateway
 - Read-only service (no Kafka consumer)
 - State is persisted by Responder Lambda
 
@@ -217,6 +243,13 @@ AWS resources defined in `terraform/`:
 
 ## Environment Variables
 
+**GraphQL Gateway API** (`packages/server/apis/gateway-api/wrangler.jsonc`):
+```
+CONVERSATION_COMMANDS_API_URL - Commands API endpoint (Ruby on Rails)
+CONVERSATION_UPDATES_API_URL  - Updates API endpoint (Ruby on Rails)
+ORGANIZATION_API_URL           - Organization API endpoint (Node.js Lambda)
+```
+
 **Frontend** (`packages/ui/customer-ui/.env`):
 ```
 GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
@@ -228,8 +261,18 @@ GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
 - `DYNAMO_TABLE_NAME` - DynamoDB table name
 - `AWS_REGION` - AWS region
 - `ANTHROPIC_API_KEY` - For AI agents
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` - PostgreSQL credentials (Organization API)
 
 ## Key Files
+
+**GraphQL Gateway API:**
+
+- `packages/server/apis/gateway-api/src/index.ts` - Cloudflare Worker entry point
+- `packages/server/apis/gateway-api/src/schema.ts` - GraphQL schema definitions (25+ queries, 30+ mutations)
+- `packages/server/apis/gateway-api/src/resolvers.ts` - Query/mutation resolvers
+- `packages/server/apis/gateway-api/src/durable-objects/conversation-stream.ts` - SSE streaming handler
+- `packages/server/apis/gateway-api/wrangler.jsonc` - Cloudflare Workers configuration
+- `packages/server/apis/gateway-api/API-REFERENCE.md` - Complete API documentation
 
 **Schemas:**
 
@@ -253,16 +296,18 @@ GRAPHQL_ENDPOINT=https://your-cf-worker.workers.dev/graphql
 - `packages/server/mcp/state-machine-query-tools/src/index.ts` - DynamoDB query tools
 - `packages/server/mcp/org-tools/` - Company Data Lambda integration tools (customer info, billing, orders)
 
+**APIs:**
+
+- `packages/server/apis/organization-api/src/router.ts` - Organization API routes (10+ resource types)
+- `packages/server/apis/organization-api/src/controllers/` - Resource controllers
+- `ruby-apis/conversation-commands/config/routes.rb` - Conversation write operations
+- `ruby-apis/conversation-updates/config/routes.rb` - Conversation read operations
+
 **Backend Utilities:**
 - `packages/server/shared/dynamo/index.ts` - DynamoDB document client wrapper
 - `packages/server/shared/postgres/index.ts` - PostgreSQL connection manager
 - `packages/server/shared/event-producer/index.ts` - Kafka producer lifecycle management
 - `packages/server/shared/secrets-manager/index.ts` - AWS Secrets Manager client
-
-**GraphQL API:**
-- `packages/server/apis/gateway-api/src/index.ts` - Apollo Server entry point
-- `packages/server/apis/gateway-api/src/schema.ts` - GraphQL type definitions
-- `packages/server/apis/gateway-api/src/resolvers.ts` - Query/mutation resolvers
 
 **Infrastructure:**
 - `terraform/*.tf` - AWS infrastructure definitions

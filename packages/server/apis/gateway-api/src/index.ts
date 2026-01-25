@@ -31,7 +31,7 @@ const yoga = createYoga<GraphQLContext>({
  * - /health → Health check endpoint
  */
 export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
 
     // CORS preflight
@@ -140,7 +140,7 @@ async function handleSSE(request: Request, env: Env): Promise<Response> {
 
   // Forward the request to the Durable Object
   const doUrl = new URL(request.url)
-  doUrl.pathname = '/' + pathParts.slice(1).join('/')
+  doUrl.pathname = `/${pathParts.slice(1).join('/')}`
 
   return stub.fetch(new Request(doUrl.toString(), request))
 }

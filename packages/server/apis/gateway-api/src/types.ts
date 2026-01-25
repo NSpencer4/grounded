@@ -8,6 +8,7 @@ declare global {
     // Environment variables
     CONVERSATION_COMMANDS_API_URL: string
     CONVERSATION_UPDATES_API_URL: string
+    ORGANIZATION_API_URL: string
   }
 }
 

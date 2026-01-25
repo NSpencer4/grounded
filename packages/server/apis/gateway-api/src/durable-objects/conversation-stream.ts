@@ -174,7 +174,9 @@ export class ConversationStream extends DurableObject<Env> {
    */
   private async sendToClient(clientId: string, event: ConversationEvent): Promise<void> {
     const client = this.clients.get(clientId)
-    if (!client) return
+    if (!client) {
+      return
+    }
 
     const sseMessage = this.formatSSEMessage(event)
     await client.writer.write(this.encoder.encode(sseMessage))

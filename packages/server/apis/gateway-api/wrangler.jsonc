@@ -11,7 +11,8 @@
    */
   "vars": {
     "CONVERSATION_COMMANDS_API_URL": "",
-    "CONVERSATION_UPDATES_API_URL": ""
+    "CONVERSATION_UPDATES_API_URL": "",
+    "ORGANIZATION_API_URL": ""
   },
   /**
    * Durable Objects for SSE streaming
