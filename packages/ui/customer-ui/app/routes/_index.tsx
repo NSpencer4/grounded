@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { GraphQLClient } from 'graphql-request'
+import { LIST_USERS } from '../lib/graphql/queries'
 import Auth from '../components/Auth'
 import ProfileSetup from '../components/ProfileSetup'
 import CustomerChat from '../components/CustomerChat'
 import RepChatView from '../components/RepChatView'
 import AdminLayout from '../components/AdminLayout'
 import type { User } from '@supabase/supabase-js'
+import type { User as GraphQLUser } from '../lib/graphql/types'
+
+/**
+ * Get GraphQL endpoint and orgId from environment
+ */
+const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
+const DEFAULT_ORG_ID = import.meta.env.VITE_DEFAULT_ORG_ID || 'org_123'
 
 /**
  * Legacy Profile Type (for existing components)
- * TODO: Migrate to GraphQL types from app/lib/graphql/types.ts
+ * TODO: Migrate components to use GraphQL types
  */
 interface Profile {
   id: string
@@ -29,7 +38,7 @@ export default function Index() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        loadProfile(session.user.id)
+        loadProfile(session.user.email!)
       } else {
         setLoading(false)
       }
@@ -40,7 +49,7 @@ export default function Index() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        loadProfile(session.user.id)
+        loadProfile(session.user.email!)
       } else {
         setProfile(null)
         setLoading(false)
@@ -50,28 +59,50 @@ export default function Index() {
     return () => subscription.unsubscribe()
   }, [])
 
-  async function loadProfile(userId: string) {
+  async function loadProfile(userEmail: string) {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle()
+      // Create GraphQL client
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-      if (error) {
-        throw error
+      // Fetch users from GraphQL and find by email
+      const response = await client.request<{ users: GraphQLUser[] }>(LIST_USERS, {
+        orgId: DEFAULT_ORG_ID,
+        limit: 100,
+        offset: 0,
+      })
+
+      // Find user by email
+      const graphqlUser = response.users.find((u) => u.email.toLowerCase() === userEmail.toLowerCase())
+
+      if (graphqlUser) {
+        // Convert GraphQL user to legacy profile format
+        const legacyProfile: Profile = {
+          id: graphqlUser.id,
+          user_id: graphqlUser.id,
+          email: graphqlUser.email,
+          name: graphqlUser.name,
+          role: graphqlUser.role.toLowerCase() as 'customer' | 'representative' | 'admin',
+          created_at: graphqlUser.createdAt,
+        }
+        setProfile(legacyProfile)
+      } else {
+        setProfile(null)
       }
-      setProfile(data)
     } catch (error) {
       console.error('Error loading profile:', error)
+      setProfile(null)
     } finally {
       setLoading(false)
     }
   }
 
   function handleProfileCreated() {
-    if (user) {
-      loadProfile(user.id)
+    if (user?.email) {
+      loadProfile(user.email)
     }
   }
 

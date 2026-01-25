@@ -136,7 +136,10 @@ export const resolvers = {
 
       try {
         const params = buildQueryParams({ limit, offset })
-        return await callAPI(`${url}/organizations/${orgId}/users?${params}`)
+        const response = (await callAPI(`${url}/organizations/${orgId}/users?${params}`)) as {
+          data: unknown[]
+        }
+        return response.data || []
       } catch (error) {
         console.error('Error fetching users:', error)
         return []
@@ -154,7 +157,10 @@ export const resolvers = {
       }
 
       try {
-        return await callAPI(`${url}/organizations/${orgId}/users/${id}`)
+        const response = (await callAPI(`${url}/organizations/${orgId}/users/${id}`)) as {
+          data: unknown
+        }
+        return response.data
       } catch (error) {
         console.error('Error fetching user:', error)
         return null
@@ -641,10 +647,11 @@ export const resolvers = {
         throw new Error('ORGANIZATION_API_URL not configured')
       }
 
-      return await callAPI(`${url}/organizations/${orgId}/users`, {
+      const response = (await callAPI(`${url}/organizations/${orgId}/users`, {
         method: 'POST',
         body: JSON.stringify(input),
-      })
+      })) as { data: unknown }
+      return response.data
     },
 
     updateUser: async (

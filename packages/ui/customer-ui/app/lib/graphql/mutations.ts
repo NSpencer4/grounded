@@ -51,14 +51,8 @@ export const UPDATE_CONVERSATION_STATUS = gql`
 // ==================== USERS ====================
 
 export const CREATE_USER = gql`
-  mutation CreateUser(
-    $orgId: ID!
-    $email: String!
-    $name: String!
-    $role: UserRole!
-    $metadata: UserMetadataInput
-  ) {
-    createUser(orgId: $orgId, email: $email, name: $name, role: $role, metadata: $metadata) {
+  mutation CreateUser($orgId: ID!, $input: CreateUserInput!) {
+    createUser(orgId: $orgId, input: $input) {
       id
       orgId
       email
@@ -71,24 +65,8 @@ export const CREATE_USER = gql`
 `
 
 export const UPDATE_USER = gql`
-  mutation UpdateUser(
-    $orgId: ID!
-    $id: ID!
-    $email: String
-    $name: String
-    $role: UserRole
-    $status: UserStatus
-    $metadata: UserMetadataInput
-  ) {
-    updateUser(
-      orgId: $orgId
-      id: $id
-      email: $email
-      name: $name
-      role: $role
-      status: $status
-      metadata: $metadata
-    ) {
+  mutation UpdateUser($orgId: ID!, $id: ID!, $input: UpdateUserInput!) {
+    updateUser(orgId: $orgId, id: $id, input: $input) {
       id
       email
       name

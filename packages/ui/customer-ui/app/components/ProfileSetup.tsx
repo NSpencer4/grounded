@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { UserCircle, LogOut } from 'lucide-react'
-
-/**
- * Legacy component using Supabase database
- * TODO: Migrate to use GraphQL CREATE_USER mutation
- * See: COMPONENTS_TO_MIGRATE.md for migration guide
- */
+import { GraphQLClient } from 'graphql-request'
+import { CREATE_USER } from '../lib/graphql/mutations'
+import { UserRole } from '../lib/graphql/types'
 
 interface ProfileSetupProps {
   onProfileCreated: () => void
 }
+
+// Get GraphQL endpoint and orgId from environment
+const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
+const DEFAULT_ORG_ID = import.meta.env.VITE_DEFAULT_ORG_ID || 'org_123'
 
 export default function ProfileSetup({ onProfileCreated }: ProfileSetupProps) {
   const [name, setName] = useState('')
@@ -44,32 +45,22 @@ export default function ProfileSetup({ onProfileCreated }: ProfileSetupProps) {
     setError('')
 
     try {
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .maybeSingle()
+      // Create a client-side GraphQL client
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-      if (existingProfile) {
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
-            id: userId,
-            name: name.trim(),
-          })
-          .eq('id', existingProfile.id)
-
-        if (updateError) throw updateError
-      } else {
-        const { error: createError } = await supabase.from('profiles').insert({
-          user_id: userId,
-          name: name.trim(),
+      // Use GraphQL mutation to create user
+      await client.request(CREATE_USER, {
+        orgId: DEFAULT_ORG_ID,
+        input: {
           email: email.toLowerCase(),
-          role: 'customer',
-        })
-
-        if (createError) throw createError
-      }
+          name: name.trim(),
+          role: UserRole.CUSTOMER,
+        },
+      })
 
       onProfileCreated()
     } catch (err: unknown) {
