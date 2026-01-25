@@ -1,0 +1,1443 @@
+{
+  "info": {
+    "_postman_id": "f7e8d9c6-5a4b-3c2d-1e9f-8a7b6c5d4e3f",
+    "name": "Organization API",
+    "description": "REST API for managing organization data - users, representatives, customers, tickets, escalations, refunds, budgets, agents, decision rules, and performance metrics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/health",
+              "host": ["{{organization_api_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Organizations",
+      "item": [
+        {
+          "name": "Get Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corp\",\n  \"slug\": \"acme-corp\",\n  \"settings\": {\n    \"timezone\": \"America/New_York\",\n    \"locale\": \"en-US\",\n    \"features\": [\"ai-agents\", \"analytics\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations"]
+            }
+          }
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corporation\",\n  \"settings\": {\n    \"timezone\": \"America/Los_Angeles\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/users?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "users"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/users/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "users", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "user_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"name\": \"John Doe\",\n  \"role\": \"AGENT\",\n  \"status\": \"ACTIVE\",\n  \"metadata\": {\n    \"phone\": \"+1234567890\",\n    \"department\": \"Customer Support\",\n    \"title\": \"Support Specialist\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/users",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "users"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\",\n  \"metadata\": {\n    \"title\": \"Senior Support Specialist\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/users/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "users", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "user_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/users/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "users", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "user_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Representatives",
+      "item": [
+        {
+          "name": "List Representatives",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Representative",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rep_789"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Representative",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_456\",\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"department\": \"Customer Support\",\n  \"status\": \"ACTIVE\",\n  \"availability\": {\n    \"isOnline\": true,\n    \"schedule\": {\n      \"monday\": [\n        { \"start\": \"09:00\", \"end\": \"17:00\" }\n      ],\n      \"tuesday\": [\n        { \"start\": \"09:00\", \"end\": \"17:00\" }\n      ],\n      \"wednesday\": [\n        { \"start\": \"09:00\", \"end\": \"17:00\" }\n      ],\n      \"thursday\": [\n        { \"start\": \"09:00\", \"end\": \"17:00\" }\n      ],\n      \"friday\": [\n        { \"start\": \"09:00\", \"end\": \"17:00\" }\n      ]\n    }\n  },\n  \"skills\": [\"billing\", \"technical-support\", \"refunds\"]\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Representative",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ON_BREAK\",\n  \"availability\": {\n    \"isOnline\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rep_789"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Representative",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rep_789"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Representative Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/representatives/:repId/performance?startDate=2026-01-01&endDate=2026-01-31",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "representatives", ":repId", "performance"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "repId",
+                  "value": "rep_789"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customer Profiles",
+      "item": [
+        {
+          "name": "List Customer Profiles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/customer-profiles?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "customer-profiles"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/customer-profiles/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "customer-profiles", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "cust_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Customer Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_789\",\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice@example.com\",\n  \"phone\": \"+1234567890\",\n  \"segment\": \"VIP\",\n  \"lifetimeValue\": 5000.00,\n  \"totalSpend\": 4500.00,\n  \"orderCount\": 25,\n  \"metadata\": {\n    \"accountAge\": 365,\n    \"lastPurchaseDate\": \"2026-01-20\",\n    \"averageOrderValue\": 180.00,\n    \"preferredContactMethod\": \"email\",\n    \"tags\": [\"loyal\", \"high-value\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/customer-profiles",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "customer-profiles"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Customer Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"segment\": \"PLATINUM\",\n  \"lifetimeValue\": 10000.00,\n  \"totalSpend\": 9500.00,\n  \"orderCount\": 50\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/customer-profiles/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "customer-profiles", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "cust_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/customer-profiles/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "customer-profiles", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "cust_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "List Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/tickets?status=OPEN&limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "tickets"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OPEN"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Ticket",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/tickets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "tickets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "ticket_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversationId\": \"conv_123\",\n  \"customerId\": \"cust_456\",\n  \"assignedTo\": \"rep_789\",\n  \"subject\": \"Issue with order #12345\",\n  \"description\": \"Customer reports item not received\",\n  \"status\": \"OPEN\",\n  \"priority\": \"HIGH\",\n  \"category\": \"shipping\",\n  \"tags\": [\"order-issue\", \"shipping-delay\"]\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/tickets",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "tickets"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Ticket",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\",\n  \"assignedTo\": \"rep_999\"\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/tickets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "tickets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "ticket_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Ticket",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/tickets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "tickets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "ticket_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Escalations",
+      "item": [
+        {
+          "name": "List Escalations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/escalations?status=PENDING&limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "escalations"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Escalation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/escalations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "escalations", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "esc_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Escalation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticketId\": \"ticket_456\",\n  \"conversationId\": \"conv_789\",\n  \"escalatedBy\": \"rep_111\",\n  \"escalatedTo\": \"manager_222\",\n  \"reason\": \"Customer requesting manager intervention for refund approval\",\n  \"status\": \"PENDING\"\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/escalations",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "escalations"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Escalation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\",\n  \"resolution\": \"Refund approved and processed\"\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/escalations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "escalations", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "esc_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Escalation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/escalations/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "escalations", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "esc_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refunds",
+      "item": [
+        {
+          "name": "List Refunds",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/refunds?status=PENDING&limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "refunds"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Refund",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/refunds/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "refunds", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "refund_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Refund",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticketId\": \"ticket_456\",\n  \"customerId\": \"cust_789\",\n  \"orderId\": \"order_12345\",\n  \"amount\": 49.99,\n  \"reason\": \"Product damaged during shipping\",\n  \"status\": \"PENDING\",\n  \"metadata\": {\n    \"paymentMethod\": \"credit_card\",\n    \"transactionId\": \"txn_98765\",\n    \"notes\": \"Customer provided photos of damage\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/refunds",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "refunds"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Refund",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"approvedBy\": \"manager_789\"\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/refunds/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "refunds", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "refund_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Refund",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/refunds/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "refunds", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "refund_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "List Budgets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/budgets?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "budgets"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Budget",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/budgets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "budgets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "budget_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Budget",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Q1 2026 Refunds Budget\",\n  \"category\": \"REFUNDS\",\n  \"amount\": 50000.00,\n  \"period\": \"QUARTERLY\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-03-31\",\n  \"alerts\": {\n    \"enabled\": true,\n    \"thresholds\": [50, 75, 90],\n    \"recipients\": [\"finance@example.com\", \"support-manager@example.com\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/budgets",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "budgets"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Budget",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 75000.00,\n  \"spent\": 15000.00\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/budgets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "budgets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "budget_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Budget",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/budgets/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "budgets", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "budget_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agent Configurations",
+      "item": [
+        {
+          "name": "List Agent Configurations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/agents?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "agents"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/agents/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "agents", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "agent_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Agent Configuration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Customer Service Agent\",\n  \"type\": \"CUSTOMER_SERVICE\",\n  \"status\": \"ACTIVE\",\n  \"config\": {\n    \"model\": \"claude-sonnet-4.5\",\n    \"temperature\": 0.7,\n    \"maxTokens\": 4096,\n    \"systemPrompt\": \"You are a helpful customer service agent...\",\n    \"tools\": [\"customer-lookup\", \"order-search\", \"refund-approval\"]\n  },\n  \"capabilities\": [\n    \"answer-questions\",\n    \"process-refunds\",\n    \"escalate-issues\"\n  ],\n  \"constraints\": {\n    \"maxRefundAmount\": 500.00,\n    \"maxDiscountPercent\": 20,\n    \"requiresApprovalAbove\": 500.00,\n    \"allowedActions\": [\"view\", \"create-ticket\", \"process-refund\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/agents",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "agents"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Agent Configuration",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"MAINTENANCE\",\n  \"constraints\": {\n    \"maxRefundAmount\": 1000.00\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/agents/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "agents", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "agent_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Agent Configuration",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/agents/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "agents", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "agent_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Decision Rules",
+      "item": [
+        {
+          "name": "List Decision Rules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/decision-rules?limit=20&offset=0",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "decision-rules"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Decision Rule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/decision-rules/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "decision-rules", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rule_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Decision Rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Auto-escalate VIP customers\",\n  \"description\": \"Automatically escalate issues from VIP customers\",\n  \"conditions\": [\n    {\n      \"field\": \"customer.segment\",\n      \"operator\": \"EQUALS\",\n      \"value\": \"VIP\"\n    },\n    {\n      \"field\": \"ticket.priority\",\n      \"operator\": \"IN\",\n      \"value\": \"HIGH,URGENT\"\n    }\n  ],\n  \"actions\": [\n    {\n      \"type\": \"ESCALATE\",\n      \"params\": {\n        \"escalateTo\": \"manager_123\"\n      }\n    },\n    {\n      \"type\": \"SET_PRIORITY\",\n      \"params\": {\n        \"priority\": \"URGENT\"\n      }\n    }\n  ],\n  \"priority\": 10,\n  \"status\": \"ACTIVE\",\n  \"metadata\": {\n    \"tags\": [\"vip\", \"auto-escalation\"],\n    \"category\": \"customer-service\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/decision-rules",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "decision-rules"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Decision Rule",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\",\n  \"priority\": 5\n}"
+            },
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/decision-rules/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "decision-rules", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rule_456"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Decision Rule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/decision-rules/:id",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "decision-rules", ":id"],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                },
+                {
+                  "key": "id",
+                  "value": "rule_456"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Performance Metrics",
+      "item": [
+        {
+          "name": "List Performance Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/performance-metrics?startDate=2026-01-01&endDate=2026-01-31",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "performance-metrics"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Team Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{organization_api_url}}/organizations/:orgId/team-performance?startDate=2026-01-01&endDate=2026-01-31",
+              "host": ["{{organization_api_url}}"],
+              "path": ["organizations", ":orgId", "team-performance"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "orgId",
+                  "value": "org_123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "organization_api_url",
+      "value": "http://localhost:9005/2015-03-31/functions/function/invocations",
+      "type": "default"
+    }
+  ]
+}

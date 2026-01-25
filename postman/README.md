@@ -33,6 +33,25 @@ Then open Postman and start making GraphQL queries to `http://localhost:8787/gra
 **Purpose:** Query-side API for reading conversation data (read operations)  
 **Base URL:** `http://localhost:3002` (docker-compose port mapping)
 
+### 4. Organization API
+**File:** `collections/organization-api.json`  
+**Purpose:** REST API for managing organization data (users, representatives, customers, tickets, escalations, refunds, budgets, agents, decision rules, performance metrics)  
+**Base URL:** `http://localhost:9005/2015-03-31/functions/function/invocations` (Lambda Runtime Interface Emulator)  
+**Requests:** 60+ REST endpoints covering 11 resource types  
+**Features:**
+- Complete CRUD operations for all resources
+- Pagination support (limit/offset)
+- Status filters for tickets, escalations, and refunds
+- Date range filters for performance metrics
+- Nested resource routes under organizations
+
+**Quick Start:**
+```bash
+# Start the Organization API Lambda locally
+cd packages/server/apis/organization-api
+npm run dev
+```
+
 ## Setup Instructions
 
 ### Import Collections
@@ -40,7 +59,8 @@ Then open Postman and start making GraphQL queries to `http://localhost:8787/gra
 1. Open Postman
 2. Click **Import** in the top-left corner
 3. Navigate to `postman/collections/` and select all JSON files:
-   - `graphql-gateway-api.json` ⭐ **Start here**
+   - `graphql-gateway-api.json` ⭐ **Start here for unified GraphQL**
+   - `organization-api.json` ⭐ **Direct REST API access**
    - `conversation-commands-service.json`
    - `conversation-updates-service.json`
 4. Import the environment file: `postman/environments/local.postman_environment.json`
@@ -55,6 +75,7 @@ The following environment variables are configured in the **Local** environment 
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
 | `graphql_gateway_url` | `http://localhost:8787` | GraphQL Gateway API (unified endpoint for all services) |
+| `organization_api_url` | `http://localhost:9005/2015-03-31/functions/function/invocations` | Organization API (direct REST access) |
 
 #### Ruby APIs
 | Variable | Default Value | Description |
@@ -115,11 +136,12 @@ docker-compose up -d --build
 
 ### Individual Service Access
 
-Once services are running, you can access these endpoints in your browser:
+Once services are running, you can access these endpoints:
 
 - **GraphQL Gateway API**: http://localhost:8787/graphql (GraphiQL playground)
-- **Kafka UI**: http://localhost:8080
-- **DynamoDB Admin**: http://localhost:8001
+- **Organization API**: http://localhost:9005/2015-03-31/functions/function/invocations (Lambda RIE)
+- **Kafka UI**: http://localhost:8080 (web interface)
+- **DynamoDB Admin**: http://localhost:8001 (web interface)
 - **Conversation Commands API**: http://localhost:3001
 - **Conversation Updates API**: http://localhost:3002
 
@@ -186,6 +208,42 @@ mutation {
 - GraphQL variables for dynamic values
 
 **Complete API documentation:** See `packages/server/apis/gateway-api/API-REFERENCE.md`
+
+---
+
+### Organization API (Direct REST Access)
+
+The Organization API provides RESTful endpoints for all organization data management.
+
+**Base URL:** `http://localhost:9005/2015-03-31/functions/function/invocations`
+
+**Resources:**
+- Organizations (4 endpoints: GET, POST, PATCH, DELETE)
+- Users (5 endpoints: list, get, create, update, delete)
+- Representatives (6 endpoints: list, get, create, update, delete, performance)
+- Customer Profiles (5 endpoints: list, get, create, update, delete)
+- Tickets (5 endpoints: list, get, create, update, delete)
+- Escalations (5 endpoints: list, get, create, update, delete)
+- Refunds (5 endpoints: list, get, create, update, delete)
+- Budgets (5 endpoints: list, get, create, update, delete)
+- Agent Configurations (5 endpoints: list, get, create, update, delete)
+- Decision Rules (5 endpoints: list, get, create, update, delete)
+- Performance Metrics (2 endpoints: org-wide, team)
+
+**Example Request:**
+```bash
+curl -X GET "http://localhost:9005/2015-03-31/functions/function/invocations/organizations/org_123/users?limit=20&offset=0"
+```
+
+**Features:**
+- RESTful endpoints following standard conventions
+- Pagination via `limit` and `offset` query parameters
+- Status filtering for tickets, escalations, and refunds
+- Date range filtering for performance metrics
+- Hierarchical resource structure under organizations
+
+**Lambda Invocation:**
+The Organization API runs as a Lambda function with the AWS Lambda Runtime Interface Emulator. All requests go through the `/2015-03-31/functions/function/invocations` path prefix.
 
 ---
 
