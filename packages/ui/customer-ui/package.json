@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "remix vite:dev",
-    "dev.wrangler": "wrangler dev",
     "build": "remix vite:build",
-    "serve": "remix-serve ./build/server/index.js",
+    "preview": "npm run build && wrangler dev",
+    "start": "wrangler dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint.fix": "eslint . --fix",
