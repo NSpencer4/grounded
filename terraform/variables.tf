@@ -2,17 +2,27 @@ variable "environment" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
+variable "aws_region" {
+  description = "AWS region for SES"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "aws_access_key" {
+  description = "AWS access key for Terraform"
+  type        = string
+  sensitive   = true
+}
+
+variable "aws_secret_key" {
+  description = "AWS secret key for Terraform"
+  type        = string
+  sensitive   = true
 }
 
 variable "vpc_name" {
   type = string
   default = "grounded-main-vpc"
-}
-
-variable "subnet_ids" {
-  type = list(string)
 }
 
 variable "actions_orchestrator_fn_name" {
@@ -46,11 +56,6 @@ variable "company_data_api_fn_name" {
 }
 
 # SES SMTP Configuration
-variable "aws_region" {
-  type    = string
-  default = "us-east-1"
-}
-
 variable "ses_domain" {
   type        = string
   description = "Domain name for SES (e.g., example.com)"
