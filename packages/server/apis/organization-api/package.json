@@ -16,6 +16,9 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/db/seed.ts",
+    "db:seed-comprehensive": "tsx scripts/seed-data.ts",
+    "db:clear": "tsx scripts/clear-data.ts",
+    "db:reset": "npm run db:clear && npm run db:seed-comprehensive",
     "test:endpoints": "tsx src/test-endpoints.ts"
   },
   "dependencies": {

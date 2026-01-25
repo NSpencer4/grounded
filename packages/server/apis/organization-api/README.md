@@ -9,16 +9,54 @@ Node.js Lambda serving organizational data via PostgreSQL. Provides REST endpoin
 npm install
 
 # Run database migrations
-npm run db:generate
 npm run db:migrate
 
-# Build
-npm run build
+# Seed database with mock data
+npm run db:seed-comprehensive
 
-# Deploy (via Terraform)
-cd ../../../terraform
-terraform apply
+# Start development server
+npm run dev
+
+# The API will be available at:
+# http://localhost:9005/2015-03-31/functions/function/invocations
 ```
+
+### First Time Setup
+
+1. **Ensure PostgreSQL is running:**
+   ```bash
+   # Via docker-compose (recommended)
+   docker-compose up postgres -d
+   
+   # Or check if running locally
+   pg_isready
+   ```
+
+2. **Set environment variables:**
+   ```bash
+   export DB_HOST=localhost
+   export DB_PORT=5432
+   export DB_USER=postgres
+   export DB_PASSWORD=postgres
+   export DB_NAME=grounded
+   ```
+
+3. **Run migrations:**
+   ```bash
+   npm run db:migrate
+   ```
+
+4. **Seed with mock data:**
+   ```bash
+   npm run db:seed-comprehensive
+   ```
+
+5. **Start the API:**
+   ```bash
+   npm run dev
+   ```
+
+You're ready! Test with Postman collection at `postman/collections/organization-api.json`
 
 ## API Endpoints
 
@@ -60,6 +98,63 @@ See the [`docs/`](./docs/) folder for detailed documentation:
 - **Validation:** Zod schemas
 - **Build:** esbuild
 
+## Database Management
+
+### Seed Scripts
+
+Comprehensive mock data for testing and development:
+
+```bash
+# Seed database with realistic mock data (60+ records)
+npm run db:seed-comprehensive
+
+# Clear all data from database
+npm run db:clear
+
+# Complete reset: clear + seed
+npm run db:reset
+```
+
+**What gets seeded:**
+- 2 Organizations (Acme Corp, TechStart Inc)
+- 12 Users (customers, representatives, admins)
+- 4 Representatives (with availability and ratings)
+- 5 Customer Profiles (various tiers: FREE, STARTER, PRO, ENTERPRISE)
+- 6 Tickets (different statuses and priorities)
+- 3 Escalations (pending, in-progress, resolved)
+- 4 Refunds (various amounts and statuses)
+- 4 Budgets (different types and periods)
+- 5 Agent Configurations (all agent types)
+- 5 Decision Rules (automation rules)
+- 5 Performance Metrics (daily, weekly, monthly)
+- 7 Team Performance Records (individual rep metrics)
+
+See `scripts/README.md` for detailed documentation.
+
+### Database Tools
+
+```bash
+# Generate migrations from schema changes
+npm run db:generate
+
+# Run pending migrations
+npm run db:migrate
+
+# Push schema changes (dev only)
+npm run db:push
+
+# Open Drizzle Studio (visual database browser)
+npm run db:studio
+```
+
+### Basic Seed
+
+Simple seed with minimal data:
+
+```bash
+npm run db:seed
+```
+
 ## Development
 
 ```bash
@@ -74,9 +169,48 @@ npm run format
 
 # Test endpoints (requires DB)
 npm run test:endpoints
+
+# Watch mode for development
+npm run dev
 ```
 
+## Scripts Reference
+
+| Script | Command | Description |
+|--------|---------|-------------|
+| **Development** | | |
+| Build | `npm run build` | Compile with esbuild |
+| Build ZIP | `npm run build:zip` | Create Lambda deployment package |
+| Dev Server | `npm run dev` | Start with hot reload |
+| Type Check | `npm run typecheck` | Run TypeScript compiler |
+| Lint | `npm run lint` | Run ESLint |
+| Lint Fix | `npm run lint:fix` | Auto-fix linting issues |
+| **Database** | | |
+| Generate Migration | `npm run db:generate` | Generate migration from schema |
+| Run Migrations | `npm run db:migrate` | Apply pending migrations |
+| Push Schema | `npm run db:push` | Push schema changes (dev) |
+| Drizzle Studio | `npm run db:studio` | Open visual database browser |
+| **Seeding** | | |
+| Basic Seed | `npm run db:seed` | Minimal seed data |
+| Full Seed | `npm run db:seed-comprehensive` | 60+ realistic records |
+| Clear Data | `npm run db:clear` | Remove all data |
+| Reset | `npm run db:reset` | Clear + comprehensive seed |
+| **Testing** | | |
+| Test Endpoints | `npm run test:endpoints` | Test API endpoints |
+
 ## Environment Variables
+
+**Local Development:**
+
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=grounded
+```
+
+**Production (AWS Lambda):**
 
 ```bash
 DATABASE_HOST=your-rds-endpoint.rds.amazonaws.com
@@ -86,7 +220,7 @@ DATABASE_USER=postgres
 DATABASE_PASSWORD=your-password
 ```
 
-Or use AWS Secrets Manager (production):
+Or use AWS Secrets Manager:
 ```bash
 DATABASE_SECRET_ARN=arn:aws:secretsmanager:...
 ```
