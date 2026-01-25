@@ -9,6 +9,7 @@ build
 
 # production
 /build
+production.tfvars
 
 # misc
 .idea

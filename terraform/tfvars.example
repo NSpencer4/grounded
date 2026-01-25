@@ -1,0 +1,55 @@
+# ============================================
+# SES SMTP Configuration
+# ============================================
+
+# Required: Your domain for sending emails
+ses_domain = "example.com"
+
+# Required: Default from email address
+ses_from_email = "noreply@example.com"
+
+# Optional: Test email for sandbox mode (needed before domain verification)
+# ses_test_email = "test@example.com"
+
+# Optional: Route53 Zone ID for automatic DNS record creation
+# Leave empty if you manage DNS elsewhere
+# ses_domain_route53_zone_id = "Z1234567890ABC"
+
+# Optional: Email for DMARC reports
+# ses_dmarc_email = "dmarc@example.com"
+
+# ============================================
+# Supabase Configuration
+# ============================================
+
+# Required: Get from Supabase Dashboard → Settings → API
+supabase_access_token = "your-supabase-access-token"
+supabase_project_ref  = "nhjjelcexbfumdqtueqt"
+supabase_url          = "https://nhjjelcexbfumdqtueqt.supabase.co"
+
+# Required: Get from Supabase Dashboard → Settings → API
+supabase_anon_key         = "your-supabase-anon-key"
+supabase_service_role_key = "your-supabase-service-role-key"
+supabase_jwt_secret       = "your-jwt-secret"
+
+# Required: Get from Supabase Dashboard → Settings → Database
+supabase_db_host     = "db.nhjjelcexbfumdqtueqt.supabase.co"
+supabase_db_password = "your-db-password"
+
+# Required: Your application URL
+supabase_site_url = "https://yourapp.com"
+
+# Allowed redirect URLs for OAuth
+supabase_redirect_urls = [
+  "https://yourapp.com/auth/callback",
+  "http://localhost:3000/auth/callback"
+]
+
+# Email Settings
+supabase_email_autoconfirm = false  # Set to true for development only
+supabase_email_sender_name = "Grounded"
+
+# Optional: Google OAuth (if using)
+# supabase_oauth_google_enabled   = true
+# supabase_oauth_google_client_id = "your-google-client-id"
+# supabase_oauth_google_secret    = "your-google-client-secret"
