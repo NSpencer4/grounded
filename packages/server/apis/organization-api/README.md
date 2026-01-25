@@ -39,6 +39,7 @@ npm run dev
    export DB_USER=postgres
    export DB_PASSWORD=postgres
    export DB_NAME=grounded
+   export JWT_SECRET=dev-secret-key-change-in-production
    ```
 
 3. **Run migrations:**
@@ -51,7 +52,13 @@ npm run dev
    npm run db:seed-comprehensive
    ```
 
-5. **Start the API:**
+5. **Generate a test JWT token:**
+   ```bash
+   npm run jwt:generate
+   ```
+   Copy the generated token for API requests.
+
+6. **Start the API:**
    ```bash
    npm run dev
    ```
@@ -77,6 +84,8 @@ You're ready! Test with Postman collection at `postman/collections/organization-
 - ✅ **Type-safe** - Zod validation + TypeScript
 - ✅ **Multi-tenant** - Organization-scoped data
 - ✅ **Validated** - Request/response validation
+- ✅ **Authenticated** - JWT-based authentication
+- ✅ **Authorized** - Organization-level access control
 - ✅ **Relations** - Drizzle ORM with foreign keys
 - ✅ **Production-ready** - AWS Lambda optimized
 
@@ -84,6 +93,7 @@ You're ready! Test with Postman collection at `postman/collections/organization-
 
 See the [`docs/`](./docs/) folder for detailed documentation:
 
+- **[JWT-AUTHENTICATION.md](./docs/JWT-AUTHENTICATION.md)** - Authentication & authorization
 - **[QUICKSTART.md](./docs/QUICKSTART.md)** - Get started quickly
 - **[API.md](./docs/API.md)** - Complete API reference
 - **[VALIDATION.md](./docs/VALIDATION.md)** - Request validation guide
@@ -195,6 +205,8 @@ npm run dev
 | Full Seed | `npm run db:seed-comprehensive` | 60+ realistic records |
 | Clear Data | `npm run db:clear` | Remove all data |
 | Reset | `npm run db:reset` | Clear + comprehensive seed |
+| **Authentication** | | |
+| Generate JWT | `npm run jwt:generate` | Create test JWT token |
 | **Testing** | | |
 | Test Endpoints | `npm run test:endpoints` | Test API endpoints |
 
@@ -203,26 +215,45 @@ npm run dev
 **Local Development:**
 
 ```bash
+# Database
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=grounded
+
+# JWT Authentication (required)
+JWT_SECRET=your-secret-key-here
+JWT_ISSUER=grounded-api
+JWT_AUDIENCE=grounded-services
+```
+
+**Generate a secure JWT secret:**
+
+```bash
+openssl rand -base64 32
 ```
 
 **Production (AWS Lambda):**
 
 ```bash
+# Database
 DATABASE_HOST=your-rds-endpoint.rds.amazonaws.com
 DATABASE_PORT=5432
 DATABASE_NAME=grounded
 DATABASE_USER=postgres
 DATABASE_PASSWORD=your-password
+
+# JWT Authentication
+JWT_SECRET=your-production-secret
+JWT_ISSUER=grounded-api
+JWT_AUDIENCE=grounded-services
 ```
 
 Or use AWS Secrets Manager:
 ```bash
 DATABASE_SECRET_ARN=arn:aws:secretsmanager:...
+JWT_SECRET_ARN=arn:aws:secretsmanager:...
 ```
 
 ## Architecture

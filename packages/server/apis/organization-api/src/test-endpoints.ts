@@ -1,10 +1,14 @@
 /**
  * Test script to verify all CRUD endpoints
  * Run with: tsx src/test-endpoints.ts
+ *
+ * Note: This bypasses JWT authentication for local testing.
+ * For testing with JWT, use Postman or generate tokens with npm run jwt:generate
  */
 import { getDb } from './db'
 import { matchRoute, executeHandler } from './router'
 import { RouteContext } from './types'
+import { AuthContext } from './middleware/auth'
 
 async function testEndpoints() {
   console.info('🧪 Testing Organization API Endpoints...\n')
@@ -17,8 +21,6 @@ async function testEndpoints() {
     database: process.env.DB_NAME || 'grounded',
   })
 
-  const ctx: RouteContext = { db }
-
   // Get seeded org ID
   const org = await db.query.organizations.findFirst()
   if (!org) {
@@ -28,6 +30,22 @@ async function testEndpoints() {
 
   const orgId = org.id
   console.info(`✅ Using organization: ${org.name} (${orgId})\n`)
+
+  // Create test auth context (bypassing JWT for local testing)
+  const testAuth: AuthContext = {
+    userId: 'test-user-123',
+    organizationId: orgId,
+    email: 'test@example.com',
+    name: 'Test User',
+    role: 'ADMIN',
+  }
+
+  const ctx: RouteContext = {
+    db,
+    auth: testAuth,
+    userId: testAuth.userId,
+    organizationId: testAuth.organizationId,
+  }
 
   // Test suite
   const tests = [

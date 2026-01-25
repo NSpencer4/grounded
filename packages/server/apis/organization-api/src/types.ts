@@ -1,7 +1,9 @@
 import { Database } from './db'
+import { AuthContext } from './middleware/auth'
 
 export interface RouteContext {
   db: Database
+  auth: AuthContext
   organizationId?: string
   userId?: string
 }

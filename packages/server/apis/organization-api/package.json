@@ -19,10 +19,13 @@
     "db:seed-comprehensive": "tsx scripts/seed-data.ts",
     "db:clear": "tsx scripts/clear-data.ts",
     "db:reset": "npm run db:clear && npm run db:seed-comprehensive",
+    "jwt:generate": "tsx scripts/generate-jwt.ts",
     "test:endpoints": "tsx src/test-endpoints.ts"
   },
   "dependencies": {
-    "@grounded/server-shared": "*"
+    "@grounded/server-shared": "*",
+    "@types/jsonwebtoken": "^9.0.10",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
     "drizzle-kit": "^0.30.5",

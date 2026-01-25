@@ -2,6 +2,7 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'a
 import { Database, getDb } from './db'
 import { matchRoute, executeHandler } from './router'
 import { RouteContext } from './types'
+import { authenticate, authorizeOrganization, AuthenticationError } from './middleware/auth'
 
 interface DbCredentials {
   host: string
@@ -106,14 +107,54 @@ export async function handler(
     })
   }
 
-  // Health check (no DB needed)
+  // Health check (no authentication or DB needed)
   if (route.handler === 'health') {
     return jsonResponse(200, {
       status: 'ok',
       timestamp: new Date().toISOString(),
       service: 'organization-api',
       version: '1.0.0',
+      authentication: 'enabled',
     })
+  }
+
+  // Authenticate request
+  let authContext
+  try {
+    const authHeader = event.headers?.authorization || event.headers?.Authorization
+    authContext = authenticate(authHeader)
+    console.log('Authenticated user:', authContext.userId, 'org:', authContext.organizationId)
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return jsonResponse(error.statusCode, {
+        error: error.code,
+        message: error.message,
+      })
+    }
+    console.error('Authentication error:', error)
+    return jsonResponse(401, {
+      error: 'AUTHENTICATION_FAILED',
+      message: 'Authentication failed',
+    })
+  }
+
+  // Authorize organization access (if route has orgId parameter)
+  if (route.params.orgId) {
+    try {
+      authorizeOrganization(authContext, route.params.orgId)
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        return jsonResponse(error.statusCode, {
+          error: error.code,
+          message: error.message,
+        })
+      }
+      console.error('Authorization error:', error)
+      return jsonResponse(403, {
+        error: 'AUTHORIZATION_FAILED',
+        message: 'Authorization failed',
+      })
+    }
   }
 
   // Get database connection
@@ -132,7 +173,12 @@ export async function handler(
   const body = parseBody(event.body)
   const query = parseQuery(event.queryStringParameters)
 
-  const ctx: RouteContext = { db }
+  const ctx: RouteContext = {
+    db,
+    auth: authContext,
+    userId: authContext.userId,
+    organizationId: authContext.organizationId,
+  }
 
   // Execute route handler
   try {
