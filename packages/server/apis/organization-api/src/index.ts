@@ -1,6 +1,7 @@
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'aws-lambda'
 import { Database, getDb } from './db'
-import { getUserById } from './routes/users'
+import { matchRoute, executeHandler } from './router'
+import { RouteContext } from './types'
 
 interface DbCredentials {
   host: string
@@ -44,33 +45,26 @@ function jsonResponse(
 }
 
 /**
- * Route matcher
+ * Parse request body
  */
-interface RouteMatch {
-  handler: string
-  params: Record<string, string>
+function parseBody(body: string | undefined): Record<string, unknown> | undefined {
+  if (!body) {
+    return undefined
+  }
+  try {
+    return JSON.parse(body) as Record<string, unknown>
+  } catch {
+    return undefined
+  }
 }
 
-function matchRoute(method: string, path: string): RouteMatch | null {
-  const routes: Array<{ method: string; pattern: RegExp; handler: string; paramNames: string[] }> =
-    [
-      { method: 'GET', pattern: /^\/users\/([^/]+)$/, handler: 'getUserById', paramNames: ['id'] },
-      { method: 'GET', pattern: /^\/health$/, handler: 'health', paramNames: [] },
-    ]
-
-  for (const route of routes) {
-    if (route.method !== method) continue
-    const match = path.match(route.pattern)
-    if (match) {
-      const params: Record<string, string> = {}
-      route.paramNames.forEach((name, index) => {
-        params[name] = match[index + 1]
-      })
-      return { handler: route.handler, params }
-    }
-  }
-
-  return null
+/**
+ * Parse query parameters
+ */
+function parseQuery(
+  queryStringParameters: Record<string, string | undefined> | undefined,
+): Record<string, string | undefined> {
+  return queryStringParameters || {}
 }
 
 /**
@@ -95,7 +89,7 @@ export async function handler(
       statusCode: 204,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Max-Age': '86400',
       },
@@ -108,12 +102,7 @@ export async function handler(
     return jsonResponse(404, {
       error: 'Not Found',
       message: `No route matches ${method} ${path}`,
-      availableRoutes: [
-        'GET /health',
-        'GET /users?orgId=:orgId',
-        'GET /users/:id',
-        'GET /users/:id/details',
-      ],
+      hint: 'Try GET /health or GET /organizations/:orgId/...',
     })
   }
 
@@ -123,6 +112,7 @@ export async function handler(
       status: 'ok',
       timestamp: new Date().toISOString(),
       service: 'organization-api',
+      version: '1.0.0',
     })
   }
 
@@ -132,24 +122,21 @@ export async function handler(
     db = await getDb(getDbCredentials())
   } catch (error) {
     console.error('Database connection error:', error)
-    return jsonResponse(500, { error: 'Database connection failed' })
+    return jsonResponse(500, {
+      error: 'Database connection failed',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    })
   }
 
-  const ctx = { db }
+  // Parse request body and query
+  const body = parseBody(event.body)
+  const query = parseQuery(event.queryStringParameters)
 
-  // Route handlers
+  const ctx: RouteContext = { db }
+
+  // Execute route handler
   try {
-    let result: { status: number; body: unknown }
-
-    switch (route.handler) {
-      case 'getUserById':
-        result = await getUserById(route.params.id, ctx)
-        break
-
-      default:
-        return jsonResponse(500, { error: 'Handler not implemented' })
-    }
-
+    const result = await executeHandler(route.handler, route.params, query, body, ctx)
     return jsonResponse(result.status, result.body)
   } catch (error) {
     console.error('Handler error:', error)
