@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "Conversation Updates Service",
+    "description": "Query endpoints for retrieving conversation data (read-only)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "Get Conversation by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{conversation_updates_base_url}}/conversations/:conversation_id",
+              "host": [
+                "{{conversation_updates_base_url}}"
+              ],
+              "path": [
+                "conversations",
+                ":conversation_id"
+              ],
+              "variable": [
+                {
+                  "key": "conversation_id",
+                  "value": "01JK7Z8M9N2P3Q4R5S6T7V8W9X",
+                  "description": "The conversation ID"
+                }
+              ]
+            },
+            "description": "Fetches a single conversation by ID, including its current state and metadata."
+          },
+          "response": []
+        },
+        {
+          "name": "List Conversations by Organization",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{conversation_updates_base_url}}/conversations?org_id={{org_id}}&limit=20",
+              "host": [
+                "{{conversation_updates_base_url}}"
+              ],
+              "path": [
+                "conversations"
+              ],
+              "query": [
+                {
+                  "key": "org_id",
+                  "value": "{{org_id}}",
+                  "description": "Organization ID to filter by"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Maximum number of conversations to return (default: 20)"
+                },
+                {
+                  "key": "last_evaluated_key",
+                  "value": "",
+                  "description": "Base64-encoded pagination key from previous response",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Lists conversations for a specific organization, sorted by newest first. Supports pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "List Conversations by User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{conversation_updates_base_url}}/conversations?user_id={{user_id}}&limit=20",
+              "host": [
+                "{{conversation_updates_base_url}}"
+              ],
+              "path": [
+                "conversations"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "{{user_id}}",
+                  "description": "User ID to filter by"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Maximum number of conversations to return (default: 20)"
+                },
+                {
+                  "key": "last_evaluated_key",
+                  "value": "",
+                  "description": "Base64-encoded pagination key from previous response",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Lists conversations for a specific user, sorted by newest first. Supports pagination."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Get Conversation Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{conversation_updates_base_url}}/conversations/:conversation_id/messages?limit=50",
+              "host": [
+                "{{conversation_updates_base_url}}"
+              ],
+              "path": [
+                "conversations",
+                ":conversation_id",
+                "messages"
+              ],
+              "variable": [
+                {
+                  "key": "conversation_id",
+                  "value": "01JK7Z8M9N2P3Q4R5S6T7V8W9X",
+                  "description": "The conversation ID"
+                }
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Maximum number of messages to return (default: 50)"
+                },
+                {
+                  "key": "last_evaluated_key",
+                  "value": "",
+                  "description": "Base64-encoded pagination key from previous response",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Fetches all messages for a conversation in chronological order (oldest first). Supports pagination."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{conversation_updates_base_url}}/up",
+          "host": [
+            "{{conversation_updates_base_url}}"
+          ],
+          "path": [
+            "up"
+          ]
+        },
+        "description": "Health check endpoint to verify the service is running."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "conversation_updates_base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ]
+}

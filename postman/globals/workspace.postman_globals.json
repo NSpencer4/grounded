@@ -1,0 +1,26 @@
+{
+  "id": "cf763299-21c1-46d7-a17c-29e08f17c46c",
+  "name": "Globals",
+  "values": [
+    {
+      "key": "conversation_updates_base_url",
+      "value": "http://localhost:3001",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "org_id",
+      "value": "org_123",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "user_id",
+      "value": "user_456",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "globals",
+  "_postman_exported_at": "2026-01-25T16:47:47.213Z"
+}

@@ -1,0 +1,114 @@
+{
+  "info": {
+    "_postman_id": "de810c7a-94d1-4038-8ef9-0b940aca0937",
+    "name": "Conversation Commands Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7696747"
+  },
+  "item": [
+    {
+      "name": "Create Conversation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"customer\": {\n        \"id\": \"57b9a008-c545-4227-965a-95e13f36c19e\"\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{conversation_commands_url}}/api/v1/conversations",
+          "host": [
+            "{{conversation_commands_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "conversations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"customer\": {\n        \"id\": \"57b9a008-c545-4227-965a-95e13f36c19e\"\n    },\n    \"message\": {\n        \"content\": \"Test\"\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{conversation_commands_url}}/api/v1/conversations/:conversationId/messages",
+          "host": [
+            "{{conversation_commands_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "conversations",
+            ":conversationId",
+            "messages"
+          ],
+          "variable": [
+            {
+              "key": "conversationId",
+              "value": "a76ff11a-9cc6-4b24-b1c5-65dfb13a8f73"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "conversation_commands_url",
+      "value": ""
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    },
+    {
+      "key": "jwt_secret",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

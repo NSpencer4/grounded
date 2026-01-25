@@ -1,0 +1,16 @@
+{
+  "workspace": {
+    "id": "d2dceb5b-3e78-49f4-b6b3-bc12a8a9cd5d"
+  },
+  "entities": {
+    "environments": [],
+    "flows": [],
+    "globals": [],
+    "mocks": [],
+    "specs": [],
+    "collections": [
+      "../postman/collections/conversation-commands-service.postman_collection.json",
+      "../postman/collections/conversation-updates-service.postman_collection.json"
+    ]
+  }
+}
