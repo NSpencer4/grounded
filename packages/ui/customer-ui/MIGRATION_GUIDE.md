@@ -74,8 +74,8 @@ app/routes/
 ```env
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 DEFAULT_ORG_ID=org_123
-VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_URL=your-supabase-url
+SUPABASE_PUBLIC_KEY=your-supabase-anon-key
 ```
 
 ### 4. Documentation

@@ -9,8 +9,8 @@ declare namespace Cloudflare {
 		VALUE_FROM_CLOUDFLARE: "Hello from Cloudflare";
 		REMIX_DEV_DEBUG: string;
 		NODE_ENV: string;
-		VITE_SUPABASE_URL: string;
-		VITE_SUPABASE_ANON_KEY: string;
+		SUPABASE_URL: string;
+		SUPABASE_PUBLIC_KEY: string;
 	}
 }
 interface Env extends Cloudflare.Env {}

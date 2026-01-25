@@ -5,10 +5,20 @@ import ProfileSetup from '../components/ProfileSetup'
 import CustomerChat from '../components/CustomerChat'
 import RepChatView from '../components/RepChatView'
 import AdminLayout from '../components/AdminLayout'
-import type { Database } from '../lib/database.types'
 import type { User } from '@supabase/supabase-js'
 
-type Profile = Database['public']['Tables']['profiles']['Row']
+/**
+ * Legacy Profile Type (for existing components)
+ * TODO: Migrate to GraphQL types from app/lib/graphql/types.ts
+ */
+interface Profile {
+  id: string
+  user_id: string
+  email: string
+  name: string
+  role: 'customer' | 'representative' | 'admin'
+  created_at: string
+}
 
 export default function Index() {
   const [user, setUser] = useState<User | null>(null)

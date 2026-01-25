@@ -38,8 +38,8 @@ Update `local.env` with your API endpoints:
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
 
 # Supabase (for authentication)
-VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_URL=your-supabase-url
+SUPABASE_PUBLIC_KEY=your-supabase-anon-key
 
 # Default organization for development
 DEFAULT_ORG_ID=org_123
@@ -168,7 +168,20 @@ SSE endpoint: `${GRAPHQL_ENDPOINT}/sse/:conversationId`
 
 ## Authentication
 
-Currently using Supabase for authentication. The GraphQL integration focuses on data operations, with Supabase handling user sessions.
+**Supabase is used for authentication ONLY.** All data operations use GraphQL.
+
+### Auth Operations (Supabase)
+- User sign up
+- User sign in/out
+- Session management
+- Token refresh
+
+### Data Operations (GraphQL)
+- All queries (conversations, users, tickets, etc.)
+- All mutations (create, update, delete)
+- Real-time updates via SSE
+
+See `SUPABASE_AUTH_ONLY.md` for complete auth-only configuration guide.
 
 ## Migration Notes
 

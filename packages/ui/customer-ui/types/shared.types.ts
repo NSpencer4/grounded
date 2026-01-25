@@ -1,5 +1,5 @@
 export type Env = {
-  VITE_SUPABASE_URL: string
-  VITE_SUPABASE_ANON_KEY: string
+  SUPABASE_URL: string
+  SUPABASE_PUBLIC_KEY: string
   NODE_ENV: string
 }

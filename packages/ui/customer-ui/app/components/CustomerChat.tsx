@@ -1,11 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { Send, MessageCircle, User, Menu, X, Plus, LogOut } from 'lucide-react'
-import type { Database } from '../lib/database.types'
 
-type Message = Database['public']['Tables']['messages']['Row']
-type Profile = Database['public']['Tables']['profiles']['Row']
-type Conversation = Database['public']['Tables']['conversations']['Row']
+/**
+ * Legacy Types (for Supabase database access)
+ * TODO: Migrate this component to use GraphQL routes
+ * See: COMPONENTS_TO_MIGRATE.md for migration guide
+ */
+type Message = {
+  id: string
+  conversation_id: string
+  sender_id: string
+  content: string
+  created_at: string
+}
+
+type Profile = {
+  id: string
+  user_id: string
+  email: string
+  name: string
+  role: 'customer' | 'representative' | 'admin'
+  created_at: string
+}
+
+type Conversation = {
+  id: string
+  customer_id: string
+  rep_id: string | null
+  status: 'active' | 'closed' | 'waiting'
+  created_at: string
+  updated_at: string
+}
 
 interface CustomerChatProps {
   profile: Profile

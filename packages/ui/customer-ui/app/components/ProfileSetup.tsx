@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { UserCircle, LogOut } from 'lucide-react'
 
+/**
+ * Legacy component using Supabase database
+ * TODO: Migrate to use GraphQL CREATE_USER mutation
+ * See: COMPONENTS_TO_MIGRATE.md for migration guide
+ */
+
 interface ProfileSetupProps {
   onProfileCreated: () => void
 }
