@@ -1,103 +1,10 @@
-# Supabase Auth Configuration with SES SMTP Integration
+# Supabase Auth Configuration
+# 
+# Note: The Supabase Terraform provider has limited support.
+# SMTP and some auth settings must be configured manually in the Supabase Dashboard.
 
 provider "supabase" {
   access_token = var.supabase_access_token
-}
-
-# Supabase Project Settings
-resource "supabase_settings" "auth" {
-  project_ref = var.supabase_project_ref
-
-  api = jsonencode({
-    db_schema            = "public"
-    db_extra_search_path = "public,extensions"
-    max_rows             = 1000
-  })
-
-  auth = jsonencode({
-    site_url = var.supabase_site_url
-    
-    # URI allow list for redirects
-    uri_allow_list = var.supabase_redirect_urls
-    
-    # JWT settings
-    jwt_exp = 3600
-    
-    # Security settings
-    security_update_password_require_reauthentication = true
-    security_refresh_token_reuse_interval             = 10
-    
-    # Email auth settings
-    enable_signup                = true
-    enable_email_signup          = true
-    enable_email_autoconfirm     = var.supabase_email_autoconfirm
-    mailer_autoconfirm           = var.supabase_email_autoconfirm
-    enable_email_confirmations   = !var.supabase_email_autoconfirm
-    
-    # Password requirements
-    password_min_length = 8
-    password_required_characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    
-    # Email templates
-    mailer_templates_invite_content = templatefile("${path.module}/supabase-email-templates/invite.html", {
-      site_url = var.supabase_site_url
-    })
-    mailer_templates_confirmation_content = templatefile("${path.module}/supabase-email-templates/confirmation.html", {
-      site_url = var.supabase_site_url
-    })
-    mailer_templates_magic_link_content = templatefile("${path.module}/supabase-email-templates/magic-link.html", {
-      site_url = var.supabase_site_url
-    })
-    mailer_templates_email_change_content = templatefile("${path.module}/supabase-email-templates/email-change.html", {
-      site_url = var.supabase_site_url
-    })
-    mailer_templates_recovery_content = templatefile("${path.module}/supabase-email-templates/recovery.html", {
-      site_url = var.supabase_site_url
-    })
-    
-    # OAuth providers (can be extended)
-    external_google_enabled  = var.supabase_oauth_google_enabled
-    external_google_client_id = var.supabase_oauth_google_client_id
-    external_google_secret    = var.supabase_oauth_google_secret
-    
-    # Rate limiting
-    rate_limit_email_sent    = 3600  # 1 hour
-    rate_limit_sms_sent      = 3600
-    rate_limit_verify_sent   = 3600
-    
-    # Session settings
-    sessions_timebox        = 86400  # 24 hours
-    sessions_inactivity_timeout = 3600  # 1 hour
-  })
-
-  # SMTP Configuration using SES
-  smtp = jsonencode({
-    enabled  = true
-    host     = "email-smtp.${var.aws_region}.amazonaws.com"
-    port     = 587
-    user     = aws_iam_access_key.smtp.id
-    pass     = aws_iam_access_key.smtp.ses_smtp_password_v4
-    admin_email = var.ses_from_email
-    sender_name = var.supabase_email_sender_name
-  })
-  
-  depends_on = [
-    aws_ses_domain_identity.main,
-    aws_iam_access_key.smtp
-  ]
-}
-
-# Database Secrets (for connection pooling if needed)
-resource "supabase_secret" "database_url" {
-  project_ref = var.supabase_project_ref
-  name        = "DATABASE_URL"
-  value       = "postgresql://${var.supabase_db_user}:${var.supabase_db_password}@${var.supabase_db_host}:5432/${var.supabase_db_name}"
-}
-
-resource "supabase_secret" "jwt_secret" {
-  project_ref = var.supabase_project_ref
-  name        = "JWT_SECRET"
-  value       = var.supabase_jwt_secret
 }
 
 # Store Supabase credentials in AWS Secrets Manager for Lambda access
@@ -121,7 +28,14 @@ resource "aws_secretsmanager_secret_version" "supabase_credentials" {
     supabase_service_key   = var.supabase_service_role_key
     supabase_jwt_secret    = var.supabase_jwt_secret
     supabase_project_ref   = var.supabase_project_ref
+    # SES SMTP credentials for reference
+    smtp_host              = "email-smtp.${var.aws_region}.amazonaws.com"
+    smtp_port              = 587
+    smtp_username          = aws_iam_access_key.smtp.id
+    smtp_password          = aws_iam_access_key.smtp.ses_smtp_password_v4
   })
+  
+  depends_on = [aws_iam_access_key.smtp]
 }
 
 # IAM Policy for Lambda functions to access Supabase credentials
@@ -161,11 +75,6 @@ output "supabase_anon_key" {
   description = "Supabase anonymous key"
   value       = var.supabase_anon_key
   sensitive   = true
-}
-
-output "supabase_smtp_configured" {
-  description = "Confirmation that SES SMTP is configured for Supabase"
-  value       = "SMTP configured: ${aws_iam_access_key.smtp.id}@email-smtp.${var.aws_region}.amazonaws.com"
 }
 
 output "supabase_credentials_secret_arn" {

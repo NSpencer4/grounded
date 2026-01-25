@@ -16,6 +16,32 @@
 	},
 	"assets": {
 		"directory": "./build/client"
+	},
+	/**
+	 * Environment-specific configurations
+	 * Deploy with: wrangler deploy --env production
+	 */
+	"env": {
+		"production": {
+			"name": "grounded-customer-ui",
+			"vars": {
+				"GRAPHQL_ENDPOINT": "https://your-graphql-worker.workers.dev/graphql",
+				"DEFAULT_ORG_ID": "org_123"
+			},
+			"routes": [
+				{
+					"pattern": "grounded.chasespencer.dev",
+					"custom_domain": true
+				}
+			]
+		},
+		"staging": {
+			"name": "grounded-customer-ui-staging",
+			"vars": {
+				"GRAPHQL_ENDPOINT": "https://your-staging-graphql-worker.workers.dev/graphql",
+				"DEFAULT_ORG_ID": "org_123"
+			}
+		}
 	}
 	/**
 	 * Smart Placement

@@ -13,6 +13,8 @@
     "lint.fix": "eslint . --fix",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "deploy": "npm run build && wrangler deploy",
+    "deploy:production": "npm run build && wrangler deploy --env production",
+    "deploy:staging": "npm run build && wrangler deploy --env staging",
     "typegen": "wrangler types"
   },
   "keywords": [],

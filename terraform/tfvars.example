@@ -37,11 +37,11 @@ supabase_db_host     = "db.nhjjelcexbfumdqtueqt.supabase.co"
 supabase_db_password = "your-db-password"
 
 # Required: Your application URL
-supabase_site_url = "https://yourapp.com"
+supabase_site_url = "http://localhost:8787"
 
 # Allowed redirect URLs for OAuth
 supabase_redirect_urls = [
-  "https://yourapp.com/auth/callback",
+  "http://localhost:8787/auth/callback",
   "http://localhost:3000/auth/callback"
 ]
 
@@ -53,3 +53,32 @@ supabase_email_sender_name = "Grounded"
 # supabase_oauth_google_enabled   = true
 # supabase_oauth_google_client_id = "your-google-client-id"
 # supabase_oauth_google_secret    = "your-google-client-secret"
+
+# ============================================
+# Cloudflare Configuration
+# ============================================
+
+# Required: Cloudflare API Token
+# Create at: https://dash.cloudflare.com/profile/api-tokens
+# Permissions needed: Workers Scripts:Edit, Account Settings:Read, Zone:Edit
+cloudflare_api_token = "your-cloudflare-api-token"
+
+# Required: Cloudflare Account ID
+# Find at: https://dash.cloudflare.com → Account Home → Account ID
+cloudflare_account_id = "your-cloudflare-account-id"
+
+# Required: Cloudflare Zone ID for chasespencer.dev
+# Find at: https://dash.cloudflare.com → select domain → Zone ID
+cloudflare_zone_id = "your-cloudflare-zone-id"
+
+# Optional: Custom domain for customer UI
+customer_ui_domain = "grounded.chasespencer.dev"
+
+# Optional: Worker name (must match wrangler.jsonc)
+customer_ui_worker_name = "grounded-customer-ui"
+
+# Required: GraphQL API endpoint (from gateway-api deployment)
+graphql_endpoint = "https://your-graphql-worker.workers.dev/graphql"
+
+# Optional: Default organization ID
+default_org_id = "org_123"

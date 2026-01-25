@@ -14,9 +14,16 @@ production.tfvars
 # misc
 .idea
 .terraform
+.terraform.lock.hcl
 .wrangler
 .DS_Store
 *.pem
+
+# terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
 
 # debug
 npm-debug.log*

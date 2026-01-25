@@ -235,25 +235,104 @@ export async function action({ request }: ActionFunctionArgs) {
 
 ## Deployment
 
-```bash
-# Build for production
-npm run build
+### Quick Deployment (Development)
 
-# Deploy to Cloudflare Workers
+```bash
+# Build and deploy to default environment
+npm run build
 npm run deploy
 ```
 
+### Production Deployment
+
+For complete production deployment with custom domain, see: **[../../terraform/CLOUDFLARE-DEPLOYMENT-GUIDE.md](../../terraform/CLOUDFLARE-DEPLOYMENT-GUIDE.md)**
+
+#### Quick Reference:
+
+```bash
+# 1. Update wrangler.jsonc production environment
+# Edit env.production.vars with your GraphQL endpoint
+
+# 2. Build and deploy worker
+npm run deploy:production
+
+# 3. Configure custom domain (from terraform directory)
+cd ../../terraform
+./deploy-customer-ui.sh production
+```
+
+#### Manual Terraform Setup:
+
+```bash
+# 1. Deploy worker
+npm run deploy:production
+
+# 2. Apply Terraform for custom domain
+cd ../../terraform
+terraform apply \
+  -target=cloudflare_record.customer_ui \
+  -target=cloudflare_worker_domain.customer_ui \
+  -var-file="production.tfvars"
+```
+
+### Staging Deployment
+
+```bash
+# Deploy to staging environment
+npm run deploy:staging
+```
+
+### Available Deploy Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run deploy` | Deploy to default environment |
+| `npm run deploy:production` | Deploy to production with custom domain |
+| `npm run deploy:staging` | Deploy to staging environment |
+| `npm run preview` | Build and run local preview |
+
 ## Environment Variables (Cloudflare Workers)
 
-Set in `wrangler.jsonc`:
+### Local Development
+
+Set in `local.env`:
+
+```env
+GRAPHQL_ENDPOINT=http://localhost:8787/graphql
+DEFAULT_ORG_ID=org_123
+```
+
+### Production
+
+Set in `wrangler.jsonc` under `env.production.vars`:
 
 ```jsonc
 {
-  "vars": {
-    "GRAPHQL_ENDPOINT": "https://your-gateway.workers.dev/graphql",
-    "DEFAULT_ORG_ID": "org_production"
+  "env": {
+    "production": {
+      "name": "grounded-customer-ui",
+      "vars": {
+        "GRAPHQL_ENDPOINT": "https://your-gateway.workers.dev/graphql",
+        "DEFAULT_ORG_ID": "org_production"
+      },
+      "routes": [
+        {
+          "pattern": "grounded.chasespencer.dev",
+          "custom_domain": true
+        }
+      ]
+    }
   }
 }
+```
+
+### Secrets (Not in wrangler.jsonc)
+
+For sensitive values, use Wrangler secrets:
+
+```bash
+wrangler secret put SUPABASE_ANON_KEY --env production
+wrangler secret put SUPABASE_URL --env production
 ```
 
 ## Testing

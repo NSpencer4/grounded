@@ -214,7 +214,7 @@ const { data: user, error: updateError } = await supabase.auth.admin.updateUserB
 // Invite user
 const { data: inviteData, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(
   'invited@example.com',
-  { redirectTo: 'https://yourapp.com/welcome' }
+  { redirectTo: 'http://localhost:8787/welcome' }
 );
 ```
 

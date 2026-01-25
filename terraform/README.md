@@ -4,7 +4,7 @@ Infrastructure-as-Code for the Grounded platform using Terraform.
 
 ## Overview
 
-This directory contains Terraform configuration for all AWS resources and Supabase auth infrastructure.
+This directory contains Terraform configuration for AWS resources, Cloudflare Workers deployment, and Supabase auth infrastructure.
 
 ## Architecture
 
@@ -78,12 +78,18 @@ For complete Supabase auth and SES SMTP setup:
 
 | File | Purpose |
 |------|---------|
-| `providers.tf` | AWS & Supabase provider configuration |
+| `providers.tf` | AWS, Cloudflare & Supabase provider configuration |
 | `variables.tf` | All input variables |
 | `production.tfvars` | Production environment values (gitignored) |
 | `networking.tf` | VPC, subnets, security groups |
 | `dynamo.tf` | DynamoDB table (single table design) |
 | `postgres.tf` | PostgreSQL RDS for company data |
+
+### Cloudflare Workers
+
+| File | Purpose |
+|------|---------|
+| `cloudflare-customer-ui.tf` | Customer UI Workers deployment & custom domain |
 
 ### Compute
 
@@ -122,7 +128,7 @@ For complete Supabase auth and SES SMTP setup:
 
 ### Setup Guides
 
-- 📘 **[QUICK-START-AUTH-SMTP.md](./QUICK-START-AUTH-SMTP.md)** - Complete auth + email setup
+- 📘 **[CLOUDFLARE-DEPLOYMENT-GUIDE.md](./CLOUDFLARE-DEPLOYMENT-GUIDE.md)** - Complete Cloudflare Workers deployment guide
 - 📘 **[SUPABASE-AUTH-SETUP.md](./SUPABASE-AUTH-SETUP.md)** - Detailed Supabase configuration
 - 📘 **[SES-SMTP-SETUP.md](./SES-SMTP-SETUP.md)** - Detailed SES SMTP setup (DELETED - reference inline docs)
 
@@ -136,6 +142,24 @@ For complete Supabase auth and SES SMTP setup:
 
 ```bash
 terraform apply -var-file="production.tfvars"
+```
+
+### Deploy Cloudflare Customer UI
+
+For complete Cloudflare deployment instructions, see:
+📘 **[CLOUDFLARE-DEPLOYMENT-GUIDE.md](./CLOUDFLARE-DEPLOYMENT-GUIDE.md)**
+
+Quick reference:
+
+```bash
+# 1. Deploy worker via Wrangler
+cd ../packages/ui/customer-ui
+npm run deploy:production
+
+# 2. Configure custom domain via Terraform
+cd ../../terraform
+terraform apply -target=cloudflare_record.customer_ui -var-file="production.tfvars"
+terraform apply -target=cloudflare_worker_domain.customer_ui -var-file="production.tfvars"
 ```
 
 ### Deploy Specific Resources
@@ -221,14 +245,23 @@ supabase_service_role_key = "eyJxxx"
 supabase_jwt_secret       = "xxx"
 supabase_db_host          = "db.xxx.supabase.co"
 supabase_db_password      = "xxx"
-supabase_site_url         = "https://yourapp.com"
+supabase_site_url         = "https://grounded.chasespencer.dev"
+
+# Cloudflare (for Workers deployment)
+cloudflare_api_token     = "your-cloudflare-api-token"
+cloudflare_account_id    = "your-cloudflare-account-id"
+cloudflare_zone_id       = "your-cloudflare-zone-id"
+customer_ui_domain       = "grounded.chasespencer.dev"
+graphql_endpoint         = "https://your-graphql-worker.workers.dev/graphql"
 ```
 
-See `ses-smtp.tfvars.example` for complete list.
+See `tfvars.example` for complete list.
 
 ### Sensitive Variables
 
 Never commit these to git:
+- `aws_access_key` / `aws_secret_key`
+- `cloudflare_api_token`
 - `supabase_access_token`
 - `supabase_anon_key`
 - `supabase_service_role_key`
@@ -244,6 +277,7 @@ Use `.gitignore` to exclude:
 
 | Output | Description |
 |--------|-------------|
+| `customer_ui_url` | Customer UI URL (Cloudflare) |
 | `ses_smtp_host` | SMTP server hostname |
 | `ses_smtp_username` | SMTP username (sensitive) |
 | `ses_smtp_password` | SMTP password (sensitive) |
@@ -264,6 +298,7 @@ Use `.gitignore` to exclude:
 | SES (10K emails) | $0 (free tier) |
 | Secrets Manager | $1 |
 | Supabase (Free) | $0 |
+| Cloudflare Workers (Free tier) | $0 |
 | **Total** | **~$31-38/month** |
 
 ### Production Setup
@@ -278,7 +313,8 @@ Use `.gitignore` to exclude:
 | App Runner (2 services) | $50 |
 | Secrets Manager | $2 |
 | Supabase (Pro) | $25 |
-| **Total** | **~$717-777/month** |
+| Cloudflare Workers (Paid) | $5 |
+| **Total** | **~$722-782/month** |
 
 ## Security Best Practices
 
@@ -409,9 +445,11 @@ When adding new infrastructure:
 ## Additional Resources
 
 - [AWS Terraform Provider Docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [Cloudflare Terraform Provider](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs)
 - [Supabase Terraform Provider](https://registry.terraform.io/providers/supabase/supabase/latest/docs)
 - [Terraform Best Practices](https://www.terraform-best-practices.com/)
 - [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
+- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
 
 ## Support
 

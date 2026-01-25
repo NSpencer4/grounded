@@ -64,12 +64,13 @@ variable "ses_domain" {
 variable "ses_from_email" {
   type        = string
   description = "Default from email address (e.g., noreply@example.com)"
+  default = "chase@thespencers.email"
 }
 
 variable "ses_test_email" {
   type        = string
   description = "Test email address for SES sandbox mode (optional)"
-  default     = ""
+  default     = "chase@thespencers.email"
 }
 
 variable "ses_domain_route53_zone_id" {
@@ -81,7 +82,7 @@ variable "ses_domain_route53_zone_id" {
 variable "ses_dmarc_email" {
   type        = string
   description = "Email address for DMARC reports"
-  default     = "dmarc@example.com"
+  default     = "chase@thespencers.email"
 }
 
 # Supabase Configuration
@@ -188,5 +189,45 @@ variable "supabase_db_password" {
   type        = string
   description = "Supabase database password"
   sensitive   = true
+}
+
+# Cloudflare Configuration
+variable "cloudflare_api_token" {
+  type        = string
+  description = "Cloudflare API token for Terraform"
+  sensitive   = true
+}
+
+variable "cloudflare_account_id" {
+  type        = string
+  description = "Cloudflare account ID"
+}
+
+variable "cloudflare_zone_id" {
+  type        = string
+  description = "Cloudflare zone ID for chasespencer.dev"
+}
+
+variable "customer_ui_domain" {
+  type        = string
+  description = "Domain name for customer UI"
+  default     = "grounded.chasespencer.dev"
+}
+
+variable "customer_ui_worker_name" {
+  type        = string
+  description = "Cloudflare Worker name for customer UI"
+  default     = "grounded-customer-ui"
+}
+
+variable "graphql_endpoint" {
+  type        = string
+  description = "GraphQL API endpoint URL"
+}
+
+variable "default_org_id" {
+  type        = string
+  description = "Default organization ID for the application"
+  default     = "org_123"
 }
 
