@@ -53,3 +53,5 @@ docker/localstack
 # postman envs
 production.postman_environment.json
 staging.postman_environment.json
+
+*.zip

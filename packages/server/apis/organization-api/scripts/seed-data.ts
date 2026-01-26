@@ -16,7 +16,7 @@
  *   DB_PASSWORD - PostgreSQL password
  *   DB_NAME - Database name (default: grounded)
  */
-
+import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import * as schema from '../src/db/schema'
@@ -65,6 +65,24 @@ async function seed() {
   console.log('🌱 Starting database seed...\n')
 
   try {
+    // ========================================================================
+    // Clear existing data (in reverse order of dependencies)
+    // ========================================================================
+    console.log('🧹 Clearing existing data...')
+    await db.delete(schema.teamPerformance)
+    await db.delete(schema.performanceMetrics)
+    await db.delete(schema.decisionRules)
+    await db.delete(schema.agentConfigurations)
+    await db.delete(schema.budgets)
+    await db.delete(schema.refunds)
+    await db.delete(schema.escalations)
+    await db.delete(schema.tickets)
+    await db.delete(schema.customerProfiles)
+    await db.delete(schema.representatives)
+    await db.delete(schema.users)
+    await db.delete(schema.organizations)
+    console.log('✅ Existing data cleared\n')
+
     // ========================================================================
     // Organizations
     // ========================================================================
@@ -379,13 +397,24 @@ async function seed() {
     console.log('🎫 Creating tickets...')
 
     const now = new Date()
+    // Generate valid UUIDs for conversation references
+    const conversationIds = {
+      conv1: crypto.randomUUID(),
+      conv2: crypto.randomUUID(),
+      conv3: crypto.randomUUID(),
+      conv4: crypto.randomUUID(),
+      conv5: crypto.randomUUID(),
+      conv6: crypto.randomUUID(),
+      conv7: crypto.randomUUID(),
+    }
+
     const tickets = await db
       .insert(schema.tickets)
       .values([
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1001',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W9X',
+          conversationId: conversationIds.conv1,
           customerId: acmeCustomers[0].id,
           assignedTo: acmeRep1.id,
           subject: 'API integration not working',
@@ -404,7 +433,7 @@ async function seed() {
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1002',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W8Y',
+          conversationId: conversationIds.conv2,
           customerId: acmeCustomers[1].id,
           assignedTo: acmeRep2.id,
           subject: 'Billing discrepancy on last invoice',
@@ -424,11 +453,12 @@ async function seed() {
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1003',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W7Z',
+          conversationId: conversationIds.conv3,
           customerId: acmeCustomers[2].id,
           assignedTo: acmeRep1.id,
           subject: 'Account suspended - payment overdue',
-          description: 'Customer account suspended due to payment failure. Need to update payment method.',
+          description:
+            'Customer account suspended due to payment failure. Need to update payment method.',
           status: 'WAITING',
           priority: 'HIGH',
           category: 'BILLING_PAYMENT',
@@ -441,7 +471,7 @@ async function seed() {
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1004',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W6A',
+          conversationId: conversationIds.conv4,
           customerId: acmeCustomers[3].id,
           assignedTo: null,
           subject: 'Feature request: Custom branding',
@@ -457,7 +487,7 @@ async function seed() {
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1005',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W5B',
+          conversationId: conversationIds.conv5,
           customerId: acmeCustomers[4].id,
           assignedTo: acmeRep3.id,
           subject: 'Chat widget not loading on mobile',
@@ -474,7 +504,7 @@ async function seed() {
         {
           organizationId: acme.id,
           ticketNumber: 'ACME-1006',
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W4C',
+          conversationId: conversationIds.conv6,
           customerId: acmeCustomers[0].id,
           assignedTo: acmeRep2.id,
           subject: 'Token usage exceeds quota',
@@ -505,7 +535,7 @@ async function seed() {
       .values([
         {
           organizationId: acme.id,
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W9X',
+          conversationId: conversationIds.conv1,
           customerId: acmeCustomers[0].id,
           assignedTo: acmeRep3.id,
           priority: 'HIGH',
@@ -521,7 +551,7 @@ async function seed() {
         },
         {
           organizationId: acme.id,
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W5B',
+          conversationId: conversationIds.conv5,
           customerId: acmeCustomers[4].id,
           assignedTo: acmeRep3.id,
           priority: 'URGENT',
@@ -536,13 +566,14 @@ async function seed() {
         },
         {
           organizationId: acme.id,
-          conversationId: '01JK7Z8M9N2P3Q4R5S6T7V8W3D',
+          conversationId: conversationIds.conv7,
           customerId: acmeCustomers[1].id,
           assignedTo: acmeRep2.id,
           priority: 'NORMAL',
           status: 'RESOLVED',
           reason: 'BILLING_DISPUTE',
-          issueDescription: 'Customer disputed invoice amount. Required manager approval for refund.',
+          issueDescription:
+            'Customer disputed invoice amount. Required manager approval for refund.',
           waitTime: 30,
           notes: 'Refund approved and processed. Customer satisfied.',
           aiSummary: 'Billing discrepancy resolved with $50 refund.',
@@ -727,7 +758,8 @@ async function seed() {
           organizationId: acme.id,
           name: 'Sentiment Analysis',
           type: 'SENTIMENT_ANALYSIS',
-          description: 'Real-time sentiment analysis of customer conversations to detect frustration or satisfaction.',
+          description:
+            'Real-time sentiment analysis of customer conversations to detect frustration or satisfaction.',
           enabled: true,
           status: 'ACTIVE',
           assertions: 3421,
@@ -744,7 +776,8 @@ async function seed() {
           organizationId: acme.id,
           name: 'Escalation Predictor',
           type: 'ESCALATION_PREDICTOR',
-          description: 'Predicts likelihood of escalation based on conversation patterns and customer history.',
+          description:
+            'Predicts likelihood of escalation based on conversation patterns and customer history.',
           enabled: true,
           status: 'ACTIVE',
           assertions: 645,
@@ -788,7 +821,8 @@ async function seed() {
         {
           organizationId: acme.id,
           name: 'Auto-resolve simple billing questions',
-          description: 'Automatically resolve straightforward billing inquiries without human intervention.',
+          description:
+            'Automatically resolve straightforward billing inquiries without human intervention.',
           enabled: true,
           priority: 10,
           conditions: {
@@ -826,7 +860,8 @@ async function seed() {
         {
           organizationId: acme.id,
           name: 'Auto-approve small refunds',
-          description: 'Automatically approve refund requests under $50 for good standing customers.',
+          description:
+            'Automatically approve refund requests under $50 for good standing customers.',
           enabled: true,
           priority: 50,
           conditions: {
@@ -912,7 +947,10 @@ async function seed() {
           organizationId: acme.id,
           period: 'DAY',
           periodStart: addDays(new Date(now.getFullYear(), now.getMonth(), now.getDate()), -1),
-          periodEnd: addDays(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59), -1),
+          periodEnd: addDays(
+            new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59),
+            -1,
+          ),
           totalChats: 189,
           activeChats: 0,
           avgResponseTime: 52,

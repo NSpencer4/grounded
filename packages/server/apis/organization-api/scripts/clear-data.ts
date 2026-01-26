@@ -19,9 +19,9 @@
  * ⚠️  WARNING: This will delete ALL data from the database!
  */
 
+import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
-import { sql } from 'drizzle-orm'
 import * as schema from '../src/db/schema'
 
 // ============================================================================
