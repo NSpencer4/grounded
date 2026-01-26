@@ -51,7 +51,7 @@ const { data, error } = await supabase.auth.signUp({
 // After sign up, create user profile via GraphQL
 const client = createGraphQLClient()
 await client.request(CREATE_USER, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
   email: data.user.email,
   name: 'User Name',
   role: 'CUSTOMER',
@@ -120,7 +120,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   })
   
   const data = await client.request(GET_USER, {
-    orgId: 'org_123',
+    orgId: 'acme-corp',
     id: userId,
   })
   
@@ -135,7 +135,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 const client = createGraphQLClient()
 
 const result = await client.request(CREATE_USER, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
   email: authUser.email,
   name: formData.name,
   role: 'CUSTOMER',
@@ -227,11 +227,11 @@ const client = createGraphQLClient({
 })
 
 const representatives = await client.request(LIST_REPRESENTATIVES, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
 })
 
 const conversations = await client.request(LIST_CONVERSATIONS, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
   limit: 50,
 })
 ```
@@ -281,7 +281,7 @@ Configure your Supabase project for **auth only**:
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
-DEFAULT_ORG_ID=org_123
+DEFAULT_ORG_ID=acme-corp
 ```
 
 ### 3. Wrangler Configuration
@@ -291,7 +291,7 @@ DEFAULT_ORG_ID=org_123
 {
   "vars": {
     "GRAPHQL_ENDPOINT": "http://localhost:8787/graphql",
-    "DEFAULT_ORG_ID": "org_123"
+    "DEFAULT_ORG_ID": "acme-corp"
   }
 }
 ```
@@ -355,7 +355,7 @@ const { data: authData } = await supabase.auth.signUp(credentials)
 
 // Create profile in your system via GraphQL
 await graphqlClient.request(CREATE_USER, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
   email: authData.user.email,
   name: name,
   role: 'CUSTOMER',
@@ -403,7 +403,7 @@ const client = createGraphQLClient({
 })
 
 const user = await client.request(GET_USER, {
-  orgId: 'org_123',
+  orgId: 'acme-corp',
   id: session.data.session?.user.id,
 })
 

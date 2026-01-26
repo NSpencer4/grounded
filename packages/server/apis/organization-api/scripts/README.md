@@ -153,7 +153,7 @@ npm run dev
 # Then use GraphQL queries
 curl -X POST http://localhost:8787/graphql \
   -H "Content-Type: application/json" \
-  -d '{"query": "{ organization(id: \"org_123\") { name slug } }"}'
+  -d '{"query": "{ organization(id: \"acme-corp\") { name slug } }"}'
 ```
 
 ## Database Management

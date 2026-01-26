@@ -87,8 +87,8 @@ services:
     image: localstack/localstack:latest
     container_name: grounded-aws-local
     ports:
-      - "4566:4566"            # LocalStack Gateway
-      - "4510-4559:4510-4559"  # External services port range
+      - "4566:4566" # LocalStack Gateway
+      - "4510-4559:4510-4559" # External services port range
     environment:
       - SERVICES=lambda,s3,iam # Lambda requirements
       - DEBUG=1
@@ -105,6 +105,7 @@ services:
       context: ./ruby-apis
       dockerfile: conversation-commands/Dockerfile
     container_name: grounded-commands-api
+    env_file: .env
     ports:
       - "3001:3000"
     environment:
@@ -124,6 +125,7 @@ services:
       context: ./ruby-apis
       dockerfile: conversation-updates/Dockerfile
     container_name: grounded-updates-api
+    env_file: .env
     ports:
       - "3002:3000"
     environment:
@@ -148,6 +150,7 @@ services:
       context: .
       dockerfile: ./packages/server/orchestrators/actions-orchestrator/Dockerfile
     container_name: grounded-actions-orchestrator
+    env_file: .env
     ports:
       - "9001:8080"
     environment:
@@ -168,6 +171,7 @@ services:
       context: .
       dockerfile: ./packages/server/orchestrators/conversation-responder/Dockerfile
     container_name: grounded-conversation-responder
+    env_file: .env
     ports:
       - "9002:8080"
     environment:
@@ -188,6 +192,7 @@ services:
       context: .
       dockerfile: ./packages/server/evaluators/customer-spend-agent/Dockerfile
     container_name: grounded-customer-spend-agent
+    env_file: .env
     ports:
       - "9003:8080"
     environment:
@@ -208,6 +213,7 @@ services:
       context: .
       dockerfile: ./packages/server/evaluators/response-recommendation-agent/Dockerfile
     container_name: grounded-response-recommendation-agent
+    env_file: .env
     ports:
       - "9004:8080"
     environment:
@@ -228,6 +234,7 @@ services:
       context: .
       dockerfile: ./packages/server/apis/organization-api/Dockerfile
     container_name: grounded-organization-api
+    env_file: .env
     ports:
       - "9005:8080"
     environment:
@@ -246,6 +253,24 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  # Gateway API - Cloudflare Worker (GraphQL & SSE)
+  gateway-api:
+    build:
+      context: .
+      dockerfile: ./packages/server/apis/gateway-api/Dockerfile
+    container_name: grounded-gateway-api
+    env_file: .env
+    ports:
+      - "8787:8787"
+    environment:
+      ORGANIZATION_API_URL: "http://organization-api:8080"
+      CONVERSATION_COMMANDS_API_URL: "http://conversation-commands-api:3000"
+      CONVERSATION_UPDATES_API_URL: "http://conversation-updates-api:3000"
+    depends_on:
+      - organization-api
+      - conversation-commands-api
+      - conversation-updates-api
 
 # Named volumes for persistent data
 volumes:

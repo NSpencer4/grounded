@@ -25,7 +25,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const graphqlClient = createGraphQLClient(endpoint)
 
   // In a real app, get these from session/auth
-  const orgId = env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = env?.DEFAULT_ORG_ID || 'acme-corp'
   const userId = 'user_456' // Would come from authenticated session
 
   try {

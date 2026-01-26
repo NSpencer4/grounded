@@ -12,7 +12,7 @@ import {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const graphqlClient = createGraphQLClient()
   const url = new URL(request.url)
-  const orgId = url.searchParams.get('orgId') || context.env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = url.searchParams.get('orgId') || context.env?.DEFAULT_ORG_ID || 'acme-corp'
 
   // Default to last 24 hours
   const endDate = new Date()

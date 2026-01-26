@@ -14,7 +14,7 @@ import type { User as GraphQLUser } from '../lib/graphql/types'
  * Get GraphQL endpoint and orgId from environment
  */
 const GRAPHQL_ENDPOINT = import.meta.env.VITE_GRAPHQL_ENDPOINT || 'http://localhost:8787/graphql'
-const DEFAULT_ORG_ID = import.meta.env.VITE_DEFAULT_ORG_ID || 'org_123'
+const DEFAULT_ORG_ID = import.meta.env.VITE_DEFAULT_ORG_ID || 'acme-corp'
 
 /**
  * Legacy Profile Type (for existing components)

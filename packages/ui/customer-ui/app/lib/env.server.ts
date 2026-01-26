@@ -21,10 +21,10 @@ export function getGraphQLEndpoint(env: CloudflareEnv): string {
 
 /**
  * Get the default organization ID from Cloudflare env
- * Falls back to 'org_123' for development
+ * Falls back to 'acme-corp' for development
  */
 export function getDefaultOrgId(env: CloudflareEnv): string {
-  return env.DEFAULT_ORG_ID || 'org_123'
+  return env.DEFAULT_ORG_ID || 'acme-corp'
 }
 
 /**

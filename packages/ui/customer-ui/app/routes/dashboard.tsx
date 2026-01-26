@@ -38,7 +38,7 @@ interface DashboardData {
 
 export async function loader({ context }: LoaderFunctionArgs) {
   const graphqlClient = createGraphQLClient()
-  const orgId = context.env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = context.env?.DEFAULT_ORG_ID || 'acme-corp'
 
   try {
     // Fetch budgets

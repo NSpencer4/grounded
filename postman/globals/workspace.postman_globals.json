@@ -4,7 +4,7 @@
   "values": [
     {
       "key": "org_id",
-      "value": "org_123",
+      "value": "acme-corp",
       "type": "default",
       "enabled": true
     },

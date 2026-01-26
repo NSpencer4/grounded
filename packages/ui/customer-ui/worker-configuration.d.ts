@@ -7,7 +7,7 @@ declare namespace Cloudflare {
 	}
 	interface Env {
 		GRAPHQL_ENDPOINT: "http://localhost:8787/graphql";
-		DEFAULT_ORG_ID: "org_123";
+		DEFAULT_ORG_ID: "acme-corp";
 		REMIX_DEV_DEBUG: string;
 		NODE_ENV: string;
 		JWT_SECRET: string;

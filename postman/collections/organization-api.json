@@ -1705,11 +1705,21 @@
       "id": "15855ef7-d80f-4fda-90c5-1d9aafb6653e"
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
   "event": [
     {
       "listen": "prerequest",
       "script": {
-        "id": "97ca212f-578f-4dac-9d58-4111bc9fddfa",
+        "id": "2b641f26-2290-4636-af04-51a8586f1777",
         "type": "text/javascript",
         "packages": {},
         "requests": {},
@@ -1835,7 +1845,7 @@
     {
       "listen": "test",
       "script": {
-        "id": "4d3b1ac9-540e-4e7d-9b79-606485263143",
+        "id": "f97f3dd4-efce-41c3-bcac-733eea6ea0d7",
         "type": "text/javascript",
         "packages": {},
         "requests": {},
@@ -1847,64 +1857,70 @@
   ],
   "variable": [
     {
-      "id": "a5e8e1be-51f3-4682-9d4b-4fffd276269b",
+      "id": "11f8661f-2e4b-41df-b51c-fe6e9c5f3d84",
       "key": "jwt_token",
       "value": "",
-      "description": "JWT token for authentication. Generate with: npm run jwt:generate --workspace=@grounded/organization-api"
+      "description": {
+        "content": "JWT token for authentication. Generate with: npm run jwt:generate --workspace=@grounded/organization-api",
+        "type": "text/plain"
+      }
     },
     {
-      "id": "b5b363a3-b166-4a30-9553-aa38403dccfd",
+      "id": "35af5771-3c02-4db8-8f27-ea2a11247e8f",
       "key": "orgId",
       "value": "acme-corp",
-      "description": "Organization ID or slug"
+      "description": {
+        "content": "Organization ID or slug",
+        "type": "text/plain"
+      }
     },
     {
-      "id": "8771a31f-062b-4f7c-be3d-c7fd982ba972",
+      "id": "67c61c38-1efd-416a-97a3-9597935f64c5",
       "key": "userId",
       "value": ""
     },
     {
-      "id": "a13fb982-f8a0-4862-a380-0afac57927b6",
+      "id": "04f3cdcf-1328-41db-aba4-66c9eb82b85b",
       "key": "repId",
       "value": ""
     },
     {
-      "id": "9592cf12-5d66-4d98-9818-b2e2a12e6d0f",
+      "id": "7cd2bf10-4b5f-419f-94ba-4347b6361a56",
       "key": "customerId",
       "value": ""
     },
     {
-      "id": "48efd004-072c-4c57-a5b9-0d5326ddaf03",
+      "id": "f6135ab3-4bb0-470b-9265-a6d1782ed01f",
       "key": "ticketId",
       "value": ""
     },
     {
-      "id": "92e82da5-0f40-464d-9cf3-8cb30b5bdced",
+      "id": "29c08379-7102-4aef-ab62-665b34e481e1",
       "key": "escalationId",
       "value": ""
     },
     {
-      "id": "f5f428c6-ba42-4cde-b434-d7c360a5c185",
+      "id": "e06c1d6e-3ea4-4201-9f6e-35ddd9b2c2e8",
       "key": "refundId",
       "value": ""
     },
     {
-      "id": "271d7996-9ab1-4f72-894a-a493465cbf82",
+      "id": "2ae4eaf0-ea32-45e1-bbef-0c3e77e81654",
       "key": "budgetId",
       "value": ""
     },
     {
-      "id": "be8bc9c1-9497-45f0-8aef-213568240b7a",
+      "id": "0591ecb5-3d92-435b-b66c-e46cddeb3c7a",
       "key": "agentId",
       "value": ""
     },
     {
-      "id": "665789b3-cc0a-4efd-9a28-a9afb34b1742",
+      "id": "b9ca025a-3e88-42f1-b310-5863a0d3859b",
       "key": "ruleId",
       "value": ""
     },
     {
-      "id": "d1dc64b4-0ac4-4e5c-91b4-4add6b169bda",
+      "id": "5019d768-134c-4b5c-8f46-f75de7086c6a",
       "key": "conversationId",
       "value": ""
     }

@@ -11,6 +11,7 @@
       "item": [
         {
           "name": "Health Check",
+          "id": "85dacf40-a591-4666-b173-2e9ca273ab59",
           "request": {
             "method": "POST",
             "header": [
@@ -20,26 +21,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query HealthCheck {\n  health {\n    status\n    timestamp\n  }\n}",
-                "variables": ""
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "2da84da8-0a67-4e0c-a60c-05f2e2e37453"
     },
     {
       "name": "Conversations",
       "item": [
         {
           "name": "Get Conversation",
+          "id": "7d1741a4-874d-4c9a-9ca6-0cb78249a894",
           "request": {
             "method": "POST",
             "header": [
@@ -49,21 +53,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetConversation($id: ID!) {\n  conversation(id: $id) {\n    id\n    orgId\n    userId\n    status\n    messages {\n      id\n      role\n      content\n      timestamp\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"id\": \"conv_123\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "List Conversations",
+          "id": "b88a798f-7aca-43ee-80c0-5e63b4190c28",
           "request": {
             "method": "POST",
             "header": [
@@ -73,21 +79,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListConversations($orgId: ID!, $limit: Int, $cursor: String) {\n  conversations(orgId: $orgId, limit: $limit, cursor: $cursor) {\n    edges {\n      node {\n        id\n        orgId\n        userId\n        status\n        createdAt\n        updatedAt\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Conversation Messages",
+          "id": "71863561-58a1-4671-af78-47f4832475f8",
           "request": {
             "method": "POST",
             "header": [
@@ -97,21 +105,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetMessages($conversationId: ID!) {\n  conversationMessages(conversationId: $conversationId) {\n    id\n    conversationId\n    role\n    content\n    timestamp\n  }\n}",
-                "variables": "{\n  \"conversationId\": \"conv_123\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Conversation",
+          "id": "aa9084f9-573a-40dd-9933-bbe807ee3023",
           "request": {
             "method": "POST",
             "header": [
@@ -121,21 +131,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateConversation($orgId: ID!, $userId: ID!, $initialMessage: String!) {\n  createConversation(orgId: $orgId, userId: $userId, initialMessage: $initialMessage) {\n    id\n    orgId\n    userId\n    status\n    messages {\n      id\n      role\n      content\n      timestamp\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"userId\": \"user_456\",\n  \"initialMessage\": \"Hello, I need help with my order\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Send Message",
+          "id": "ebfc6fd6-8101-4632-a6a9-f59b64b93977",
           "request": {
             "method": "POST",
             "header": [
@@ -145,26 +157,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation SendMessage($conversationId: ID!, $content: String!) {\n  sendMessage(conversationId: $conversationId, content: $content) {\n    id\n    conversationId\n    role\n    content\n    timestamp\n  }\n}",
-                "variables": "{\n  \"conversationId\": \"conv_123\",\n  \"content\": \"I'm still waiting for a response\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "fa63ca99-5918-4fc0-95e2-daef266e3497"
     },
     {
       "name": "Organizations",
       "item": [
         {
           "name": "Get Organization",
+          "id": "b1fe5cbc-bbfe-4959-8dcf-1710d4743aca",
           "request": {
             "method": "POST",
             "header": [
@@ -174,21 +189,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetOrganization($id: ID!) {\n  organization(id: $id) {\n    id\n    name\n    slug\n    settings {\n      timezone\n      locale\n      features\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"id\": \"org_123\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Organization",
+          "id": "19ddd45b-165f-4ef9-9d4f-2975eee0a684",
           "request": {
             "method": "POST",
             "header": [
@@ -198,21 +215,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateOrganization($input: CreateOrganizationInput!) {\n  createOrganization(input: $input) {\n    id\n    name\n    slug\n    settings {\n      timezone\n      locale\n      features\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"input\": {\n    \"name\": \"Acme Corp\",\n    \"slug\": \"acme-corp\",\n    \"settings\": {\n      \"timezone\": \"America/New_York\",\n      \"locale\": \"en-US\",\n      \"features\": [\"ai-agents\", \"analytics\"]\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Organization",
+          "id": "5a970131-f08a-4381-ba06-cae9c283f76c",
           "request": {
             "method": "POST",
             "header": [
@@ -222,21 +241,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateOrganization($id: ID!, $input: UpdateOrganizationInput!) {\n  updateOrganization(id: $id, input: $input) {\n    id\n    name\n    slug\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"id\": \"org_123\",\n  \"input\": {\n    \"name\": \"Acme Corporation\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Organization",
+          "id": "deaa0c1e-89f6-4025-81ab-ad7eee39fd23",
           "request": {
             "method": "POST",
             "header": [
@@ -246,26 +267,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteOrganization($id: ID!) {\n  deleteOrganization(id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"id\": \"org_123\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "001659ac-1a4d-4f09-9a31-31c132d7053c"
     },
     {
       "name": "Users",
       "item": [
         {
           "name": "List Users",
+          "id": "68443378-4054-4191-98b3-cfd81e05dbae",
           "request": {
             "method": "POST",
             "header": [
@@ -275,21 +299,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListUsers($orgId: ID!, $limit: Int, $offset: Int) {\n  users(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    email\n    name\n    role\n    status\n    metadata {\n      phone\n      department\n      title\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get User",
+          "id": "f9c8dcc5-e96d-4f93-a93b-716ce3717b91",
           "request": {
             "method": "POST",
             "header": [
@@ -299,21 +325,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetUser($orgId: ID!, $id: ID!) {\n  user(orgId: $orgId, id: $id) {\n    id\n    email\n    name\n    role\n    status\n    metadata {\n      phone\n      department\n      title\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"user_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create User",
+          "id": "ea72a87b-2dec-46c6-bc3d-f73cb61f6a7e",
           "request": {
             "method": "POST",
             "header": [
@@ -323,21 +351,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateUser($orgId: ID!, $input: CreateUserInput!) {\n  createUser(orgId: $orgId, input: $input) {\n    id\n    email\n    name\n    role\n    status\n    metadata {\n      phone\n      department\n      title\n    }\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"email\": \"john@example.com\",\n    \"name\": \"John Doe\",\n    \"role\": \"AGENT\",\n    \"status\": \"ACTIVE\",\n    \"metadata\": {\n      \"phone\": \"+1234567890\",\n      \"department\": \"Customer Support\",\n      \"title\": \"Support Specialist\"\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update User",
+          "id": "1ae7e2b4-066a-4fbd-a559-301ddb652dbb",
           "request": {
             "method": "POST",
             "header": [
@@ -347,21 +377,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateUser($orgId: ID!, $id: ID!, $input: UpdateUserInput!) {\n  updateUser(orgId: $orgId, id: $id, input: $input) {\n    id\n    email\n    name\n    role\n    status\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"user_456\",\n  \"input\": {\n    \"status\": \"INACTIVE\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete User",
+          "id": "9bd7b7f7-7ab2-4f00-9124-df87b367bfcc",
           "request": {
             "method": "POST",
             "header": [
@@ -371,26 +403,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteUser($orgId: ID!, $id: ID!) {\n  deleteUser(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"user_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "da3f8835-7b34-4e78-9367-d41db0e35387"
     },
     {
       "name": "Representatives",
       "item": [
         {
           "name": "List Representatives",
+          "id": "feb81829-e99e-4173-be08-4716dcba9517",
           "request": {
             "method": "POST",
             "header": [
@@ -400,21 +435,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListRepresentatives($orgId: ID!, $limit: Int, $offset: Int) {\n  representatives(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    userId\n    name\n    email\n    department\n    status\n    availability {\n      isOnline\n      lastActive\n    }\n    skills\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Representative",
+          "id": "5d96a851-e64d-411a-b401-8cbfedf91e09",
           "request": {
             "method": "POST",
             "header": [
@@ -424,21 +461,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetRepresentative($orgId: ID!, $id: ID!) {\n  representative(orgId: $orgId, id: $id) {\n    id\n    name\n    email\n    department\n    status\n    availability {\n      isOnline\n      lastActive\n      schedule {\n        monday {\n          start\n          end\n        }\n        tuesday {\n          start\n          end\n        }\n      }\n    }\n    skills\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rep_789\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Representative Performance",
+          "id": "8fcd45f9-0c3f-4fe2-9d61-829a0203a3bf",
           "request": {
             "method": "POST",
             "header": [
@@ -448,21 +487,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetRepPerformance($orgId: ID!, $repId: ID!, $startDate: String, $endDate: String) {\n  representativePerformance(\n    orgId: $orgId\n    repId: $repId\n    startDate: $startDate\n    endDate: $endDate\n  ) {\n    id\n    period\n    metrics {\n      totalConversations\n      resolvedConversations\n      averageResponseTime\n      averageResolutionTime\n      customerSatisfactionScore\n      firstContactResolutionRate\n      escalationRate\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"repId\": \"rep_789\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-01-31\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Representative",
+          "id": "b9f4a7cb-2c02-429a-abb3-0a41c2e3c3a7",
           "request": {
             "method": "POST",
             "header": [
@@ -472,21 +513,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateRepresentative($orgId: ID!, $input: CreateRepresentativeInput!) {\n  createRepresentative(orgId: $orgId, input: $input) {\n    id\n    name\n    email\n    department\n    status\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"userId\": \"user_456\",\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@example.com\",\n    \"department\": \"Customer Support\",\n    \"status\": \"ACTIVE\",\n    \"availability\": {\n      \"isOnline\": true,\n      \"schedule\": {\n        \"monday\": [\n          { \"start\": \"09:00\", \"end\": \"17:00\" }\n        ]\n      }\n    },\n    \"skills\": [\"billing\", \"technical-support\", \"refunds\"]\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Representative",
+          "id": "28b20fdf-3ba1-43f6-a25e-6e6218c2bbd9",
           "request": {
             "method": "POST",
             "header": [
@@ -496,21 +539,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateRepresentative($orgId: ID!, $id: ID!, $input: UpdateRepresentativeInput!) {\n  updateRepresentative(orgId: $orgId, id: $id, input: $input) {\n    id\n    name\n    status\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rep_789\",\n  \"input\": {\n    \"status\": \"ON_BREAK\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Representative",
+          "id": "cbc3beaa-309b-4bf0-a746-1c5dbd76167c",
           "request": {
             "method": "POST",
             "header": [
@@ -520,26 +565,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteRepresentative($orgId: ID!, $id: ID!) {\n  deleteRepresentative(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rep_789\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "6a5bf26b-d378-4b4d-839f-0417a143de92"
     },
     {
       "name": "Customer Profiles",
       "item": [
         {
           "name": "List Customer Profiles",
+          "id": "748f5319-f85b-4285-9cc8-04f9f745c175",
           "request": {
             "method": "POST",
             "header": [
@@ -549,21 +597,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListCustomerProfiles($orgId: ID!, $limit: Int, $offset: Int) {\n  customerProfiles(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    userId\n    name\n    email\n    phone\n    segment\n    lifetimeValue\n    totalSpend\n    orderCount\n    metadata {\n      accountAge\n      lastPurchaseDate\n      averageOrderValue\n      preferredContactMethod\n      tags\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Customer Profile",
+          "id": "2105fb63-5639-42e2-a46e-73e9bb518880",
           "request": {
             "method": "POST",
             "header": [
@@ -573,21 +623,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetCustomerProfile($orgId: ID!, $id: ID!) {\n  customerProfile(orgId: $orgId, id: $id) {\n    id\n    name\n    email\n    phone\n    segment\n    lifetimeValue\n    totalSpend\n    orderCount\n    metadata {\n      accountAge\n      lastPurchaseDate\n      averageOrderValue\n      tags\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"cust_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Customer Profile",
+          "id": "07e0c900-b10e-4f9d-ac89-d4f3daf0e22f",
           "request": {
             "method": "POST",
             "header": [
@@ -597,21 +649,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateCustomerProfile($orgId: ID!, $input: CreateCustomerProfileInput!) {\n  createCustomerProfile(orgId: $orgId, input: $input) {\n    id\n    name\n    email\n    segment\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"userId\": \"user_789\",\n    \"name\": \"Alice Johnson\",\n    \"email\": \"alice@example.com\",\n    \"phone\": \"+1234567890\",\n    \"segment\": \"VIP\",\n    \"lifetimeValue\": 5000.00,\n    \"totalSpend\": 4500.00,\n    \"orderCount\": 25,\n    \"metadata\": {\n      \"accountAge\": 365,\n      \"lastPurchaseDate\": \"2026-01-20\",\n      \"averageOrderValue\": 180.00,\n      \"preferredContactMethod\": \"email\",\n      \"tags\": [\"loyal\", \"high-value\"]\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Customer Profile",
+          "id": "f21f9be9-72ad-42ee-a5ca-87d703099a59",
           "request": {
             "method": "POST",
             "header": [
@@ -621,21 +675,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateCustomerProfile($orgId: ID!, $id: ID!, $input: UpdateCustomerProfileInput!) {\n  updateCustomerProfile(orgId: $orgId, id: $id, input: $input) {\n    id\n    name\n    segment\n    lifetimeValue\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"cust_456\",\n  \"input\": {\n    \"segment\": \"PLATINUM\",\n    \"lifetimeValue\": 10000.00\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Customer Profile",
+          "id": "fe57f0f2-2a2f-424e-bbd9-d2097ef826b0",
           "request": {
             "method": "POST",
             "header": [
@@ -645,26 +701,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteCustomerProfile($orgId: ID!, $id: ID!) {\n  deleteCustomerProfile(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"cust_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "2a7e483b-6be7-40d6-8a64-3723ea357b73"
     },
     {
       "name": "Tickets",
       "item": [
         {
           "name": "List Tickets",
+          "id": "c4931daa-ec67-4bbc-99cd-8245add06b9a",
           "request": {
             "method": "POST",
             "header": [
@@ -674,21 +733,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListTickets($orgId: ID!, $status: String, $limit: Int, $offset: Int) {\n  tickets(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {\n    id\n    orgId\n    conversationId\n    customerId\n    assignedTo\n    subject\n    description\n    status\n    priority\n    category\n    tags\n    createdAt\n    updatedAt\n    resolvedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"status\": \"OPEN\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Ticket",
+          "id": "53a06911-ca28-409f-8a17-748073a0035e",
           "request": {
             "method": "POST",
             "header": [
@@ -698,21 +759,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetTicket($orgId: ID!, $id: ID!) {\n  ticket(orgId: $orgId, id: $id) {\n    id\n    subject\n    description\n    status\n    priority\n    category\n    tags\n    createdAt\n    resolvedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"ticket_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Ticket",
+          "id": "fdd1175c-19fe-473a-b43b-eafec28dea9c",
           "request": {
             "method": "POST",
             "header": [
@@ -722,21 +785,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateTicket($orgId: ID!, $input: CreateTicketInput!) {\n  createTicket(orgId: $orgId, input: $input) {\n    id\n    subject\n    status\n    priority\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"conversationId\": \"conv_123\",\n    \"customerId\": \"cust_456\",\n    \"assignedTo\": \"rep_789\",\n    \"subject\": \"Issue with order #12345\",\n    \"description\": \"Customer reports item not received\",\n    \"priority\": \"HIGH\",\n    \"category\": \"shipping\",\n    \"tags\": [\"order-issue\", \"shipping-delay\"]\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Ticket",
+          "id": "28b2e4c3-0973-4005-b5e4-d5c8aa69b632",
           "request": {
             "method": "POST",
             "header": [
@@ -746,21 +811,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateTicket($orgId: ID!, $id: ID!, $input: UpdateTicketInput!) {\n  updateTicket(orgId: $orgId, id: $id, input: $input) {\n    id\n    status\n    priority\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"ticket_456\",\n  \"input\": {\n    \"status\": \"RESOLVED\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Ticket",
+          "id": "2940d531-a6bf-40d1-80a3-5ef888c64c71",
           "request": {
             "method": "POST",
             "header": [
@@ -770,26 +837,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteTicket($orgId: ID!, $id: ID!) {\n  deleteTicket(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"ticket_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "b3a70e46-30cc-4f07-b3a9-342c0acd981f"
     },
     {
       "name": "Escalations",
       "item": [
         {
           "name": "List Escalations",
+          "id": "3e827edd-54d4-4e8f-a2fc-c1a65884e33a",
           "request": {
             "method": "POST",
             "header": [
@@ -799,21 +869,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListEscalations($orgId: ID!, $status: String, $limit: Int, $offset: Int) {\n  escalations(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {\n    id\n    orgId\n    ticketId\n    conversationId\n    escalatedBy\n    escalatedTo\n    reason\n    status\n    resolvedAt\n    resolution\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"status\": \"PENDING\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Escalation",
+          "id": "c03bc61f-f60c-4133-bbaf-a7ecb3e7d59a",
           "request": {
             "method": "POST",
             "header": [
@@ -823,21 +895,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetEscalation($orgId: ID!, $id: ID!) {\n  escalation(orgId: $orgId, id: $id) {\n    id\n    ticketId\n    reason\n    status\n    resolution\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"esc_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Escalation",
+          "id": "475af430-6c01-4173-a264-4e199cd3c33c",
           "request": {
             "method": "POST",
             "header": [
@@ -847,21 +921,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateEscalation($orgId: ID!, $input: CreateEscalationInput!) {\n  createEscalation(orgId: $orgId, input: $input) {\n    id\n    ticketId\n    reason\n    status\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"ticketId\": \"ticket_456\",\n    \"conversationId\": \"conv_789\",\n    \"escalatedBy\": \"rep_111\",\n    \"escalatedTo\": \"manager_222\",\n    \"reason\": \"Customer requesting manager intervention for refund approval\",\n    \"status\": \"PENDING\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Escalation",
+          "id": "6f7bc324-1da9-413a-b3ab-4b2cef77034b",
           "request": {
             "method": "POST",
             "header": [
@@ -871,21 +947,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateEscalation($orgId: ID!, $id: ID!, $input: UpdateEscalationInput!) {\n  updateEscalation(orgId: $orgId, id: $id, input: $input) {\n    id\n    status\n    resolution\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"esc_456\",\n  \"input\": {\n    \"status\": \"RESOLVED\",\n    \"resolution\": \"Refund approved and processed\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Escalation",
+          "id": "4ea505f3-5bbc-4aee-985e-0ef76bf3226d",
           "request": {
             "method": "POST",
             "header": [
@@ -895,26 +973,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteEscalation($orgId: ID!, $id: ID!) {\n  deleteEscalation(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"esc_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "9cae59c9-a406-4aca-af73-14fa30857c88"
     },
     {
       "name": "Refunds",
       "item": [
         {
           "name": "List Refunds",
+          "id": "eec8c5af-4c2d-4a15-b53d-713e4a9c63e9",
           "request": {
             "method": "POST",
             "header": [
@@ -924,21 +1005,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListRefunds($orgId: ID!, $status: String, $limit: Int, $offset: Int) {\n  refunds(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {\n    id\n    orgId\n    ticketId\n    customerId\n    orderId\n    amount\n    reason\n    status\n    approvedBy\n    processedAt\n    metadata {\n      paymentMethod\n      transactionId\n      notes\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"status\": \"PENDING\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Refund",
+          "id": "687eb098-6ac5-4fc4-ae60-57aa17c78cba",
           "request": {
             "method": "POST",
             "header": [
@@ -948,21 +1031,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetRefund($orgId: ID!, $id: ID!) {\n  refund(orgId: $orgId, id: $id) {\n    id\n    orderId\n    amount\n    reason\n    status\n    approvedBy\n    processedAt\n    metadata {\n      paymentMethod\n      transactionId\n      notes\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"refund_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Refund",
+          "id": "244ec136-dad2-4f79-be74-10b9fea64467",
           "request": {
             "method": "POST",
             "header": [
@@ -972,21 +1057,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateRefund($orgId: ID!, $input: CreateRefundInput!) {\n  createRefund(orgId: $orgId, input: $input) {\n    id\n    orderId\n    amount\n    status\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"ticketId\": \"ticket_456\",\n    \"customerId\": \"cust_789\",\n    \"orderId\": \"order_12345\",\n    \"amount\": 49.99,\n    \"reason\": \"Product damaged during shipping\",\n    \"status\": \"PENDING\",\n    \"metadata\": {\n      \"paymentMethod\": \"credit_card\",\n      \"transactionId\": \"txn_98765\",\n      \"notes\": \"Customer provided photos of damage\"\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Refund",
+          "id": "804ad572-2fc3-4837-b259-9a34cbf9bc89",
           "request": {
             "method": "POST",
             "header": [
@@ -996,21 +1083,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateRefund($orgId: ID!, $id: ID!, $input: UpdateRefundInput!) {\n  updateRefund(orgId: $orgId, id: $id, input: $input) {\n    id\n    status\n    approvedBy\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"refund_456\",\n  \"input\": {\n    \"status\": \"APPROVED\",\n    \"approvedBy\": \"manager_789\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Refund",
+          "id": "488e35da-7dd0-4507-9ad2-fb9be377a088",
           "request": {
             "method": "POST",
             "header": [
@@ -1020,26 +1109,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteRefund($orgId: ID!, $id: ID!) {\n  deleteRefund(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"refund_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "2831ea8e-e357-49b8-a2e7-ae62976147e3"
     },
     {
       "name": "Budgets",
       "item": [
         {
           "name": "List Budgets",
+          "id": "bdd38487-5c13-49df-bed2-326b95393f53",
           "request": {
             "method": "POST",
             "header": [
@@ -1049,21 +1141,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListBudgets($orgId: ID!, $limit: Int, $offset: Int) {\n  budgets(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    name\n    category\n    amount\n    period\n    spent\n    remaining\n    startDate\n    endDate\n    alerts {\n      enabled\n      thresholds\n      recipients\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Budget",
+          "id": "106aee64-da45-4541-9104-c93396808256",
           "request": {
             "method": "POST",
             "header": [
@@ -1073,21 +1167,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetBudget($orgId: ID!, $id: ID!) {\n  budget(orgId: $orgId, id: $id) {\n    id\n    name\n    category\n    amount\n    spent\n    remaining\n    period\n    startDate\n    endDate\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"budget_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Budget",
+          "id": "74c097d5-8f2a-478d-8404-ac53507b2657",
           "request": {
             "method": "POST",
             "header": [
@@ -1097,21 +1193,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateBudget($orgId: ID!, $input: CreateBudgetInput!) {\n  createBudget(orgId: $orgId, input: $input) {\n    id\n    name\n    category\n    amount\n    period\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"name\": \"Q1 2026 Refunds Budget\",\n    \"category\": \"REFUNDS\",\n    \"amount\": 50000.00,\n    \"period\": \"QUARTERLY\",\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-03-31\",\n    \"alerts\": {\n      \"enabled\": true,\n      \"thresholds\": [50, 75, 90],\n      \"recipients\": [\"finance@example.com\", \"support-manager@example.com\"]\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Budget",
+          "id": "c6e55da1-6485-4c76-ac2f-760b34cf399d",
           "request": {
             "method": "POST",
             "header": [
@@ -1121,21 +1219,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateBudget($orgId: ID!, $id: ID!, $input: UpdateBudgetInput!) {\n  updateBudget(orgId: $orgId, id: $id, input: $input) {\n    id\n    amount\n    spent\n    remaining\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"budget_456\",\n  \"input\": {\n    \"amount\": 75000.00\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Budget",
+          "id": "dafb0a46-08e6-465e-99c2-d7270fae95b8",
           "request": {
             "method": "POST",
             "header": [
@@ -1145,26 +1245,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteBudget($orgId: ID!, $id: ID!) {\n  deleteBudget(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"budget_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "fdb20379-0f7a-4c3c-8124-d8c4d9127f02"
     },
     {
       "name": "Agent Configurations",
       "item": [
         {
           "name": "List Agent Configurations",
+          "id": "9b107eb2-07d2-4e56-9aa4-29eb6c02c1e2",
           "request": {
             "method": "POST",
             "header": [
@@ -1174,21 +1277,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListAgentConfigs($orgId: ID!, $limit: Int, $offset: Int) {\n  agentConfigurations(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    name\n    type\n    status\n    config {\n      model\n      temperature\n      maxTokens\n      systemPrompt\n      tools\n    }\n    capabilities\n    constraints {\n      maxRefundAmount\n      maxDiscountPercent\n      requiresApprovalAbove\n      allowedActions\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Agent Configuration",
+          "id": "a51f994a-54e4-4fce-8061-d97ad53a99e4",
           "request": {
             "method": "POST",
             "header": [
@@ -1198,21 +1303,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetAgentConfig($orgId: ID!, $id: ID!) {\n  agentConfiguration(orgId: $orgId, id: $id) {\n    id\n    name\n    type\n    status\n    config {\n      model\n      temperature\n      maxTokens\n      systemPrompt\n      tools\n    }\n    capabilities\n    constraints {\n      maxRefundAmount\n      maxDiscountPercent\n      requiresApprovalAbove\n      allowedActions\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"agent_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Agent Configuration",
+          "id": "0194008e-93dd-4626-b7b2-422150e9ca0e",
           "request": {
             "method": "POST",
             "header": [
@@ -1222,21 +1329,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateAgentConfiguration($orgId: ID!, $input: CreateAgentConfigurationInput!) {\n  createAgentConfiguration(orgId: $orgId, input: $input) {\n    id\n    name\n    type\n    status\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"name\": \"Customer Service Agent\",\n    \"type\": \"CUSTOMER_SERVICE\",\n    \"status\": \"ACTIVE\",\n    \"config\": {\n      \"model\": \"claude-sonnet-4.5\",\n      \"temperature\": 0.7,\n      \"maxTokens\": 4096,\n      \"systemPrompt\": \"You are a helpful customer service agent...\",\n      \"tools\": [\"customer-lookup\", \"order-search\", \"refund-approval\"]\n    },\n    \"capabilities\": [\n      \"answer-questions\",\n      \"process-refunds\",\n      \"escalate-issues\"\n    ],\n    \"constraints\": {\n      \"maxRefundAmount\": 500.00,\n      \"maxDiscountPercent\": 20,\n      \"requiresApprovalAbove\": 500.00,\n      \"allowedActions\": [\"view\", \"create-ticket\", \"process-refund\"]\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Agent Configuration",
+          "id": "1897c592-5308-4818-9307-fa1927c1eab5",
           "request": {
             "method": "POST",
             "header": [
@@ -1246,21 +1355,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateAgentConfiguration($orgId: ID!, $id: ID!, $input: UpdateAgentConfigurationInput!) {\n  updateAgentConfiguration(orgId: $orgId, id: $id, input: $input) {\n    id\n    name\n    status\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"agent_456\",\n  \"input\": {\n    \"status\": \"MAINTENANCE\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Agent Configuration",
+          "id": "55444f65-7027-4db2-87ef-82c1991d5953",
           "request": {
             "method": "POST",
             "header": [
@@ -1270,26 +1381,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteAgentConfiguration($orgId: ID!, $id: ID!) {\n  deleteAgentConfiguration(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"agent_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "3dfcf7f0-12fa-4c17-91ca-241f5ac05221"
     },
     {
       "name": "Decision Rules",
       "item": [
         {
           "name": "List Decision Rules",
+          "id": "63929e8c-2110-4cdd-b777-10f7f0806179",
           "request": {
             "method": "POST",
             "header": [
@@ -1299,21 +1413,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query ListDecisionRules($orgId: ID!, $limit: Int, $offset: Int) {\n  decisionRules(orgId: $orgId, limit: $limit, offset: $offset) {\n    id\n    orgId\n    name\n    description\n    conditions {\n      field\n      operator\n      value\n    }\n    actions {\n      type\n      params {\n        template\n        amount\n        assignTo\n        escalateTo\n        priority\n      }\n    }\n    priority\n    status\n    metadata {\n      tags\n      category\n      author\n      lastModifiedBy\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"limit\": 20,\n  \"offset\": 0\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Decision Rule",
+          "id": "104d1b31-8eff-4048-8bcf-51437d60d0f4",
           "request": {
             "method": "POST",
             "header": [
@@ -1323,21 +1439,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetDecisionRule($orgId: ID!, $id: ID!) {\n  decisionRule(orgId: $orgId, id: $id) {\n    id\n    name\n    description\n    conditions {\n      field\n      operator\n      value\n    }\n    actions {\n      type\n      params {\n        template\n        amount\n      }\n    }\n    priority\n    status\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rule_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Create Decision Rule",
+          "id": "e7cb79c9-5338-488a-911b-6901c5eeebc3",
           "request": {
             "method": "POST",
             "header": [
@@ -1347,21 +1465,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation CreateDecisionRule($orgId: ID!, $input: CreateDecisionRuleInput!) {\n  createDecisionRule(orgId: $orgId, input: $input) {\n    id\n    name\n    priority\n    status\n    createdAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"input\": {\n    \"name\": \"Auto-escalate VIP customers\",\n    \"description\": \"Automatically escalate issues from VIP customers\",\n    \"conditions\": [\n      {\n        \"field\": \"customer.segment\",\n        \"operator\": \"EQUALS\",\n        \"value\": \"VIP\"\n      },\n      {\n        \"field\": \"ticket.priority\",\n        \"operator\": \"IN\",\n        \"value\": \"HIGH,URGENT\"\n      }\n    ],\n    \"actions\": [\n      {\n        \"type\": \"ESCALATE\",\n        \"params\": {\n          \"escalateTo\": \"manager_123\"\n        }\n      },\n      {\n        \"type\": \"SET_PRIORITY\",\n        \"params\": {\n          \"priority\": \"URGENT\"\n        }\n      }\n    ],\n    \"priority\": 10,\n    \"status\": \"ACTIVE\",\n    \"metadata\": {\n      \"tags\": [\"vip\", \"auto-escalation\"],\n      \"category\": \"customer-service\"\n    }\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Update Decision Rule",
+          "id": "2dea6c32-b632-4641-9f7b-b4816fd9be88",
           "request": {
             "method": "POST",
             "header": [
@@ -1371,21 +1491,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation UpdateDecisionRule($orgId: ID!, $id: ID!, $input: UpdateDecisionRuleInput!) {\n  updateDecisionRule(orgId: $orgId, id: $id, input: $input) {\n    id\n    name\n    priority\n    status\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rule_456\",\n  \"input\": {\n    \"status\": \"INACTIVE\"\n  }\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Delete Decision Rule",
+          "id": "6553efb5-52c0-413e-8b3d-669109f3cef0",
           "request": {
             "method": "POST",
             "header": [
@@ -1395,26 +1517,29 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "mutation DeleteDecisionRule($orgId: ID!, $id: ID!) {\n  deleteDecisionRule(orgId: $orgId, id: $id) {\n    success\n    message\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"id\": \"rule_456\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "6ef07d17-2be4-4432-aceb-60ac88dce5e3"
     },
     {
       "name": "Performance Metrics",
       "item": [
         {
           "name": "Get Performance Metrics",
+          "id": "ec36af38-df77-4111-9a2d-8ed786853252",
           "request": {
             "method": "POST",
             "header": [
@@ -1424,21 +1549,23 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetPerformanceMetrics($orgId: ID!, $startDate: String, $endDate: String) {\n  performanceMetrics(orgId: $orgId, startDate: $startDate, endDate: $endDate) {\n    id\n    orgId\n    period\n    metrics {\n      totalConversations\n      resolvedConversations\n      averageResponseTime\n      averageResolutionTime\n      customerSatisfactionScore\n      firstContactResolutionRate\n      escalationRate\n    }\n    createdAt\n    updatedAt\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-01-31\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Get Team Performance",
+          "id": "1597a795-0d29-4c3e-9e23-21d3907584ee",
           "request": {
             "method": "POST",
             "header": [
@@ -1448,27 +1575,210 @@
               }
             ],
             "body": {
-              "mode": "graphql",
-              "graphql": {
-                "query": "query GetTeamPerformance($orgId: ID!, $startDate: String, $endDate: String) {\n  teamPerformance(orgId: $orgId, startDate: $startDate, endDate: $endDate) {\n    period\n    totalMembers\n    activeMembers\n    metrics {\n      totalConversations\n      resolvedConversations\n      averageResponseTime\n      averageResolutionTime\n      customerSatisfactionScore\n    }\n    topPerformers {\n      id\n      name\n      email\n    }\n  }\n}",
-                "variables": "{\n  \"orgId\": \"org_123\",\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-01-31\"\n}"
-              }
+              "mode": "graphql"
             },
             "url": {
               "raw": "{{graphql_gateway_url}}/graphql",
-              "host": ["{{graphql_gateway_url}}"],
-              "path": ["graphql"]
+              "host": [
+                "{{graphql_gateway_url}}"
+              ],
+              "path": [
+                "graphql"
+              ]
             }
-          }
+          },
+          "response": []
         }
-      ]
+      ],
+      "id": "2a2d5628-0055-4de5-bd0d-8b60315de89f"
+    },
+    {
+      "name": "List Users",
+      "id": "68443378-4054-4191-98b3-cfd81e05dbae",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "graphql"
+        },
+        "url": {
+          "raw": "{{graphql_gateway_url}}/graphql",
+          "host": [
+            "{{graphql_gateway_url}}"
+          ],
+          "path": [
+            "graphql"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "5bcc0f52-d7c2-4fcc-aac4-14dc0e97a29b",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "/**",
+          " * JWT Pre-Request Script for Organization API",
+          " * ",
+          " * This script automatically generates a valid JWT token for the Organization API",
+          " * and sets it in the `jwt_token` collection variable.",
+          " * ",
+          " * SETUP INSTRUCTIONS:",
+          " * 1. In Postman, select the \"Organization API (NestJS)\" collection",
+          " * 2. Go to the \"Scripts\" tab",
+          " * 3. In the \"Pre-request\" section, paste this entire script",
+          " * 4. Save the collection",
+          " * ",
+          " * The script will automatically run before each request and generate a fresh JWT token.",
+          " * ",
+          " * ENVIRONMENT VARIABLES (configured in local.postman_environment.json):",
+          " * - jwt_secret: The secret key for signing the JWT",
+          " * - jwt_issuer: Token issuer (default: grounded-api)",
+          " * - jwt_audience: Token audience (default: grounded-services)",
+          " * - jwt_user_id: User ID for the token subject",
+          " * - jwt_user_email: User email",
+          " * - jwt_user_name: User display name",
+          " * - jwt_organization_id: Organization ID",
+          " * - jwt_user_role: User role (CUSTOMER, REPRESENTATIVE, or ADMIN)",
+          " * - jwt_expiry_hours: Token expiry in hours (default: 24)",
+          " */",
+          "",
+          "// Get configuration from environment variables",
+          "const jwtSecret = pm.environment.get('jwt_secret');",
+          "const jwtIssuer = pm.environment.get('jwt_issuer') || 'grounded-api';",
+          "const jwtAudience = pm.environment.get('jwt_audience') || 'grounded-services';",
+          "const userId = pm.environment.get('jwt_user_id') || 'test-user-123';",
+          "const userEmail = pm.environment.get('jwt_user_email') || 'test@example.com';",
+          "const userName = pm.environment.get('jwt_user_name') || 'Test User';",
+          "const organizationId = pm.environment.get('jwt_organization_id') || 'acme-corp';",
+          "const userRole = pm.environment.get('jwt_user_role') || 'ADMIN';",
+          "const expiryHours = parseInt(pm.environment.get('jwt_expiry_hours') || '24', 10);",
+          "",
+          "// Validate required configuration",
+          "if (!jwtSecret) {",
+          "    console.error('❌ JWT_SECRET not configured in environment variables');",
+          "    throw new Error('JWT_SECRET is required. Please set jwt_secret in your Postman environment.');",
+          "}",
+          "",
+          "// Helper function to base64url encode",
+          "function base64url(source) {",
+          "    // Encode in classical base64",
+          "    let encodedSource = CryptoJS.enc.Base64.stringify(source);",
+          "    ",
+          "    // Remove padding equal signs",
+          "    encodedSource = encodedSource.replace(/=+$/, '');",
+          "    ",
+          "    // Replace characters according to base64url specifications",
+          "    encodedSource = encodedSource.replace(/\\+/g, '-');",
+          "    encodedSource = encodedSource.replace(/\\//g, '_');",
+          "    ",
+          "    return encodedSource;",
+          "}",
+          "",
+          "// Create JWT header",
+          "const header = {",
+          "    alg: 'HS256',",
+          "    typ: 'JWT'",
+          "};",
+          "",
+          "// Create JWT payload",
+          "const now = Math.floor(Date.now() / 1000);",
+          "const exp = now + (expiryHours * 3600); // expiry in seconds",
+          "",
+          "const payload = {",
+          "    sub: userId,",
+          "    email: userEmail,",
+          "    name: userName,",
+          "    organizationId: organizationId,",
+          "    role: userRole,",
+          "    iat: now,",
+          "    exp: exp,",
+          "    iss: jwtIssuer,",
+          "    aud: jwtAudience",
+          "};",
+          "",
+          "// Encode header and payload",
+          "const stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));",
+          "const encodedHeader = base64url(stringifiedHeader);",
+          "",
+          "const stringifiedPayload = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));",
+          "const encodedPayload = base64url(stringifiedPayload);",
+          "",
+          "// Create signature",
+          "const token = `${encodedHeader}.${encodedPayload}`;",
+          "const signature = CryptoJS.HmacSHA256(token, jwtSecret);",
+          "const encodedSignature = base64url(signature);",
+          "",
+          "// Complete JWT",
+          "const jwt = `${token}.${encodedSignature}`;",
+          "",
+          "// Set the JWT token in collection variable",
+          "pm.collectionVariables.set('jwt_token', jwt);",
+          "",
+          "// Log token details (for debugging)",
+          "console.log('✅ JWT Token Generated Successfully');",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('📋 Token Details:');",
+          "console.log(`   User ID: ${userId}`);",
+          "console.log(`   Email: ${userEmail}`);",
+          "console.log(`   Name: ${userName}`);",
+          "console.log(`   Organization: ${organizationId}`);",
+          "console.log(`   Role: ${userRole}`);",
+          "console.log(`   Issuer: ${jwtIssuer}`);",
+          "console.log(`   Audience: ${jwtAudience}`);",
+          "console.log(`   Issued At: ${new Date(now * 1000).toISOString()}`);",
+          "console.log(`   Expires At: ${new Date(exp * 1000).toISOString()}`);",
+          "console.log(`   Valid For: ${expiryHours} hours`);",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('🔑 Token (first 50 chars):', jwt.substring(0, 50) + '...');",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "f4bc2451-a23c-4ea4-b9d0-fbe4751ec370",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [
     {
+      "id": "f00a71d9-fdd6-4e9c-8ce4-5706f711c8a6",
       "key": "graphql_gateway_url",
-      "value": "http://localhost:8787",
-      "type": "default"
+      "value": "http://localhost:8787"
+    },
+    {
+      "id": "6176934d-6d96-4d6d-b9e3-966cfaa6daf6",
+      "key": "jwt_token",
+      "value": ""
     }
   ]
 }

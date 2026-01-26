@@ -146,7 +146,7 @@ import { createUser } from '@grounded/server-shared/supabase';
 const user = await createUser('newuser@example.com', 'securepassword', {
   email_confirm: true,
   user_metadata: {
-    organization_id: 'org_123',
+    organization_id: 'acme-corp',
     role: 'customer',
   },
 });

@@ -81,4 +81,4 @@ customer_ui_worker_name = "grounded-customer-ui"
 graphql_endpoint = "https://your-graphql-worker.workers.dev/graphql"
 
 # Optional: Default organization ID
-default_org_id = "org_123"
+default_org_id = "acme-corp"

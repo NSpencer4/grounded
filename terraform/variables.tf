@@ -228,7 +228,7 @@ variable "graphql_endpoint" {
 variable "default_org_id" {
   type        = string
   description = "Default organization ID for the application"
-  default     = "org_123"
+  default     = "acme-corp"
 }
 
 # Organization API Configuration

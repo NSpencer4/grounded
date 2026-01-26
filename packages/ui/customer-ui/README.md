@@ -42,7 +42,7 @@ VITE_SUPABASE_URL=your-supabase-url
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 # Default organization for development
-DEFAULT_ORG_ID=org_123
+DEFAULT_ORG_ID=acme-corp
 ```
 
 ### Development
@@ -299,7 +299,7 @@ Set in `local.env`:
 
 ```env
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
-DEFAULT_ORG_ID=org_123
+DEFAULT_ORG_ID=acme-corp
 ```
 
 ### Production

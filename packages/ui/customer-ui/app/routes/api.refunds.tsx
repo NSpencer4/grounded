@@ -17,7 +17,7 @@ import {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const graphqlClient = createGraphQLClient()
   const url = new URL(request.url)
-  const orgId = url.searchParams.get('orgId') || context.env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = url.searchParams.get('orgId') || context.env?.DEFAULT_ORG_ID || 'acme-corp'
   const dataType = url.searchParams.get('type') || 'refunds'
 
   if (dataType === 'budgets') {
@@ -55,7 +55,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const graphqlClient = createGraphQLClient()
   const formData = await request.formData()
   const actionType = formData.get('_action')
-  const orgId = (formData.get('orgId') as string) || context.env?.DEFAULT_ORG_ID || 'org_123'
+  const orgId = (formData.get('orgId') as string) || context.env?.DEFAULT_ORG_ID || 'acme-corp'
 
   switch (actionType) {
     case 'create': {

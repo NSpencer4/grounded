@@ -141,7 +141,7 @@ The following global variables are configured (these are shared across all envir
 
 | Variable | Default Value | Description |
 |----------|---------------|-------------|
-| `org_id` | `org_123` | Sample organization ID for testing |
+| `org_id` | `acme-corp` | Sample organization ID for testing |
 | `user_id` | `user_456` | Sample user ID for testing |
 
 You can modify environment-specific values in Postman by selecting **Environments** → **Local**, and global values under **Globals**.
@@ -205,7 +205,7 @@ query {
     }
   }
   
-  users(orgId: "org_123", limit: 10) {
+  users(orgId: "acme-corp", limit: 10) {
     id
     name
     email
@@ -218,7 +218,7 @@ query {
 ```graphql
 mutation {
   createConversation(
-    orgId: "org_123"
+    orgId: "acme-corp"
     userId: "user_456"
     initialMessage: "Hello, I need help"
   ) {
@@ -301,7 +301,7 @@ Fetches a single conversation with its current state.
 ```json
 {
   "id": "01JK7Z8M9N2P3Q4R5S6T7V8W9X",
-  "org_id": "org_123",
+  "org_id": "acme-corp",
   "user_id": "user_456",
   "status": "active",
   "current_step": "awaiting_response",

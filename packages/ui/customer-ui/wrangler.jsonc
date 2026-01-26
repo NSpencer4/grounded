@@ -9,7 +9,7 @@
 	"main": "./workers/index.ts",
 	"vars": {
 		"GRAPHQL_ENDPOINT": "http://localhost:8787/graphql",
-		"DEFAULT_ORG_ID": "org_123"
+		"DEFAULT_ORG_ID": "acme-corp"
 	},
 	"observability": {
 		"enabled": true
@@ -26,7 +26,7 @@
 			"name": "grounded-customer-ui",
 			"vars": {
 				"GRAPHQL_ENDPOINT": "https://your-graphql-worker.workers.dev/graphql",
-				"DEFAULT_ORG_ID": "org_123"
+				"DEFAULT_ORG_ID": "acme-corp"
 			},
 			"routes": [
 				{
@@ -39,7 +39,7 @@
 			"name": "grounded-customer-ui-staging",
 			"vars": {
 				"GRAPHQL_ENDPOINT": "https://your-staging-graphql-worker.workers.dev/graphql",
-				"DEFAULT_ORG_ID": "org_123"
+				"DEFAULT_ORG_ID": "acme-corp"
 			}
 		}
 	}

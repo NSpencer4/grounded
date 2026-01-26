@@ -78,13 +78,13 @@ query {
     timestamp
   }
   
-  organization(id: "org_123") {
+  organization(id: "acme-corp") {
     id
     name
     slug
   }
   
-  users(orgId: "org_123", limit: 10) {
+  users(orgId: "acme-corp", limit: 10) {
     id
     name
     email
@@ -98,7 +98,7 @@ Example mutation:
 ```graphql
 mutation {
   createConversation(
-    orgId: "org_123"
+    orgId: "acme-corp"
     userId: "user_456"
     initialMessage: "Hello, I need help with my order"
   ) {

@@ -1,5 +1,6 @@
 {
   "info": {
+    "_postman_id": "7df6e38b-b247-4fc4-b226-47a567bb0ae9",
     "name": "Conversation Updates Service",
     "description": "Query endpoints for retrieving conversation data (read-only)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -10,6 +11,7 @@
       "item": [
         {
           "name": "Get Conversation by ID",
+          "id": "15efe6c8-d9ae-45b8-8a38-7eeaeb48e308",
           "request": {
             "method": "GET",
             "header": [],
@@ -36,6 +38,7 @@
         },
         {
           "name": "List Conversations by Organization",
+          "id": "c41251be-4e1d-4469-b2a2-e5c962f4c646",
           "request": {
             "method": "GET",
             "header": [],
@@ -72,6 +75,7 @@
         },
         {
           "name": "List Conversations by User",
+          "id": "cc11b644-8377-4286-87a2-2e3e1364ea98",
           "request": {
             "method": "GET",
             "header": [],
@@ -106,13 +110,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "52585670-ce47-40d7-b759-54a531fd5c9f"
     },
     {
       "name": "Messages",
       "item": [
         {
           "name": "Get Conversation Messages",
+          "id": "d29b0d77-de85-4650-b188-a2ffb0db949f",
           "request": {
             "method": "GET",
             "header": [],
@@ -126,13 +132,6 @@
                 ":conversation_id",
                 "messages"
               ],
-              "variable": [
-                {
-                  "key": "conversation_id",
-                  "value": "01JK7Z8M9N2P3Q4R5S6T7V8W9X",
-                  "description": "The conversation ID"
-                }
-              ],
               "query": [
                 {
                   "key": "limit",
@@ -145,16 +144,25 @@
                   "description": "Base64-encoded pagination key from previous response",
                   "disabled": true
                 }
+              ],
+              "variable": [
+                {
+                  "key": "conversation_id",
+                  "value": "01JK7Z8M9N2P3Q4R5S6T7V8W9X",
+                  "description": "The conversation ID"
+                }
               ]
             },
             "description": "Fetches all messages for a conversation in chronological order (oldest first). Supports pagination."
           },
           "response": []
         }
-      ]
+      ],
+      "id": "bc7c52eb-89e3-4606-b25a-dd7002369248"
     },
     {
       "name": "Health Check",
+      "id": "f3bc3e0f-f8c6-4597-ac0d-1dddcfda5d80",
       "request": {
         "method": "GET",
         "header": [],
@@ -172,11 +180,166 @@
       "response": []
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "c8a5583c-2eba-4dc6-adf0-8243803aef6a",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "/**",
+          " * JWT Pre-Request Script for Organization API",
+          " * ",
+          " * This script automatically generates a valid JWT token for the Organization API",
+          " * and sets it in the `jwt_token` collection variable.",
+          " * ",
+          " * SETUP INSTRUCTIONS:",
+          " * 1. In Postman, select the \"Organization API (NestJS)\" collection",
+          " * 2. Go to the \"Scripts\" tab",
+          " * 3. In the \"Pre-request\" section, paste this entire script",
+          " * 4. Save the collection",
+          " * ",
+          " * The script will automatically run before each request and generate a fresh JWT token.",
+          " * ",
+          " * ENVIRONMENT VARIABLES (configured in local.postman_environment.json):",
+          " * - jwt_secret: The secret key for signing the JWT",
+          " * - jwt_issuer: Token issuer (default: grounded-api)",
+          " * - jwt_audience: Token audience (default: grounded-services)",
+          " * - jwt_user_id: User ID for the token subject",
+          " * - jwt_user_email: User email",
+          " * - jwt_user_name: User display name",
+          " * - jwt_organization_id: Organization ID",
+          " * - jwt_user_role: User role (CUSTOMER, REPRESENTATIVE, or ADMIN)",
+          " * - jwt_expiry_hours: Token expiry in hours (default: 24)",
+          " */",
+          "",
+          "// Get configuration from environment variables",
+          "const jwtSecret = pm.environment.get('jwt_secret');",
+          "const jwtIssuer = pm.environment.get('jwt_issuer') || 'grounded-api';",
+          "const jwtAudience = pm.environment.get('jwt_audience') || 'grounded-services';",
+          "const userId = pm.environment.get('jwt_user_id') || 'test-user-123';",
+          "const userEmail = pm.environment.get('jwt_user_email') || 'test@example.com';",
+          "const userName = pm.environment.get('jwt_user_name') || 'Test User';",
+          "const organizationId = pm.environment.get('jwt_organization_id') || 'acme-corp';",
+          "const userRole = pm.environment.get('jwt_user_role') || 'ADMIN';",
+          "const expiryHours = parseInt(pm.environment.get('jwt_expiry_hours') || '24', 10);",
+          "",
+          "// Validate required configuration",
+          "if (!jwtSecret) {",
+          "    console.error('❌ JWT_SECRET not configured in environment variables');",
+          "    throw new Error('JWT_SECRET is required. Please set jwt_secret in your Postman environment.');",
+          "}",
+          "",
+          "// Helper function to base64url encode",
+          "function base64url(source) {",
+          "    // Encode in classical base64",
+          "    let encodedSource = CryptoJS.enc.Base64.stringify(source);",
+          "    ",
+          "    // Remove padding equal signs",
+          "    encodedSource = encodedSource.replace(/=+$/, '');",
+          "    ",
+          "    // Replace characters according to base64url specifications",
+          "    encodedSource = encodedSource.replace(/\\+/g, '-');",
+          "    encodedSource = encodedSource.replace(/\\//g, '_');",
+          "    ",
+          "    return encodedSource;",
+          "}",
+          "",
+          "// Create JWT header",
+          "const header = {",
+          "    alg: 'HS256',",
+          "    typ: 'JWT'",
+          "};",
+          "",
+          "// Create JWT payload",
+          "const now = Math.floor(Date.now() / 1000);",
+          "const exp = now + (expiryHours * 3600); // expiry in seconds",
+          "",
+          "const payload = {",
+          "    sub: userId,",
+          "    email: userEmail,",
+          "    name: userName,",
+          "    organizationId: organizationId,",
+          "    role: userRole,",
+          "    iat: now,",
+          "    exp: exp,",
+          "    iss: jwtIssuer,",
+          "    aud: jwtAudience",
+          "};",
+          "",
+          "// Encode header and payload",
+          "const stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));",
+          "const encodedHeader = base64url(stringifiedHeader);",
+          "",
+          "const stringifiedPayload = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));",
+          "const encodedPayload = base64url(stringifiedPayload);",
+          "",
+          "// Create signature",
+          "const token = `${encodedHeader}.${encodedPayload}`;",
+          "const signature = CryptoJS.HmacSHA256(token, jwtSecret);",
+          "const encodedSignature = base64url(signature);",
+          "",
+          "// Complete JWT",
+          "const jwt = `${token}.${encodedSignature}`;",
+          "",
+          "// Set the JWT token in collection variable",
+          "pm.collectionVariables.set('jwt_token', jwt);",
+          "",
+          "// Log token details (for debugging)",
+          "console.log('✅ JWT Token Generated Successfully');",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('📋 Token Details:');",
+          "console.log(`   User ID: ${userId}`);",
+          "console.log(`   Email: ${userEmail}`);",
+          "console.log(`   Name: ${userName}`);",
+          "console.log(`   Organization: ${organizationId}`);",
+          "console.log(`   Role: ${userRole}`);",
+          "console.log(`   Issuer: ${jwtIssuer}`);",
+          "console.log(`   Audience: ${jwtAudience}`);",
+          "console.log(`   Issued At: ${new Date(now * 1000).toISOString()}`);",
+          "console.log(`   Expires At: ${new Date(exp * 1000).toISOString()}`);",
+          "console.log(`   Valid For: ${expiryHours} hours`);",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('🔑 Token (first 50 chars):', jwt.substring(0, 50) + '...');",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "74d93331-da77-4c62-bd9e-7eb3da80a164",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
   "variable": [
     {
+      "id": "026c347c-8caa-4c84-b4fb-77b9e3d715f2",
       "key": "conversation_updates_base_url",
-      "value": "http://localhost:3002",
-      "type": "string"
+      "value": "http://localhost:3002"
+    },
+    {
+      "id": "9c46ece4-bfe0-4849-9c7c-b88c9a30c8c9",
+      "key": "jwt_token",
+      "value": ""
     }
   ]
 }

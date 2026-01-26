@@ -216,7 +216,7 @@ function Conversation({ id }) {
 Create `local.env`:
 ```env
 GRAPHQL_ENDPOINT=http://localhost:8787/graphql
-DEFAULT_ORG_ID=org_123
+DEFAULT_ORG_ID=acme-corp
 ```
 
 ### 2. Start Services
@@ -246,17 +246,17 @@ curl http://localhost:5173/dashboard
 ### 2. Test API Routes
 ```bash
 # List users
-curl http://localhost:5173/api/users?orgId=org_123
+curl http://localhost:5173/api/users?orgId=acme-corp
 
 # List conversations
-curl http://localhost:5173/api/conversations?orgId=org_123
+curl http://localhost:5173/api/conversations?orgId=acme-corp
 ```
 
 ### 3. Test GraphQL Directly
 ```graphql
 # In GraphiQL at http://localhost:8787/graphql
 query {
-  conversations(orgId: "org_123", limit: 10) {
+  conversations(orgId: "acme-corp", limit: 10) {
     edges {
       node {
         id
