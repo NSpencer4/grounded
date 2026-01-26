@@ -39,7 +39,7 @@ export async function getDb(credentials: DbCredentials): Promise<Database> {
     user: credentials.username,
     password: credentials.password,
     database: credentials.database,
-    ssl: {
+    ssl: process.env.DB_SSL === 'false' ? false : {
       rejectUnauthorized: false,
     },
   })

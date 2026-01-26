@@ -332,12 +332,12 @@
   ],
   "variable": [
     {
-      "id": "026c347c-8caa-4c84-b4fb-77b9e3d715f2",
+      "id": "c1a558fb-1021-4b79-96f6-2f94051f53b5",
       "key": "conversation_updates_base_url",
       "value": "http://localhost:3002"
     },
     {
-      "id": "9c46ece4-bfe0-4849-9c7c-b88c9a30c8c9",
+      "id": "83ffc066-f93d-42a2-8883-5142e2ab6e4b",
       "key": "jwt_token",
       "value": ""
     }

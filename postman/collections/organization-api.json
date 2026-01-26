@@ -197,7 +197,7 @@
               }
             ],
             "url": {
-              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users/{{userId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users/:userId",
               "host": [
                 "{{organization_api_url}}"
               ],
@@ -205,7 +205,14 @@
                 "organizations",
                 "{{orgId}}",
                 "users",
-                "{{userId}}"
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "b6d64125-8103-476e-a265-76114a8e1dc2",
+                  "uuid": "44f0878a-e60c-461e-9e0d-0db9b8f41c12"
+                }
               ]
             }
           },
@@ -1857,7 +1864,7 @@
   ],
   "variable": [
     {
-      "id": "11f8661f-2e4b-41df-b51c-fe6e9c5f3d84",
+      "id": "71360307-3f49-471b-b754-f48de3b5ff7a",
       "key": "jwt_token",
       "value": "",
       "description": {
@@ -1866,61 +1873,61 @@
       }
     },
     {
-      "id": "35af5771-3c02-4db8-8f27-ea2a11247e8f",
+      "id": "29ea2df7-a98a-41a1-b0f2-fddd3cd53b6f",
       "key": "orgId",
-      "value": "acme-corp",
+      "value": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
       "description": {
         "content": "Organization ID or slug",
         "type": "text/plain"
       }
     },
     {
-      "id": "67c61c38-1efd-416a-97a3-9597935f64c5",
+      "id": "1c469cd2-c060-4a9d-bc79-18bf53f8b257",
       "key": "userId",
       "value": ""
     },
     {
-      "id": "04f3cdcf-1328-41db-aba4-66c9eb82b85b",
+      "id": "c3b72490-d0e5-4642-8c92-290740ddd492",
       "key": "repId",
       "value": ""
     },
     {
-      "id": "7cd2bf10-4b5f-419f-94ba-4347b6361a56",
+      "id": "24292d79-295a-4d52-af9a-a0448deb7f8f",
       "key": "customerId",
       "value": ""
     },
     {
-      "id": "f6135ab3-4bb0-470b-9265-a6d1782ed01f",
+      "id": "b72261e9-b63d-4904-82a9-a18fe762becf",
       "key": "ticketId",
       "value": ""
     },
     {
-      "id": "29c08379-7102-4aef-ab62-665b34e481e1",
+      "id": "cc84d92d-2482-4149-9cd5-a8113b2a5997",
       "key": "escalationId",
       "value": ""
     },
     {
-      "id": "e06c1d6e-3ea4-4201-9f6e-35ddd9b2c2e8",
+      "id": "834495f9-adba-49a9-9714-faf3db576f28",
       "key": "refundId",
       "value": ""
     },
     {
-      "id": "2ae4eaf0-ea32-45e1-bbef-0c3e77e81654",
+      "id": "1fb0fe11-5bd4-49bb-bd9f-b1bd8d920ded",
       "key": "budgetId",
       "value": ""
     },
     {
-      "id": "0591ecb5-3d92-435b-b66c-e46cddeb3c7a",
+      "id": "9ec2a4f0-48f1-46b0-9bc3-9dbe49c22b5a",
       "key": "agentId",
       "value": ""
     },
     {
-      "id": "b9ca025a-3e88-42f1-b310-5863a0d3859b",
+      "id": "e1c9144c-490f-4398-9435-8a83fa7bdab5",
       "key": "ruleId",
       "value": ""
     },
     {
-      "id": "5019d768-134c-4b5c-8f46-f75de7086c6a",
+      "id": "c64e1287-a596-4d9f-bb2e-91224788b9dc",
       "key": "conversationId",
       "value": ""
     }

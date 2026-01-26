@@ -821,7 +821,7 @@ mutation CreateUser($orgId: ID!, $input: CreateUserInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "email": "john@example.com",
     "name": "John Doe",
@@ -887,7 +887,7 @@ mutation CreateRepresentative($orgId: ID!, $input: CreateRepresentativeInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "userId": "user_456",
     "name": "Jane Smith",
@@ -955,7 +955,7 @@ mutation CreateCustomerProfile($orgId: ID!, $input: CreateCustomerProfileInput!)
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "userId": "user_789",
     "name": "Alice Johnson",
@@ -1025,7 +1025,7 @@ mutation CreateTicket($orgId: ID!, $input: CreateTicketInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "conversationId": "conv_123",
     "customerId": "cust_456",
@@ -1087,7 +1087,7 @@ mutation CreateEscalation($orgId: ID!, $input: CreateEscalationInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "ticketId": "ticket_456",
     "conversationId": "conv_789",
@@ -1147,7 +1147,7 @@ mutation CreateRefund($orgId: ID!, $input: CreateRefundInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "ticketId": "ticket_456",
     "customerId": "cust_789",
@@ -1213,7 +1213,7 @@ mutation CreateBudget($orgId: ID!, $input: CreateBudgetInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "name": "Q1 2026 Refunds Budget",
     "category": "REFUNDS",
@@ -1279,7 +1279,7 @@ mutation CreateAgentConfiguration($orgId: ID!, $input: CreateAgentConfigurationI
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "name": "Customer Service Agent",
     "type": "CUSTOMER_SERVICE",
@@ -1354,7 +1354,7 @@ mutation CreateDecisionRule($orgId: ID!, $input: CreateDecisionRuleInput!) {
 **Input:**
 ```json
 {
-  "orgId": "acme-corp",
+  "orgId": "5d18b2ef-f9a0-4ba7-97c9-c7d61b5ed4f0",
   "input": {
     "name": "Auto-escalate VIP customers",
     "description": "Automatically escalate issues from VIP customers",

@@ -201,7 +201,6 @@ services:
       AWS_ACCESS_KEY_ID: local
       AWS_SECRET_ACCESS_KEY: local
       KAFKA_BROKERS: kafka:29092
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ORG_API_ENDPOINT: http://organization-api:8080
     depends_on:
       - kafka
@@ -222,7 +221,6 @@ services:
       AWS_ACCESS_KEY_ID: local
       AWS_SECRET_ACCESS_KEY: local
       KAFKA_BROKERS: kafka:29092
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ORG_API_ENDPOINT: http://organization-api:8080
     depends_on:
       - kafka
@@ -247,9 +245,9 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: grounded
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-change-in-production}
       NODE_ENV: development
       PORT: 8080
+      DB_SSL: "false"
     depends_on:
       postgres:
         condition: service_healthy
