@@ -24,9 +24,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/health\"\n    }\n  },\n  \"rawPath\": \"/health\",\n  \"headers\": {},\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -52,9 +52,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -75,9 +75,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations\"\n    }\n  },\n  \"rawPath\": \"/organizations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Acme Corp\\\", \\\"slug\\\": \\\"acme-corp\\\", \\\"settings\\\": {\\\"timezone\\\": \\\"America/New_York\\\", \\\"locale\\\": \\\"en-US\\\", \\\"features\\\": [\\\"ai-agents\\\", \\\"analytics\\\"]}}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -98,9 +98,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Acme Corporation\\\", \\\"settings\\\": {\\\"timezone\\\": \\\"America/Los_Angeles\\\"}}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -121,9 +121,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -149,9 +149,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/users\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -172,9 +172,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -195,9 +195,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/users\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"email\\\": \\\"john@example.com\\\", \\\"name\\\": \\\"John Doe\\\", \\\"role\\\": \\\"CUSTOMER\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -218,9 +218,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"John Smith\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -241,9 +241,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -269,9 +269,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -292,9 +292,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -315,9 +315,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/representatives\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"userId\\\": \\\"{{userId}}\\\", \\\"role\\\": \\\"JUNIOR_SUPPORT\\\", \\\"status\\\": \\\"ONLINE\\\", \\\"maxChats\\\": 10}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -338,9 +338,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"AWAY\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -361,9 +361,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -384,9 +384,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}/performance\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}/performance\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -412,9 +412,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -435,9 +435,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -458,9 +458,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"userId\\\": \\\"{{userId}}\\\", \\\"tier\\\": \\\"PRO\\\", \\\"standing\\\": \\\"GOOD\\\", \\\"lifetimeValue\\\": \\\"1000.00\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -481,9 +481,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"tier\\\": \\\"ENTERPRISE\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -504,9 +504,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -532,9 +532,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/tickets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"status\": \"OPEN\",\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -555,9 +555,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -578,9 +578,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/tickets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"ticketNumber\\\": \\\"TICKET-001\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"subject\\\": \\\"Issue with order\\\", \\\"description\\\": \\\"Customer reports item not received\\\", \\\"status\\\": \\\"OPEN\\\", \\\"priority\\\": \\\"HIGH\\\", \\\"category\\\": \\\"TECHNICAL_ISSUE\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -601,9 +601,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"RESOLVED\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -624,9 +624,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -652,9 +652,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/escalations\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -675,9 +675,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -698,9 +698,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/escalations\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"conversationId\\\": \\\"{{conversationId}}\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"priority\\\": \\\"HIGH\\\", \\\"status\\\": \\\"PENDING\\\", \\\"reason\\\": \\\"CUSTOMER_REQUEST\\\", \\\"issueDescription\\\": \\\"Customer requesting manager intervention\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -721,9 +721,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"RESOLVED\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -744,9 +744,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -772,9 +772,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/refunds\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -795,9 +795,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -818,9 +818,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/refunds\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"orderId\\\": \\\"ORD-12345\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"amount\\\": \\\"49.99\\\", \\\"reason\\\": \\\"CUSTOMER_REQUEST\\\", \\\"status\\\": \\\"PENDING\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -841,9 +841,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"APPROVED\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -864,9 +864,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -892,9 +892,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/budgets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -915,9 +915,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -938,9 +938,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/budgets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"type\\\": \\\"REFUND\\\", \\\"period\\\": \\\"MONTHLY\\\", \\\"limit\\\": \\\"5000.00\\\", \\\"alertThresholds\\\": [50, 75, 90]}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -961,9 +961,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"limit\\\": \\\"10000.00\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -984,9 +984,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1012,9 +1012,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/agents\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1035,9 +1035,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1058,9 +1058,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/agents\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Customer Service Agent\\\", \\\"type\\\": \\\"RESPONSE_RECOMMENDATION\\\", \\\"enabled\\\": true, \\\"status\\\": \\\"ACTIVE\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1081,9 +1081,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"enabled\\\": false}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1104,9 +1104,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1132,9 +1132,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1155,9 +1155,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1178,9 +1178,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Auto-escalate VIP customers\\\", \\\"enabled\\\": true, \\\"priority\\\": 100, \\\"action\\\": \\\"ROUTE_TO_SENIOR\\\"}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1201,9 +1201,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"enabled\\\": false}\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1224,9 +1224,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1252,9 +1252,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/performance-metrics\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/performance-metrics\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
@@ -1275,9 +1275,9 @@
               "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/team-performance\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/team-performance\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
             },
             "url": {
-              "raw": "{{organization_api_url}",
+              "raw": "{{organization_api_url}}",
               "host": [
-                "{{organization_api_url}"
+                "{{organization_api_url}}"
               ]
             }
           },
