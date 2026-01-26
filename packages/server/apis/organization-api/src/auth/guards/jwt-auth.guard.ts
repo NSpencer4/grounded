@@ -22,7 +22,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context)
   }
 
-  handleRequest(err: Error | null, user: unknown, info: Error | null) {
+  handleRequest<TUser = any>(
+    err: Error | null,
+    user: unknown,
+    info: Error | null,
+    context: ExecutionContext,
+    status?: any,
+  ): TUser {
     if (err || !user) {
       if (info?.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token has expired')
@@ -32,6 +38,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       }
       throw new UnauthorizedException('Authentication required')
     }
-    return user
+    return user as TUser
   }
 }

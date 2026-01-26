@@ -8,7 +8,7 @@ import { IsUUID } from 'class-validator'
 
 class RepPerformanceParamsDto extends OrgScopedParamsDto {
   @IsUUID('4')
-  repId: string
+  repId!: string
 }
 
 @Controller('organizations/:orgId')
