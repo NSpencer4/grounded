@@ -20,7 +20,6 @@
     "db:seed-comprehensive": "tsx scripts/seed-data.ts",
     "db:clear": "tsx scripts/clear-data.ts",
     "db:reset": "npm run db:clear && npm run db:seed-comprehensive",
-    "jwt:generate": "tsx scripts/generate-jwt.ts",
     "test:endpoints": "tsx src/test-endpoints.ts"
   },
   "dependencies": {

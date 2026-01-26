@@ -11,13 +11,14 @@
       "item": [
         {
           "name": "Health Check",
+          "id": "b0b6e98b-2c79-4cff-9f63-afb948237531",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/health",
+              "raw": "{{organization_api_url}}/health",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "health"
@@ -26,13 +27,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "3ab69a13-30e7-4723-b264-cedd20047a18"
     },
     {
       "name": "Organizations",
       "item": [
         {
           "name": "Get Organization",
+          "id": "02c53f1f-e758-41a7-b171-c9f910a3b36d",
           "request": {
             "method": "GET",
             "header": [
@@ -42,9 +45,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -56,6 +59,7 @@
         },
         {
           "name": "Create Organization",
+          "id": "3a225d21-5613-451d-b19b-00d911baaa92",
           "request": {
             "method": "POST",
             "header": [
@@ -73,9 +77,9 @@
               "raw": "{\n  \"name\": \"Acme Corp\",\n  \"slug\": \"acme-corp\",\n  \"settings\": {\n    \"timezone\": \"America/New_York\",\n    \"locale\": \"en-US\",\n    \"features\": [\"ai-agents\", \"analytics\"]\n  }\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations",
+              "raw": "{{organization_api_url}}/organizations",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations"
@@ -86,6 +90,7 @@
         },
         {
           "name": "Update Organization",
+          "id": "3948a0de-78c1-4fd1-ae7f-567467a10034",
           "request": {
             "method": "PATCH",
             "header": [
@@ -103,9 +108,9 @@
               "raw": "{\n  \"name\": \"Acme Corporation\",\n  \"settings\": {\n    \"timezone\": \"America/Los_Angeles\"\n  }\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -117,6 +122,7 @@
         },
         {
           "name": "Delete Organization",
+          "id": "169bd324-b52b-42dc-9c31-367f13af29f7",
           "request": {
             "method": "DELETE",
             "header": [
@@ -126,9 +132,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -138,13 +144,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "8c276c57-8457-4c41-b64a-ec04a2abf97d"
     },
     {
       "name": "Users",
       "item": [
         {
           "name": "List Users",
+          "id": "debdeeae-0dcb-4dd7-a201-d4b7dc5d08ee",
           "request": {
             "method": "GET",
             "header": [
@@ -154,9 +162,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/users?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -179,6 +187,7 @@
         },
         {
           "name": "Get User",
+          "id": "659541c5-92d6-4e6e-831f-473065a29c4b",
           "request": {
             "method": "GET",
             "header": [
@@ -188,9 +197,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -204,6 +213,7 @@
         },
         {
           "name": "Create User",
+          "id": "457b9e42-0803-407b-b979-d84e8a6d88c8",
           "request": {
             "method": "POST",
             "header": [
@@ -221,9 +231,9 @@
               "raw": "{\n  \"email\": \"john@example.com\",\n  \"name\": \"John Doe\",\n  \"role\": \"CUSTOMER\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/users",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -236,6 +246,7 @@
         },
         {
           "name": "Update User",
+          "id": "991772fb-2353-4369-8725-58bf8b9db5ac",
           "request": {
             "method": "PATCH",
             "header": [
@@ -253,9 +264,9 @@
               "raw": "{\n  \"name\": \"John Smith\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -269,6 +280,7 @@
         },
         {
           "name": "Delete User",
+          "id": "b26cf673-2dc7-48b8-ab4d-3c3d6ad44ed3",
           "request": {
             "method": "DELETE",
             "header": [
@@ -278,9 +290,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -292,13 +304,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "b30d2289-532b-4556-8fdb-bb8ca7220f84"
     },
     {
       "name": "Representatives",
       "item": [
         {
           "name": "List Representatives",
+          "id": "4d9ce529-3dc6-4d76-8eb4-5c93f492e18d",
           "request": {
             "method": "GET",
             "header": [
@@ -308,9 +322,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -333,6 +347,7 @@
         },
         {
           "name": "Get Representative",
+          "id": "9a849747-6d8f-457b-85f2-485d0788b552",
           "request": {
             "method": "GET",
             "header": [
@@ -342,9 +357,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -358,6 +373,7 @@
         },
         {
           "name": "Create Representative",
+          "id": "abae1dd9-3284-44c7-98cd-0996dc001fc3",
           "request": {
             "method": "POST",
             "header": [
@@ -375,9 +391,9 @@
               "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"JUNIOR_SUPPORT\",\n  \"status\": \"ONLINE\",\n  \"maxChats\": 10\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -390,6 +406,7 @@
         },
         {
           "name": "Update Representative",
+          "id": "6c2e1822-435e-4208-83f9-0079e4728457",
           "request": {
             "method": "PATCH",
             "header": [
@@ -407,9 +424,9 @@
               "raw": "{\n  \"status\": \"AWAY\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -423,6 +440,7 @@
         },
         {
           "name": "Delete Representative",
+          "id": "d61f1f2d-0535-43b5-8209-98500dae87c0",
           "request": {
             "method": "DELETE",
             "header": [
@@ -432,9 +450,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -448,6 +466,7 @@
         },
         {
           "name": "Get Representative Performance",
+          "id": "354944e1-519b-42c3-8da5-1372e0c53c7d",
           "request": {
             "method": "GET",
             "header": [
@@ -457,9 +476,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}/performance?startDate=2026-01-01&endDate=2026-01-31",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/representatives/{{repId}}/performance?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -482,13 +501,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "be001876-83da-42b2-8422-908c54316510"
     },
     {
       "name": "Customer Profiles",
       "item": [
         {
           "name": "List Customer Profiles",
+          "id": "f1b248f6-378b-4c1f-85ca-ca411e89debe",
           "request": {
             "method": "GET",
             "header": [
@@ -498,9 +519,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/customer-profiles?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -523,6 +544,7 @@
         },
         {
           "name": "Get Customer Profile",
+          "id": "7d9ae4a3-b6af-49eb-ae12-013c5b6e9d26",
           "request": {
             "method": "GET",
             "header": [
@@ -532,9 +554,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -548,6 +570,7 @@
         },
         {
           "name": "Create Customer Profile",
+          "id": "72cb19f5-aada-431e-b9e0-f8e1aadabf9d",
           "request": {
             "method": "POST",
             "header": [
@@ -565,9 +588,9 @@
               "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"tier\": \"PRO\",\n  \"standing\": \"GOOD\",\n  \"lifetimeValue\": \"1000.00\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/customer-profiles",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -580,6 +603,7 @@
         },
         {
           "name": "Update Customer Profile",
+          "id": "e69000c1-ed80-4ded-bc16-ac3b1d88b56b",
           "request": {
             "method": "PATCH",
             "header": [
@@ -597,9 +621,9 @@
               "raw": "{\n  \"tier\": \"ENTERPRISE\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -613,6 +637,7 @@
         },
         {
           "name": "Delete Customer Profile",
+          "id": "12ac6b4d-3110-402b-b78c-c9a9a24c268e",
           "request": {
             "method": "DELETE",
             "header": [
@@ -622,9 +647,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -636,13 +661,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "ea05982f-9dcc-4308-8347-e346b35cdd64"
     },
     {
       "name": "Tickets",
       "item": [
         {
           "name": "List Tickets",
+          "id": "95d99e4d-0dba-4080-a264-402515a31558",
           "request": {
             "method": "GET",
             "header": [
@@ -652,9 +679,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/tickets?status=OPEN&limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/tickets?status=OPEN&limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -681,6 +708,7 @@
         },
         {
           "name": "Get Ticket",
+          "id": "eb4d61e3-d03c-466c-8057-3536d29b7f70",
           "request": {
             "method": "GET",
             "header": [
@@ -690,9 +718,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -706,6 +734,7 @@
         },
         {
           "name": "Create Ticket",
+          "id": "adbee8f5-4edb-4d7e-ac94-bd120aee078c",
           "request": {
             "method": "POST",
             "header": [
@@ -723,9 +752,9 @@
               "raw": "{\n  \"ticketNumber\": \"TICKET-001\",\n  \"customerId\": \"{{customerId}}\",\n  \"subject\": \"Issue with order\",\n  \"description\": \"Customer reports item not received\",\n  \"status\": \"OPEN\",\n  \"priority\": \"HIGH\",\n  \"category\": \"TECHNICAL_ISSUE\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/tickets",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/tickets",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -738,6 +767,7 @@
         },
         {
           "name": "Update Ticket",
+          "id": "90ae01a5-3912-449b-b39f-e0d7446753a2",
           "request": {
             "method": "PATCH",
             "header": [
@@ -755,9 +785,9 @@
               "raw": "{\n  \"status\": \"RESOLVED\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -771,6 +801,7 @@
         },
         {
           "name": "Delete Ticket",
+          "id": "75cb122d-c175-45a0-8719-cfb810c7f08c",
           "request": {
             "method": "DELETE",
             "header": [
@@ -780,9 +811,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -794,13 +825,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "f3d98806-e919-4aea-a927-febfb70786ef"
     },
     {
       "name": "Escalations",
       "item": [
         {
           "name": "List Escalations",
+          "id": "587b4cd9-56af-4782-87cc-ef7d4fcd258e",
           "request": {
             "method": "GET",
             "header": [
@@ -810,9 +843,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/escalations?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/escalations?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -835,6 +868,7 @@
         },
         {
           "name": "Get Escalation",
+          "id": "ea4a5df0-57a4-4733-92af-103198816142",
           "request": {
             "method": "GET",
             "header": [
@@ -844,9 +878,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -860,6 +894,7 @@
         },
         {
           "name": "Create Escalation",
+          "id": "f8c701cd-312d-4c9f-ab60-0297ac81ba52",
           "request": {
             "method": "POST",
             "header": [
@@ -877,9 +912,9 @@
               "raw": "{\n  \"conversationId\": \"{{conversationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"priority\": \"HIGH\",\n  \"status\": \"PENDING\",\n  \"reason\": \"CUSTOMER_REQUEST\",\n  \"issueDescription\": \"Customer requesting manager intervention\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/escalations",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/escalations",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -892,6 +927,7 @@
         },
         {
           "name": "Update Escalation",
+          "id": "f9b82d9b-449f-4dad-8f33-f9609799b28c",
           "request": {
             "method": "PATCH",
             "header": [
@@ -909,9 +945,9 @@
               "raw": "{\n  \"status\": \"RESOLVED\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -925,6 +961,7 @@
         },
         {
           "name": "Delete Escalation",
+          "id": "933e6dfe-983c-4634-a225-6793b86f4ffa",
           "request": {
             "method": "DELETE",
             "header": [
@@ -934,9 +971,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -948,13 +985,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "ab854019-0c54-4ff2-9581-d25411e088f3"
     },
     {
       "name": "Refunds",
       "item": [
         {
           "name": "List Refunds",
+          "id": "9eb30928-9f3e-41d9-92d2-530eed2b6699",
           "request": {
             "method": "GET",
             "header": [
@@ -964,9 +1003,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/refunds?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/refunds?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -989,6 +1028,7 @@
         },
         {
           "name": "Get Refund",
+          "id": "9871425f-22ba-4f06-8426-73a34a383f1f",
           "request": {
             "method": "GET",
             "header": [
@@ -998,9 +1038,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1014,6 +1054,7 @@
         },
         {
           "name": "Create Refund",
+          "id": "ba17586b-5447-4e12-afe6-6f4ec377252f",
           "request": {
             "method": "POST",
             "header": [
@@ -1031,9 +1072,9 @@
               "raw": "{\n  \"orderId\": \"ORD-12345\",\n  \"customerId\": \"{{customerId}}\",\n  \"amount\": \"49.99\",\n  \"reason\": \"CUSTOMER_REQUEST\",\n  \"status\": \"PENDING\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/refunds",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/refunds",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1046,6 +1087,7 @@
         },
         {
           "name": "Update Refund",
+          "id": "98a016df-d463-4ac8-b34d-affaa3839b17",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1063,9 +1105,9 @@
               "raw": "{\n  \"status\": \"APPROVED\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1079,6 +1121,7 @@
         },
         {
           "name": "Delete Refund",
+          "id": "2f893bdc-8678-473d-879f-31789c5c027e",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1088,9 +1131,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1102,13 +1145,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "3e3ecdff-1e42-422b-8676-b379ecca53be"
     },
     {
       "name": "Budgets",
       "item": [
         {
           "name": "List Budgets",
+          "id": "5ee29158-e111-4310-824b-fd48d92583ae",
           "request": {
             "method": "GET",
             "header": [
@@ -1118,9 +1163,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/budgets?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/budgets?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1143,6 +1188,7 @@
         },
         {
           "name": "Get Budget",
+          "id": "3d3d7e26-34fb-4bed-9ddc-fde09e25b83c",
           "request": {
             "method": "GET",
             "header": [
@@ -1152,9 +1198,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1168,6 +1214,7 @@
         },
         {
           "name": "Create Budget",
+          "id": "c2c26c1d-ad43-4b4e-9812-6c5c92109987",
           "request": {
             "method": "POST",
             "header": [
@@ -1185,9 +1232,9 @@
               "raw": "{\n  \"type\": \"REFUND\",\n  \"period\": \"MONTHLY\",\n  \"limit\": \"5000.00\",\n  \"alertThresholds\": [50, 75, 90]\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/budgets",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/budgets",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1200,6 +1247,7 @@
         },
         {
           "name": "Update Budget",
+          "id": "772d08a8-864d-4976-992e-454f012dfd69",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1217,9 +1265,9 @@
               "raw": "{\n  \"limit\": \"10000.00\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1233,6 +1281,7 @@
         },
         {
           "name": "Delete Budget",
+          "id": "0104e665-e9aa-445d-b0bd-c7edb5d84988",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1242,9 +1291,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1256,13 +1305,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "e98d9e7b-201a-4a81-ac78-3c9a57bcbc12"
     },
     {
       "name": "Agent Configurations",
       "item": [
         {
           "name": "List Agents",
+          "id": "a58d6f32-44e8-42f4-bbe3-1b324482121a",
           "request": {
             "method": "GET",
             "header": [
@@ -1272,9 +1323,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/agents?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/agents?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1297,6 +1348,7 @@
         },
         {
           "name": "Get Agent",
+          "id": "ccdb7c9c-3897-4c07-82e6-d2848af5c00d",
           "request": {
             "method": "GET",
             "header": [
@@ -1306,9 +1358,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1322,6 +1374,7 @@
         },
         {
           "name": "Create Agent",
+          "id": "5362c522-7023-4b45-a5b4-ab3d52623670",
           "request": {
             "method": "POST",
             "header": [
@@ -1339,9 +1392,9 @@
               "raw": "{\n  \"name\": \"Customer Service Agent\",\n  \"type\": \"RESPONSE_RECOMMENDATION\",\n  \"enabled\": true,\n  \"status\": \"ACTIVE\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/agents",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/agents",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1354,6 +1407,7 @@
         },
         {
           "name": "Update Agent",
+          "id": "1d3c22af-0497-4805-907c-5bd00fd3856d",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1371,9 +1425,9 @@
               "raw": "{\n  \"enabled\": false\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1387,6 +1441,7 @@
         },
         {
           "name": "Delete Agent",
+          "id": "9c35e87c-9c31-4931-a69c-0879e4c423c6",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1396,9 +1451,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1410,13 +1465,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "47243b6c-8194-4a02-b20b-b472f0c5478b"
     },
     {
       "name": "Decision Rules",
       "item": [
         {
           "name": "List Decision Rules",
+          "id": "90a2a66e-f762-48ff-9d40-39cf6189e9ef",
           "request": {
             "method": "GET",
             "header": [
@@ -1426,9 +1483,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules?limit=20&offset=0",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/decision-rules?limit=20&offset=0",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1451,6 +1508,7 @@
         },
         {
           "name": "Get Decision Rule",
+          "id": "c3a02d23-236e-4481-8e21-e2b3678a8bf3",
           "request": {
             "method": "GET",
             "header": [
@@ -1460,9 +1518,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1476,6 +1534,7 @@
         },
         {
           "name": "Create Decision Rule",
+          "id": "29a5cf95-c33f-439a-a664-d276afc73abe",
           "request": {
             "method": "POST",
             "header": [
@@ -1493,9 +1552,9 @@
               "raw": "{\n  \"name\": \"Auto-escalate VIP customers\",\n  \"enabled\": true,\n  \"priority\": 100,\n  \"action\": \"ROUTE_TO_SENIOR\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/decision-rules",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1508,6 +1567,7 @@
         },
         {
           "name": "Update Decision Rule",
+          "id": "59cc5701-8e25-488d-9ada-132ffce1d277",
           "request": {
             "method": "PATCH",
             "header": [
@@ -1525,9 +1585,9 @@
               "raw": "{\n  \"enabled\": false\n}"
             },
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1541,6 +1601,7 @@
         },
         {
           "name": "Delete Decision Rule",
+          "id": "977a1ccd-5765-4aa7-bac0-2328183b8644",
           "request": {
             "method": "DELETE",
             "header": [
@@ -1550,9 +1611,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1564,13 +1625,15 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "4192d943-68ca-4aee-8032-5f63f74a4b18"
     },
     {
       "name": "Performance Metrics",
       "item": [
         {
           "name": "List Performance Metrics",
+          "id": "12d9c306-c3f4-4470-96f8-5f160877bbed",
           "request": {
             "method": "GET",
             "header": [
@@ -1580,9 +1643,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/performance-metrics?startDate=2026-01-01&endDate=2026-01-31",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/performance-metrics?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1605,6 +1668,7 @@
         },
         {
           "name": "Get Team Performance",
+          "id": "ec700a22-e129-4456-b037-bcf8d1c4df7c",
           "request": {
             "method": "GET",
             "header": [
@@ -1614,9 +1678,9 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/organizations/{{orgId}}/team-performance?startDate=2026-01-01&endDate=2026-01-31",
+              "raw": "{{organization_api_url}}/organizations/{{orgId}}/team-performance?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{base_url}}"
+                "{{organization_api_url}}"
               ],
               "path": [
                 "organizations",
@@ -1637,77 +1701,212 @@
           },
           "response": []
         }
-      ]
+      ],
+      "id": "15855ef7-d80f-4fda-90c5-1d9aafb6653e"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "97ca212f-578f-4dac-9d58-4111bc9fddfa",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "/**",
+          " * JWT Pre-Request Script for Organization API",
+          " * ",
+          " * This script automatically generates a valid JWT token for the Organization API",
+          " * and sets it in the `jwt_token` collection variable.",
+          " * ",
+          " * SETUP INSTRUCTIONS:",
+          " * 1. In Postman, select the \"Organization API (NestJS)\" collection",
+          " * 2. Go to the \"Scripts\" tab",
+          " * 3. In the \"Pre-request\" section, paste this entire script",
+          " * 4. Save the collection",
+          " * ",
+          " * The script will automatically run before each request and generate a fresh JWT token.",
+          " * ",
+          " * ENVIRONMENT VARIABLES (configured in local.postman_environment.json):",
+          " * - jwt_secret: The secret key for signing the JWT",
+          " * - jwt_issuer: Token issuer (default: grounded-api)",
+          " * - jwt_audience: Token audience (default: grounded-services)",
+          " * - jwt_user_id: User ID for the token subject",
+          " * - jwt_user_email: User email",
+          " * - jwt_user_name: User display name",
+          " * - jwt_organization_id: Organization ID",
+          " * - jwt_user_role: User role (CUSTOMER, REPRESENTATIVE, or ADMIN)",
+          " * - jwt_expiry_hours: Token expiry in hours (default: 24)",
+          " */",
+          "",
+          "// Get configuration from environment variables",
+          "const jwtSecret = pm.environment.get('jwt_secret');",
+          "const jwtIssuer = pm.environment.get('jwt_issuer') || 'grounded-api';",
+          "const jwtAudience = pm.environment.get('jwt_audience') || 'grounded-services';",
+          "const userId = pm.environment.get('jwt_user_id') || 'test-user-123';",
+          "const userEmail = pm.environment.get('jwt_user_email') || 'test@example.com';",
+          "const userName = pm.environment.get('jwt_user_name') || 'Test User';",
+          "const organizationId = pm.environment.get('jwt_organization_id') || 'acme-corp';",
+          "const userRole = pm.environment.get('jwt_user_role') || 'ADMIN';",
+          "const expiryHours = parseInt(pm.environment.get('jwt_expiry_hours') || '24', 10);",
+          "",
+          "// Validate required configuration",
+          "if (!jwtSecret) {",
+          "    console.error('❌ JWT_SECRET not configured in environment variables');",
+          "    throw new Error('JWT_SECRET is required. Please set jwt_secret in your Postman environment.');",
+          "}",
+          "",
+          "// Helper function to base64url encode",
+          "function base64url(source) {",
+          "    // Encode in classical base64",
+          "    let encodedSource = CryptoJS.enc.Base64.stringify(source);",
+          "    ",
+          "    // Remove padding equal signs",
+          "    encodedSource = encodedSource.replace(/=+$/, '');",
+          "    ",
+          "    // Replace characters according to base64url specifications",
+          "    encodedSource = encodedSource.replace(/\\+/g, '-');",
+          "    encodedSource = encodedSource.replace(/\\//g, '_');",
+          "    ",
+          "    return encodedSource;",
+          "}",
+          "",
+          "// Create JWT header",
+          "const header = {",
+          "    alg: 'HS256',",
+          "    typ: 'JWT'",
+          "};",
+          "",
+          "// Create JWT payload",
+          "const now = Math.floor(Date.now() / 1000);",
+          "const exp = now + (expiryHours * 3600); // expiry in seconds",
+          "",
+          "const payload = {",
+          "    sub: userId,",
+          "    email: userEmail,",
+          "    name: userName,",
+          "    organizationId: organizationId,",
+          "    role: userRole,",
+          "    iat: now,",
+          "    exp: exp,",
+          "    iss: jwtIssuer,",
+          "    aud: jwtAudience",
+          "};",
+          "",
+          "// Encode header and payload",
+          "const stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));",
+          "const encodedHeader = base64url(stringifiedHeader);",
+          "",
+          "const stringifiedPayload = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));",
+          "const encodedPayload = base64url(stringifiedPayload);",
+          "",
+          "// Create signature",
+          "const token = `${encodedHeader}.${encodedPayload}`;",
+          "const signature = CryptoJS.HmacSHA256(token, jwtSecret);",
+          "const encodedSignature = base64url(signature);",
+          "",
+          "// Complete JWT",
+          "const jwt = `${token}.${encodedSignature}`;",
+          "",
+          "// Set the JWT token in collection variable",
+          "pm.collectionVariables.set('jwt_token', jwt);",
+          "",
+          "// Log token details (for debugging)",
+          "console.log('✅ JWT Token Generated Successfully');",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('📋 Token Details:');",
+          "console.log(`   User ID: ${userId}`);",
+          "console.log(`   Email: ${userEmail}`);",
+          "console.log(`   Name: ${userName}`);",
+          "console.log(`   Organization: ${organizationId}`);",
+          "console.log(`   Role: ${userRole}`);",
+          "console.log(`   Issuer: ${jwtIssuer}`);",
+          "console.log(`   Audience: ${jwtAudience}`);",
+          "console.log(`   Issued At: ${new Date(now * 1000).toISOString()}`);",
+          "console.log(`   Expires At: ${new Date(exp * 1000).toISOString()}`);",
+          "console.log(`   Valid For: ${expiryHours} hours`);",
+          "console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');",
+          "console.log('🔑 Token (first 50 chars):', jwt.substring(0, 50) + '...');",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "4d3b1ac9-540e-4e7d-9b79-606485263143",
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [
     {
-      "key": "base_url",
-      "value": "http://localhost:3001",
-      "type": "default",
-      "description": "Base URL for the Organization API"
-    },
-    {
+      "id": "a5e8e1be-51f3-4682-9d4b-4fffd276269b",
       "key": "jwt_token",
       "value": "",
-      "type": "default",
       "description": "JWT token for authentication. Generate with: npm run jwt:generate --workspace=@grounded/organization-api"
     },
     {
+      "id": "b5b363a3-b166-4a30-9553-aa38403dccfd",
       "key": "orgId",
       "value": "acme-corp",
-      "type": "default",
       "description": "Organization ID or slug"
     },
     {
+      "id": "8771a31f-062b-4f7c-be3d-c7fd982ba972",
       "key": "userId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "a13fb982-f8a0-4862-a380-0afac57927b6",
       "key": "repId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "9592cf12-5d66-4d98-9818-b2e2a12e6d0f",
       "key": "customerId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "48efd004-072c-4c57-a5b9-0d5326ddaf03",
       "key": "ticketId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "92e82da5-0f40-464d-9cf3-8cb30b5bdced",
       "key": "escalationId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "f5f428c6-ba42-4cde-b434-d7c360a5c185",
       "key": "refundId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "271d7996-9ab1-4f72-894a-a493465cbf82",
       "key": "budgetId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "be8bc9c1-9497-45f0-8aef-213568240b7a",
       "key": "agentId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "665789b3-cc0a-4efd-9a28-a9afb34b1742",
       "key": "ruleId",
-      "value": "",
-      "type": "default"
+      "value": ""
     },
     {
+      "id": "d1dc64b4-0ac4-4e5c-91b4-4add6b169bda",
       "key": "conversationId",
-      "value": "",
-      "type": "default"
+      "value": ""
     }
   ]
 }

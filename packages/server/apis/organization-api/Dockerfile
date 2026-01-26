@@ -38,8 +38,8 @@ COPY --chown=nestjs:nodejs package*.json ./
 COPY --chown=nestjs:nodejs lerna.json ./
 COPY --chown=nestjs:nodejs tsconfig.base.json ./
 
-# Copy only production dependencies
-RUN npm ci --only=production --ignore-scripts
+# Copy node_modules from builder (includes all workspace dependencies)
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 
 # Copy built application from builder
 COPY --from=builder --chown=nestjs:nodejs /app/packages/server/apis/organization-api/dist ./packages/server/apis/organization-api/dist
@@ -47,6 +47,7 @@ COPY --from=builder --chown=nestjs:nodejs /app/packages/server/apis/organization
 
 # Copy shared packages (if any dependencies exist)
 COPY --from=builder --chown=nestjs:nodejs /app/packages/server/shared ./packages/server/shared
+COPY --from=builder --chown=nestjs:nodejs /app/packages/schemas ./packages/schemas
 
 # Switch to non-root user
 USER nestjs
