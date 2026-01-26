@@ -10,7 +10,8 @@ data "aws_ami" "amazon_linux_2" {
 
 resource "aws_instance" "kafka_cluster" {
   ami           = data.aws_ami.amazon_linux_2.id
-  instance_type = "t3.small" # 2GB RAM - minimum recommended for Kafka/Zookeeper
+  # instance_type = "t3.small" # 2GB RAM - minimum recommended for Kafka/Zookeeper
+  instance_type = "t3.micro" # 2GB RAM - minimum recommended for Kafka/Zookeeper micro could be unstable
 
   subnet_id                   = aws_subnet.private_primary.id
   vpc_security_group_ids      = [aws_security_group.grounded_kafka_cluster_sg.id]

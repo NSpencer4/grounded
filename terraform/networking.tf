@@ -116,19 +116,18 @@ resource "aws_route_table_association" "private_primary" {
   route_table_id = aws_route_table.private.id
 }
 
-# Two subnets required for MSK uncomment if MSK is enabled
-# resource "aws_subnet" "private_secondary" {
-#   vpc_id            = aws_vpc.main.id
-#   cidr_block        = "10.0.11.0/24"
-#   availability_zone = "us-east-1b"
-#   tags = { Name = "grounded-private-b", Environment = var.environment }
-# }
-#
-# # Two subnets required for MSK
-# resource "aws_route_table_association" "private_secondary" {
-#   subnet_id      = aws_subnet.private_secondary.id
-#   route_table_id = aws_route_table.private.id
-# }
+# Two subnets required for RDS DB Subnet Groups (multi-AZ requirement)
+resource "aws_subnet" "private_secondary" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.11.0/24"
+  availability_zone = "us-east-1b"
+  tags = { Name = "grounded-private-b", Environment = var.environment }
+}
+
+resource "aws_route_table_association" "private_secondary" {
+  subnet_id      = aws_subnet.private_secondary.id
+  route_table_id = aws_route_table.private.id
+}
 
 # TODO: Testing purposes - remove when complete
 resource "aws_security_group" "private_primary" {
@@ -221,8 +220,7 @@ resource "aws_security_group" "grounded_kafka_cluster_sg" {
     protocol    = "tcp"
     cidr_blocks = [
       aws_subnet.private_primary.cidr_block,
-      # Uncomment if MSK is enabled
-      # aws_subnet.private_secondary.cidr_block
+      aws_subnet.private_secondary.cidr_block
     ]
   }
 
@@ -232,8 +230,7 @@ resource "aws_security_group" "grounded_kafka_cluster_sg" {
     protocol    = "tcp"
     cidr_blocks = [
       aws_subnet.private_primary.cidr_block,
-      # Uncomment if MSK is enabled
-      # aws_subnet.private_secondary.cidr_block
+      aws_subnet.private_secondary.cidr_block
     ]
   }
 
@@ -243,8 +240,7 @@ resource "aws_security_group" "grounded_kafka_cluster_sg" {
     protocol    = "tcp"
     cidr_blocks = [
       aws_subnet.private_primary.cidr_block,
-      # Uncomment if MSK is enabled
-      # aws_subnet.private_secondary.cidr_block
+      aws_subnet.private_secondary.cidr_block
     ]
   }
 
@@ -254,8 +250,7 @@ resource "aws_security_group" "grounded_kafka_cluster_sg" {
     protocol    = "tcp"
     cidr_blocks = [
       aws_subnet.private_primary.cidr_block,
-      # Uncomment if MSK is enabled
-      # aws_subnet.private_secondary.cidr_block
+      aws_subnet.private_secondary.cidr_block
     ]
   }
 
@@ -293,7 +288,7 @@ output "private_primary_subnet_id" {
 }
 
 output "private_secondary_subnet_id" {
-  value = aws_subnet.private_primary.id
+  value = aws_subnet.private_secondary.id
 }
 
 output "vpc_cidr_block" {

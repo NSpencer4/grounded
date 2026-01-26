@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "f7e8d9c6-5a4b-3c2d-1e9f-8a7b6c5d4e3f",
-    "name": "Organization API (Lambda)",
-    "description": "REST API for managing organization data via AWS Lambda Runtime Interface Emulator.\n\n**IMPORTANT**: This API runs as a Lambda container. All requests must be POST to the Lambda RIE endpoint with an API Gateway V2 event payload.\n\n## Local Development\n- URL: http://localhost:9005/2015-03-31/functions/function/invocations\n- All requests are POST with JSON body containing the API Gateway event\n\n## Authentication\nMost endpoints require a JWT token. Generate one with:\n```bash\nnpm run jwt:generate --workspace=@grounded/organization-api\n```",
+    "name": "Organization API (NestJS)",
+    "description": "REST API for managing organization data via NestJS.\n\n## Local Development\n- URL: http://localhost:3001\n- All requests use standard HTTP methods (GET, POST, PATCH, DELETE)\n\n## Authentication\nMost endpoints require a JWT token in the Authorization header. Generate one with:\n```bash\nnpm run jwt:generate --workspace=@grounded/organization-api\n```",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -12,21 +12,15 @@
         {
           "name": "Health Check",
           "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/health\"\n    }\n  },\n  \"rawPath\": \"/health\",\n  \"headers\": {},\n  \"body\": null\n}"
-            },
+            "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/health",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
               ]
             }
           },
@@ -40,21 +34,21 @@
         {
           "name": "Get Organization",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}"
               ]
             }
           },
@@ -66,18 +60,25 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations\"\n    }\n  },\n  \"rawPath\": \"/organizations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Acme Corp\\\", \\\"slug\\\": \\\"acme-corp\\\", \\\"settings\\\": {\\\"timezone\\\": \\\"America/New_York\\\", \\\"locale\\\": \\\"en-US\\\", \\\"features\\\": [\\\"ai-agents\\\", \\\"analytics\\\"]}}\"\n}"
+              "raw": "{\n  \"name\": \"Acme Corp\",\n  \"slug\": \"acme-corp\",\n  \"settings\": {\n    \"timezone\": \"America/New_York\",\n    \"locale\": \"en-US\",\n    \"features\": [\"ai-agents\", \"analytics\"]\n  }\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations"
               ]
             }
           },
@@ -86,8 +87,12 @@
         {
           "name": "Update Organization",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -95,12 +100,16 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Acme Corporation\\\", \\\"settings\\\": {\\\"timezone\\\": \\\"America/Los_Angeles\\\"}}\"\n}"
+              "raw": "{\n  \"name\": \"Acme Corporation\",\n  \"settings\": {\n    \"timezone\": \"America/Los_Angeles\"\n  }\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}"
               ]
             }
           },
@@ -109,21 +118,21 @@
         {
           "name": "Delete Organization",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}"
               ]
             }
           },
@@ -137,21 +146,32 @@
         {
           "name": "List Users",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/users\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/users?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -160,21 +180,23 @@
         {
           "name": "Get User",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "users",
+                "{{userId}}"
               ]
             }
           },
@@ -186,18 +208,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/users\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"email\\\": \\\"john@example.com\\\", \\\"name\\\": \\\"John Doe\\\", \\\"role\\\": \\\"CUSTOMER\\\"}\"\n}"
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"name\": \"John Doe\",\n  \"role\": \"CUSTOMER\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/users",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "users"
               ]
             }
           },
@@ -206,8 +237,12 @@
         {
           "name": "Update User",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -215,12 +250,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"John Smith\\\"}\"\n}"
+              "raw": "{\n  \"name\": \"John Smith\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "users",
+                "{{userId}}"
               ]
             }
           },
@@ -229,21 +270,23 @@
         {
           "name": "Delete User",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/users/{{userId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/users/{{userId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/users/{{userId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "users",
+                "{{userId}}"
               ]
             }
           },
@@ -257,21 +300,32 @@
         {
           "name": "List Representatives",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -280,21 +334,23 @@
         {
           "name": "Get Representative",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives",
+                "{{repId}}"
               ]
             }
           },
@@ -306,18 +362,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/representatives\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"userId\\\": \\\"{{userId}}\\\", \\\"role\\\": \\\"JUNIOR_SUPPORT\\\", \\\"status\\\": \\\"ONLINE\\\", \\\"maxChats\\\": 10}\"\n}"
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"JUNIOR_SUPPORT\",\n  \"status\": \"ONLINE\",\n  \"maxChats\": 10\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives"
               ]
             }
           },
@@ -326,8 +391,12 @@
         {
           "name": "Update Representative",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -335,12 +404,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"AWAY\\\"}\"\n}"
+              "raw": "{\n  \"status\": \"AWAY\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives",
+                "{{repId}}"
               ]
             }
           },
@@ -349,21 +424,23 @@
         {
           "name": "Delete Representative",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives",
+                "{{repId}}"
               ]
             }
           },
@@ -372,21 +449,34 @@
         {
           "name": "Get Representative Performance",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/representatives/{{repId}}/performance\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/representatives/{{repId}}/performance\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/representatives/{{repId}}/performance?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "representatives",
+                "{{repId}}",
+                "performance"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
               ]
             }
           },
@@ -400,21 +490,32 @@
         {
           "name": "List Customer Profiles",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "customer-profiles"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -423,21 +524,23 @@
         {
           "name": "Get Customer Profile",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "customer-profiles",
+                "{{customerId}}"
               ]
             }
           },
@@ -449,18 +552,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"userId\\\": \\\"{{userId}}\\\", \\\"tier\\\": \\\"PRO\\\", \\\"standing\\\": \\\"GOOD\\\", \\\"lifetimeValue\\\": \\\"1000.00\\\"}\"\n}"
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"tier\": \"PRO\",\n  \"standing\": \"GOOD\",\n  \"lifetimeValue\": \"1000.00\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "customer-profiles"
               ]
             }
           },
@@ -469,8 +581,12 @@
         {
           "name": "Update Customer Profile",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -478,12 +594,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"tier\\\": \\\"ENTERPRISE\\\"}\"\n}"
+              "raw": "{\n  \"tier\": \"ENTERPRISE\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "customer-profiles",
+                "{{customerId}}"
               ]
             }
           },
@@ -492,21 +614,23 @@
         {
           "name": "Delete Customer Profile",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/customer-profiles/{{customerId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/customer-profiles/{{customerId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "customer-profiles",
+                "{{customerId}}"
               ]
             }
           },
@@ -520,21 +644,36 @@
         {
           "name": "List Tickets",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/tickets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"status\": \"OPEN\",\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/tickets?status=OPEN&limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OPEN"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -543,21 +682,23 @@
         {
           "name": "Get Ticket",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "tickets",
+                "{{ticketId}}"
               ]
             }
           },
@@ -569,18 +710,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/tickets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"ticketNumber\\\": \\\"TICKET-001\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"subject\\\": \\\"Issue with order\\\", \\\"description\\\": \\\"Customer reports item not received\\\", \\\"status\\\": \\\"OPEN\\\", \\\"priority\\\": \\\"HIGH\\\", \\\"category\\\": \\\"TECHNICAL_ISSUE\\\"}\"\n}"
+              "raw": "{\n  \"ticketNumber\": \"TICKET-001\",\n  \"customerId\": \"{{customerId}}\",\n  \"subject\": \"Issue with order\",\n  \"description\": \"Customer reports item not received\",\n  \"status\": \"OPEN\",\n  \"priority\": \"HIGH\",\n  \"category\": \"TECHNICAL_ISSUE\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/tickets",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "tickets"
               ]
             }
           },
@@ -589,8 +739,12 @@
         {
           "name": "Update Ticket",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -598,12 +752,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"RESOLVED\\\"}\"\n}"
+              "raw": "{\n  \"status\": \"RESOLVED\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "tickets",
+                "{{ticketId}}"
               ]
             }
           },
@@ -612,21 +772,23 @@
         {
           "name": "Delete Ticket",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/tickets/{{ticketId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/tickets/{{ticketId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "tickets",
+                "{{ticketId}}"
               ]
             }
           },
@@ -640,21 +802,32 @@
         {
           "name": "List Escalations",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/escalations\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/escalations?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "escalations"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -663,21 +836,23 @@
         {
           "name": "Get Escalation",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "escalations",
+                "{{escalationId}}"
               ]
             }
           },
@@ -689,18 +864,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/escalations\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"conversationId\\\": \\\"{{conversationId}}\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"priority\\\": \\\"HIGH\\\", \\\"status\\\": \\\"PENDING\\\", \\\"reason\\\": \\\"CUSTOMER_REQUEST\\\", \\\"issueDescription\\\": \\\"Customer requesting manager intervention\\\"}\"\n}"
+              "raw": "{\n  \"conversationId\": \"{{conversationId}}\",\n  \"customerId\": \"{{customerId}}\",\n  \"priority\": \"HIGH\",\n  \"status\": \"PENDING\",\n  \"reason\": \"CUSTOMER_REQUEST\",\n  \"issueDescription\": \"Customer requesting manager intervention\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/escalations",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "escalations"
               ]
             }
           },
@@ -709,8 +893,12 @@
         {
           "name": "Update Escalation",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -718,12 +906,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"RESOLVED\\\"}\"\n}"
+              "raw": "{\n  \"status\": \"RESOLVED\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "escalations",
+                "{{escalationId}}"
               ]
             }
           },
@@ -732,21 +926,23 @@
         {
           "name": "Delete Escalation",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/escalations/{{escalationId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/escalations/{{escalationId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "escalations",
+                "{{escalationId}}"
               ]
             }
           },
@@ -760,21 +956,32 @@
         {
           "name": "List Refunds",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/refunds\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/refunds?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "refunds"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -783,21 +990,23 @@
         {
           "name": "Get Refund",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "refunds",
+                "{{refundId}}"
               ]
             }
           },
@@ -809,18 +1018,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/refunds\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"orderId\\\": \\\"ORD-12345\\\", \\\"customerId\\\": \\\"{{customerId}}\\\", \\\"amount\\\": \\\"49.99\\\", \\\"reason\\\": \\\"CUSTOMER_REQUEST\\\", \\\"status\\\": \\\"PENDING\\\"}\"\n}"
+              "raw": "{\n  \"orderId\": \"ORD-12345\",\n  \"customerId\": \"{{customerId}}\",\n  \"amount\": \"49.99\",\n  \"reason\": \"CUSTOMER_REQUEST\",\n  \"status\": \"PENDING\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/refunds",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "refunds"
               ]
             }
           },
@@ -829,8 +1047,12 @@
         {
           "name": "Update Refund",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -838,12 +1060,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"status\\\": \\\"APPROVED\\\"}\"\n}"
+              "raw": "{\n  \"status\": \"APPROVED\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "refunds",
+                "{{refundId}}"
               ]
             }
           },
@@ -852,21 +1080,23 @@
         {
           "name": "Delete Refund",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/refunds/{{refundId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/refunds/{{refundId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/refunds/{{refundId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "refunds",
+                "{{refundId}}"
               ]
             }
           },
@@ -880,21 +1110,32 @@
         {
           "name": "List Budgets",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/budgets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/budgets?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "budgets"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -903,21 +1144,23 @@
         {
           "name": "Get Budget",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "budgets",
+                "{{budgetId}}"
               ]
             }
           },
@@ -929,18 +1172,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/budgets\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"type\\\": \\\"REFUND\\\", \\\"period\\\": \\\"MONTHLY\\\", \\\"limit\\\": \\\"5000.00\\\", \\\"alertThresholds\\\": [50, 75, 90]}\"\n}"
+              "raw": "{\n  \"type\": \"REFUND\",\n  \"period\": \"MONTHLY\",\n  \"limit\": \"5000.00\",\n  \"alertThresholds\": [50, 75, 90]\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/budgets",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "budgets"
               ]
             }
           },
@@ -949,8 +1201,12 @@
         {
           "name": "Update Budget",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -958,12 +1214,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"limit\\\": \\\"10000.00\\\"}\"\n}"
+              "raw": "{\n  \"limit\": \"10000.00\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "budgets",
+                "{{budgetId}}"
               ]
             }
           },
@@ -972,21 +1234,23 @@
         {
           "name": "Delete Budget",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/budgets/{{budgetId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/budgets/{{budgetId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "budgets",
+                "{{budgetId}}"
               ]
             }
           },
@@ -1000,21 +1264,32 @@
         {
           "name": "List Agents",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/agents\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/agents?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "agents"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -1023,21 +1298,23 @@
         {
           "name": "Get Agent",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "agents",
+                "{{agentId}}"
               ]
             }
           },
@@ -1049,18 +1326,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/agents\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Customer Service Agent\\\", \\\"type\\\": \\\"RESPONSE_RECOMMENDATION\\\", \\\"enabled\\\": true, \\\"status\\\": \\\"ACTIVE\\\"}\"\n}"
+              "raw": "{\n  \"name\": \"Customer Service Agent\",\n  \"type\": \"RESPONSE_RECOMMENDATION\",\n  \"enabled\": true,\n  \"status\": \"ACTIVE\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/agents",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "agents"
               ]
             }
           },
@@ -1069,8 +1355,12 @@
         {
           "name": "Update Agent",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -1078,12 +1368,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"enabled\\\": false}\"\n}"
+              "raw": "{\n  \"enabled\": false\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "agents",
+                "{{agentId}}"
               ]
             }
           },
@@ -1092,21 +1388,23 @@
         {
           "name": "Delete Agent",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/agents/{{agentId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/agents/{{agentId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/agents/{{agentId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "agents",
+                "{{agentId}}"
               ]
             }
           },
@@ -1120,21 +1418,32 @@
         {
           "name": "List Decision Rules",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"limit\": \"20\",\n    \"offset\": \"0\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules?limit=20&offset=0",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "decision-rules"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
               ]
             }
           },
@@ -1143,21 +1452,23 @@
         {
           "name": "Get Decision Rule",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "decision-rules",
+                "{{ruleId}}"
               ]
             }
           },
@@ -1169,18 +1480,27 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"POST\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"name\\\": \\\"Auto-escalate VIP customers\\\", \\\"enabled\\\": true, \\\"priority\\\": 100, \\\"action\\\": \\\"ROUTE_TO_SENIOR\\\"}\"\n}"
+              "raw": "{\n  \"name\": \"Auto-escalate VIP customers\",\n  \"enabled\": true,\n  \"priority\": 100,\n  \"action\": \"ROUTE_TO_SENIOR\"\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "decision-rules"
               ]
             }
           },
@@ -1189,8 +1509,12 @@
         {
           "name": "Update Decision Rule",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -1198,12 +1522,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"PATCH\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\",\n    \"content-type\": \"application/json\"\n  },\n  \"body\": \"{\\\"enabled\\\": false}\"\n}"
+              "raw": "{\n  \"enabled\": false\n}"
             },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "decision-rules",
+                "{{ruleId}}"
               ]
             }
           },
@@ -1212,21 +1542,23 @@
         {
           "name": "Delete Decision Rule",
           "request": {
-            "method": "POST",
+            "method": "DELETE",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"DELETE\",\n      \"path\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/decision-rules/{{ruleId}}\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/decision-rules/{{ruleId}}",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "decision-rules",
+                "{{ruleId}}"
               ]
             }
           },
@@ -1240,21 +1572,32 @@
         {
           "name": "List Performance Metrics",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/performance-metrics\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/performance-metrics\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/performance-metrics?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "performance-metrics"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
               ]
             }
           },
@@ -1263,21 +1606,32 @@
         {
           "name": "Get Team Performance",
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
               }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"requestContext\": {\n    \"http\": {\n      \"method\": \"GET\",\n      \"path\": \"/organizations/{{orgId}}/team-performance\"\n    }\n  },\n  \"rawPath\": \"/organizations/{{orgId}}/team-performance\",\n  \"headers\": {\n    \"authorization\": \"Bearer {{jwt_token}}\"\n  },\n  \"queryStringParameters\": {\n    \"startDate\": \"2026-01-01\",\n    \"endDate\": \"2026-01-31\"\n  },\n  \"body\": null\n}"
-            },
             "url": {
-              "raw": "{{organization_api_base_url}}",
+              "raw": "{{base_url}}/organizations/{{orgId}}/team-performance?startDate=2026-01-01&endDate=2026-01-31",
               "host": [
-                "{{organization_api_base_url}}"
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                "{{orgId}}",
+                "team-performance"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-01-31"
+                }
               ]
             }
           },
@@ -1288,9 +1642,10 @@
   ],
   "variable": [
     {
-      "key": "lambda_invoke_url",
-      "value": "http://localhost:9005/2015-03-31/functions/function/invocations",
-      "type": "default"
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "default",
+      "description": "Base URL for the Organization API"
     },
     {
       "key": "jwt_token",

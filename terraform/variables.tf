@@ -231,3 +231,15 @@ variable "default_org_id" {
   default     = "org_123"
 }
 
+# Organization API Configuration
+variable "organization_api_ecr_repository_url" {
+  type        = string
+  description = "ECR repository URL for Organization API Docker image"
+}
+
+variable "organization_api_cors_origin" {
+  type        = string
+  description = "CORS origin for Organization API"
+  default     = "*"
+}
+
