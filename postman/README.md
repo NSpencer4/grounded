@@ -72,10 +72,10 @@ npm run dev
 The following environment variables are configured in the **Local** environment for your local docker-compose setup:
 
 #### GraphQL Gateway API
-| Variable | Default Value | Description |
-|----------|---------------|-------------|
-| `graphql_gateway_url` | `http://localhost:8787` | GraphQL Gateway API (unified endpoint for all services) |
-| `organization_api_url` | `http://localhost:9005/2015-03-31/functions/function/invocations` | Organization API (direct REST access) |
+| Variable                    | Default Value                                                     | Description                                             |
+|-----------------------------|-------------------------------------------------------------------|---------------------------------------------------------|
+| `graphql_gateway_url`       | `http://localhost:8787`                                           | GraphQL Gateway API (unified endpoint for all services) |
+| `organization_api_base_url` | `http://localhost:9005/2015-03-31/functions/function/invocations` | Organization API (direct REST access)                   |
 
 #### Ruby APIs
 | Variable | Default Value | Description |
