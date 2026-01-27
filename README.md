@@ -7,6 +7,16 @@
 
 ---
 
+# Architecture Overview
+
+## Mermaid
+
+![Grounded Project](./docs/poc-scope-mermaid-diagram.png "Grounded Project")
+
+## DrawIO
+
+![Grounded Project](./docs/drawio-arch-diagram.png "Grounded Project")
+
 ## 1. Why "Grounded"?
 
 The name **Grounded** stems from an electrical engineering metaphor designed to solve a critical problem in Generative AI: **Volatility.**
