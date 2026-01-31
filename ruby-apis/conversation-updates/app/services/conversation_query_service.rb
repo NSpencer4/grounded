@@ -29,7 +29,7 @@ class ConversationQueryService
         index_name: "GSI1",
         key_condition_expression: "GSI1PK = :org_id",
         expression_attribute_values: {
-          ":org_id" => "organization#{org_id}"
+          ":org_id" => "organization##{org_id}"
         },
         limit: limit,
         scan_index_forward: false # Newest first

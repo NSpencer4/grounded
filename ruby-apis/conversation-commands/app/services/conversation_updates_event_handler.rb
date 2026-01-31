@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ConversationCommandsEventHandler
+class ConversationUpdatesEventHandler
   SUPPORTED_EVENT_TYPES = [
     EventTypes::CONVERSATION_INITIATED,
     EventTypes::MESSAGE_RECEIVED

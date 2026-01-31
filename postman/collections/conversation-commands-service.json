@@ -19,7 +19,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"customer\": {\n        \"id\": \"57b9a008-c545-4227-965a-95e13f36c19e\"\n    }\n}",
+          "raw": "{\n    \"customer\": {\n        \"id\": \"57b9a008-c545-4227-965a-95e13f36c19e\"\n    },\n    \"message\": {\n        \"content\": \"Test\"\n    }\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -236,17 +236,17 @@
   ],
   "variable": [
     {
-      "id": "900d66f7-ac42-4cb2-bd86-ca4a8cbe54b1",
+      "id": "52f3df96-d71b-4d75-9404-0e6cc88cb226",
       "key": "conversation_commands_url",
       "value": "http://localhost:3001"
     },
     {
-      "id": "42028d12-ce55-49a5-90c7-b9f1b762f09c",
+      "id": "1c13f286-6ee8-4deb-8d95-63ad085ef05f",
       "key": "jwt_token",
       "value": ""
     },
     {
-      "id": "933a5568-5856-423f-a95d-32141daa8b79",
+      "id": "ca572687-aeba-44b4-94c1-f94d244cfc5a",
       "key": "jwt_secret",
       "value": ""
     }

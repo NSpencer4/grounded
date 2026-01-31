@@ -26,7 +26,7 @@ begin
 
     puts "[Consumer] Received message: key=#{message[:key]}, topic=#{message[:topic]}"
 
-    ConversationCommandsEventHandler.new(message[:value]).call
+    ConversationUpdatesEventHandler.new(message[:value]).call
   end
 rescue Interrupt
   puts "\nShutting down consumer..."

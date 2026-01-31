@@ -94,7 +94,7 @@ class ConversationService
     {
       "PK" => "conversation##{conversation_id}",
       "SK" => "STATE",
-      "GSI1PK" => "organization#{@organization_id}",
+      "GSI1PK" => "organization##{@organization_id}",
       "GSI1SK" => @timestamp,
       "conversation" => event.to_message["conversation"],
       "metadata" => {
