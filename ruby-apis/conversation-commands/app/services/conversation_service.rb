@@ -5,10 +5,12 @@ class ConversationService
 
   UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
-  def initialize(current_user:, conversation_id: nil, message_content: nil)
+  def initialize(current_user:, organization_id:, conversation_id: nil, message_content: nil)
     @current_user = current_user
+    @organization_id = organization_id
     @provided_conversation_id = conversation_id
     @message_content = message_content
+    @timestamp = Time.now.utc.iso8601
   end
 
   def call
@@ -25,7 +27,7 @@ class ConversationService
       message: message
     )
 
-    persist_event(event)
+    persist_items(conversation_id, event, message)
     publish_event(conversation_id, event)
 
     Result.new(success?: true, conversation_id: conversation_id)
@@ -56,11 +58,11 @@ class ConversationService
     user_metadata = current_user[:user_metadata] || {}
 
     {
-      user: {
-        id: current_user_id,
-        role: UserRole::CUSTOMER,
-        name: user_metadata[:full_name] || user_metadata[:name] || "Unknown User",
-        email: current_user[:email]
+      "user" => {
+        "id" => current_user_id,
+        "role" => UserRole::CUSTOMER,
+        "name" => user_metadata[:full_name] || user_metadata[:name] || "Unknown User",
+        "email" => current_user[:email]
       }
     }
   end
@@ -69,18 +71,54 @@ class ConversationService
     return nil unless @message_content
 
     {
-      id: SecureRandom.uuid,
-      content: @message_content,
-      sender: customer
+      "id" => SecureRandom.uuid,
+      "content" => @message_content,
+      "sender" => customer
     }
   end
 
-  def persist_event(event)
-    DynamoClient.put_item(
+  def persist_items(conversation_id, event, message)
+    items = [
+      event.to_item,
+      build_state_item(conversation_id, event)
+    ]
+    items << build_message_item(conversation_id, message) if message
+
+    DynamoClient.batch_write_items(
       table_name: dynamo_table_name,
-      item: event.to_item,
-      condition_expression: "attribute_not_exists(PK)"
+      put_items: items
     )
+  end
+
+  def build_state_item(conversation_id, event)
+    {
+      "PK" => "conversation##{conversation_id}",
+      "SK" => "STATE",
+      "GSI1PK" => "organization#{@organization_id}",
+      "GSI1SK" => @timestamp,
+      "conversation" => event.to_message["conversation"],
+      "metadata" => {
+        "createdAt" => @timestamp,
+        "updatedAt" => @timestamp
+      }
+    }
+  end
+
+  def build_message_item(conversation_id, message)
+    message_id = message["id"]
+    {
+      "PK" => "conversation##{conversation_id}",
+      "SK" => "message##{@timestamp}##{message_id}",
+      "GSI1PK" => "user##{current_user_id}",
+      "GSI1SK" => @timestamp,
+      "message" => {
+        "id" => message_id,
+        "conversationId" => conversation_id,
+        "sender" => message["sender"],
+        "content" => message["content"],
+        "createdAt" => @timestamp
+      }
+    }
   end
 
   def publish_event(conversation_id, event)
@@ -97,6 +135,6 @@ class ConversationService
   end
 
   def kafka_topic_name
-    ENV.fetch("KAFKA_CONVERSATION_EVENTS_TOPIC", "conversation-events")
+    ENV.fetch("KAFKA_CONVERSATION_EVENTS_TOPIC", "conversation-commands")
   end
 end

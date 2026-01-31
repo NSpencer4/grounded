@@ -202,22 +202,22 @@ See `packages/server/apis/gateway-api/API-REFERENCE.md` for complete documentati
 
 | Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1PK           | GSI1SK          | Purpose                      |
 |:-------------------------|:-------------------|:-------------------|:-----------------|:----------------|:-----------------------------|
-| **Conversation State**   | `CONV#<id>`        | `STATE`            | `ORG#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
-| **Conversation Message** | `CONV#<id>`        | `MSG#<ts>#<id>`    | `USER#<user_id>` | `2026-01-20...` | Threaded chat + User history |
-| **Process State**        | `CONV#<id>`        | `PROC#<ts>#<type>` | -                | -               | State Machine Internal Data  |
+| **Conversation State**   | `conversation#<id>`        | `STATE`            | `organization#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
+| **Conversation Message** | `conversation#<id>`        | `message#<ts>#<id>`    | `user#<user_id>` | `2026-01-20...` | Threaded chat + User history |
+| **Process State**        | `conversation#<id>`        | `PROC#<ts>#<type>` | -                | -               | State Machine Internal Data  |
 
 **Primary Access Patterns:**
 
-- **Fetch Conversation by ID:** `GetItem(PK: CONV#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
-- **List Org Conversations by Date:** `Query(GSI1PK: ORG#<org_id>, ScanIndexForward: false)`.
-- **List User Conversations by Date:** `Query(GSI1PK: USER#<user_id>, ScanIndexForward: false)`.
-- **Fetch Message History:** `Query(PK: CONV#<id>, SK begins_with: MSG#)`.
+- **Fetch Conversation by ID:** `GetItem(PK: conversation#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
+- **List Org Conversations by Date:** `Query(GSI1PK: organization#<org_id>, ScanIndexForward: false)`.
+- **List User Conversations by Date:** `Query(GSI1PK: user#<user_id>, ScanIndexForward: false)`.
+- **Fetch Message History:** `Query(PK: conversation#<id>, SK begins_with: message#)`.
 
 **Persistence Responsibilities:**
 
-- **Conversation Commands API:** Writes the initial `MSG#` record and the initial `STATE` record.
+- **Conversation Commands API:** Writes the initial `message#` record and the initial `STATE` record.
 - **Actions Orchestrator:** Updates `STATE` and appends `PROC#` logs.
-- **Responder Lambda:** Updates `STATE`, manages `GSI1` attributes, and appends new `MSG#` (AI responses).
+- **Responder Lambda:** Updates `STATE`, manages `GSI1` attributes, and appends new `message#` (AI responses).
 - **Conversation Updates API:** Read-only (no persistence).
 
 ## Infrastructure (Terraform)
