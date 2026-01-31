@@ -54,7 +54,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"customer\": {\n        \"id\": \"57b9a008-c545-4227-965a-95e13f36c19e\"\n    },\n    \"message\": {\n        \"content\": \"Test\"\n    }\n}",
+          "raw": "{\n    \"message\": {\n        \"content\": \"Test\"\n    }\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -76,7 +76,7 @@
           "variable": [
             {
               "key": "conversationId",
-              "value": "a76ff11a-9cc6-4b24-b1c5-65dfb13a8f73"
+              "value": "de6ca1ab-7e90-4878-9f58-3b998da061aa"
             }
           ]
         }
@@ -236,17 +236,17 @@
   ],
   "variable": [
     {
-      "id": "f9488e73-eba8-4caf-b8bc-7f66b4365118",
+      "id": "42120ccd-969a-4a93-a2bc-405c4c4b5f86",
       "key": "conversation_commands_url",
       "value": "http://localhost:3001"
     },
     {
-      "id": "499ae713-9203-40eb-92ca-c8fe84561c1e",
+      "id": "5580d4eb-6e7b-43df-b959-9c2485287f26",
       "key": "jwt_token",
       "value": ""
     },
     {
-      "id": "6acab820-6b4f-4b95-a5b7-7bae18cfdaf7",
+      "id": "850238c7-d34c-4122-84cd-d2c12633ab58",
       "key": "jwt_secret",
       "value": ""
     }

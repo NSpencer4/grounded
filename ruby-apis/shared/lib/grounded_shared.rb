@@ -3,6 +3,7 @@
 # Constants
 require_relative "grounded_shared/outbox_status"
 require_relative "grounded_shared/event_types"
+require_relative "grounded_shared/action_types"
 require_relative "grounded_shared/user_role"
 require_relative "grounded_shared/schemas/conversation_status"
 

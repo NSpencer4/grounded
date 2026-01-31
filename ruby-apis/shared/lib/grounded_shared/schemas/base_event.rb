@@ -6,14 +6,14 @@ module Schemas
   class BaseEvent
     SCHEMA_VERSION = "1"
 
-    attr_reader :pk, :sk, :gsi1, :event, :metadata, :outbox, :action_context
+    attr_reader :pk, :sk, :gsi1_pk, :event, :metadata, :outbox, :action_context
 
-    def initialize(pk:, sk:, event_type:, action:, action_by:, correlation_id: nil, outbox_status: OutboxStatus::PENDING)
+    def initialize(pk:, sk:, gsi1_pk:, event_type:, action:, action_by:, correlation_id: nil, outbox_status:)
       timestamp = Time.now.utc.iso8601
 
       @pk = pk
       @sk = sk
-      @gsi1 = outbox_status
+      @gsi1pk = gsi1_pk
       @event = {
         "id" => SecureRandom.uuid,
         "type" => event_type,
@@ -38,7 +38,7 @@ module Schemas
       {
         "PK" => pk,
         "SK" => sk,
-        "GSI1" => gsi1
+        "GSI1PK" => gsi1_pk,
       }.merge(to_message)
     end
 

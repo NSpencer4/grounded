@@ -18,10 +18,12 @@ module Schemas
       super(
         pk: "conversation##{conversation_id}",
         sk: "commandEvent##{EventTypes::MESSAGE_RECEIVED}",
+        gsi1_pk: "outboxStatus##{OutboxStatus::PENDING}",
         event_type: EventTypes::MESSAGE_RECEIVED,
-        action: "CREATE",
+        action: ActionTypes::CREATE,
         action_by: action_by,
-        correlation_id: correlation_id
+        correlation_id: correlation_id,
+        outbox_status: OutboxStatus::PENDING
       )
 
       @conversation = conversation
