@@ -211,19 +211,19 @@ All code verified:
 
 ```bash
 cd packages/server/apis/organization-api
-npm run db:migrate
+yarn run db:migrate
 ```
 
 ### 2. Seed Database
 
 ```bash
-npm run db:seed
+yarn run db:seed
 ```
 
 ### 3. Explore with Drizzle Studio
 
 ```bash
-npm run db:studio
+yarn run db:studio
 ```
 
 ### 4. Start Building API Routes
@@ -346,9 +346,9 @@ The schema is production-ready with:
 ### Adding New Tables
 
 1. Update `src/db/schema.ts`
-2. Generate migration: `npm run db:generate`
+2. Generate migration: `yarn run db:generate`
 3. Review SQL in `drizzle/`
-4. Apply migration: `npm run db:migrate`
+4. Apply migration: `yarn run db:migrate`
 
 ### Modifying Existing Tables
 

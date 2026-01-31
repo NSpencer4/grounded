@@ -21,9 +21,9 @@ COPY packages/server/shared ./packages/server/shared/
 COPY packages/server/orchestrators/actions-orchestrator ./packages/server/orchestrators/actions-orchestrator/
 
 # Build all packages
-RUN npm run build --workspace=@grounded/schemas && \
-    npm run build --workspace=@grounded/server-shared && \
-    npm run build --workspace=actions-orchestrator
+RUN yarn run build --workspace=@grounded/schemas && \
+    yarn run build --workspace=@grounded/server-shared && \
+    yarn run build --workspace=actions-orchestrator
 
 # Production image
 FROM public.ecr.aws/lambda/nodejs:20

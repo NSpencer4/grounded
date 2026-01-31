@@ -17,23 +17,23 @@ DynamoDB + Kafka (Backend)
 npm install
 
 # Root-level commands
-npm run build        # Build all packages
-npm run lint         # Lint all packages
-npm run typecheck    # TypeScript check all packages
-npm run format       # Prettier format
+yarn run build        # Build all packages
+yarn run lint         # Lint all packages
+yarn run typecheck    # TypeScript check all packages
+yarn run format       # Prettier format
 
 # Development (from packages/ui/customer-ui)
-npm run dev          # Start Remix dev server with Vite
+yarn run dev          # Start Remix dev server with Vite
 
 # Production (from packages/ui/customer-ui)
-npm run build        # Build for production
-npm run serve        # Run production build
+yarn run build        # Build for production
+yarn run serve        # Run production build
 
 # GraphQL Gateway API (from packages/server/apis/gateway-api)
-npm run dev          # Start Wrangler dev server (port 8787)
-npm run build        # Build for production (dry-run)
-npm run deploy       # Deploy to Cloudflare Workers
-npm run typecheck    # Type check without emitting
+yarn run dev          # Start Wrangler dev server (port 8787)
+yarn run build        # Build for production (dry-run)
+yarn run deploy       # Deploy to Cloudflare Workers
+yarn run typecheck    # Type check without emitting
 ```
 
 ## Monorepo Structure

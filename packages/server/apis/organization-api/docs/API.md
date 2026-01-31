@@ -866,11 +866,11 @@ Use the included seed data to test all endpoints:
 
 ```bash
 # Setup database
-npm run db:migrate
-npm run db:seed
+yarn run db:migrate
+yarn run db:seed
 
 # Start API
-npm run dev
+yarn run dev
 
 # Test health
 curl http://localhost:3000/health

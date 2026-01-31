@@ -367,7 +367,7 @@ Sample data includes:
 - Performance metrics
 - Team performance records
 
-Run: `npm run db:seed`
+Run: `yarn run db:seed`
 
 ## Best Practices
 

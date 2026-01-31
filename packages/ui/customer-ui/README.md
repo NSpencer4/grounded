@@ -49,7 +49,7 @@ DEFAULT_ORG_ID=acme-corp
 
 ```bash
 # Start development server
-npm run dev
+yarn run dev
 ```
 
 The app will be available at `http://localhost:5173`
@@ -239,8 +239,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
 ```bash
 # Build and deploy to default environment
-npm run build
-npm run deploy
+yarn run build
+yarn run deploy
 ```
 
 ### Production Deployment
@@ -254,7 +254,7 @@ For complete production deployment with custom domain, see: **[../../terraform/C
 # Edit env.production.vars with your GraphQL endpoint
 
 # 2. Build and deploy worker
-npm run deploy:production
+yarn run deploy:production
 
 # 3. Configure custom domain (from terraform directory)
 cd ../../terraform
@@ -265,7 +265,7 @@ cd ../../terraform
 
 ```bash
 # 1. Deploy worker
-npm run deploy:production
+yarn run deploy:production
 
 # 2. Apply Terraform for custom domain
 cd ../../terraform
@@ -279,17 +279,17 @@ terraform apply \
 
 ```bash
 # Deploy to staging environment
-npm run deploy:staging
+yarn run deploy:staging
 ```
 
 ### Available Deploy Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run deploy` | Deploy to default environment |
-| `npm run deploy:production` | Deploy to production with custom domain |
-| `npm run deploy:staging` | Deploy to staging environment |
-| `npm run preview` | Build and run local preview |
+| Command                      | Description                             |
+|------------------------------|-----------------------------------------|
+| `yarn run deploy`            | Deploy to default environment           |
+| `yarn run deploy:production` | Deploy to production with custom domain |
+| `yarn run deploy:staging`    | Deploy to staging environment           |
+| `yarn run preview`           | Build and run local preview             |
 
 ## Environment Variables (Cloudflare Workers)
 
@@ -355,7 +355,7 @@ Tests are not yet configured (stretch goal).
 
 ### Type Errors
 
-- Run `npm run typecheck` to identify issues
+- Run `yarn run typecheck` to identify issues
 - Ensure GraphQL types match schema
 - Check `app/lib/graphql/types.ts` for type definitions
 

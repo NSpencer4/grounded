@@ -55,7 +55,7 @@ npm install
 ## 4. Run Migrations
 
 ```bash
-npm run db:migrate
+yarn run db:migrate
 ```
 
 Expected output:
@@ -69,7 +69,7 @@ Expected output:
 ## 5. Seed Database
 
 ```bash
-npm run db:seed
+yarn run db:seed
 ```
 
 Expected output:
@@ -94,7 +94,7 @@ Expected output:
 ### Option A: Drizzle Studio (Web UI)
 
 ```bash
-npm run db:studio
+yarn run db:studio
 ```
 
 Open `https://local.drizzle.studio` in your browser to explore tables and data.
@@ -120,7 +120,7 @@ SELECT id, name, email, role FROM users;
 ## 7. Start Development Server
 
 ```bash
-npm run dev
+yarn run dev
 ```
 
 The API will be available at `http://localhost:3000` (or your configured port).
@@ -220,29 +220,29 @@ export default router
 When you need to update the schema:
 
 1. Edit `src/db/schema.ts`
-2. Generate migration: `npm run db:generate`
+2. Generate migration: `yarn run db:generate`
 3. Review the SQL in `drizzle/`
-4. Apply migration: `npm run db:migrate`
+4. Apply migration: `yarn run db:migrate`
 
 ## Common Commands
 
 ```bash
 # Development
-npm run dev              # Start dev server
-npm run typecheck        # Type check
-npm run lint             # Lint code
-npm run lint:fix         # Auto-fix lint issues
+yarn run dev              # Start dev server
+yarn run typecheck        # Type check
+yarn run lint             # Lint code
+yarn run lint:fix         # Auto-fix lint issues
 
 # Database
-npm run db:generate      # Generate migration from schema changes
-npm run db:migrate       # Run migrations
-npm run db:push          # Push schema directly (dev only)
-npm run db:studio        # Open Drizzle Studio
-npm run db:seed          # Seed database with sample data
+yarn run db:generate      # Generate migration from schema changes
+yarn run db:migrate       # Run migrations
+yarn run db:push          # Push schema directly (dev only)
+yarn run db:studio        # Open Drizzle Studio
+yarn run db:seed          # Seed database with sample data
 
 # Production
-npm run build            # Build for deployment
-npm run build:zip        # Create Lambda deployment package
+yarn run build            # Build for deployment
+yarn run build:zip        # Create Lambda deployment package
 ```
 
 ## Troubleshooting
@@ -268,8 +268,8 @@ docker exec -it grounded-postgres psql -U postgres -c "DROP DATABASE grounded;"
 docker exec -it grounded-postgres psql -U postgres -c "CREATE DATABASE grounded;"
 
 # Re-run migrations
-npm run db:migrate
-npm run db:seed
+yarn run db:migrate
+yarn run db:seed
 ```
 
 ### Port 5432 already in use

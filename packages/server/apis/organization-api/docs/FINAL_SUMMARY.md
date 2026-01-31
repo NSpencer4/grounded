@@ -308,9 +308,9 @@ Clear validation errors make integration easy.
 
 ```bash
 # Verify everything works
-npm run typecheck --workspace=@grounded/organization-api  # ✅ 0 errors
-npm run build --workspace=@grounded/organization-api      # ✅ 588.8KB bundle
-npm run test:endpoints --workspace=@grounded/organization-api  # ✅ All pass
+yarn run typecheck --workspace=@grounded/organization-api  # ✅ 0 errors
+yarn run build --workspace=@grounded/organization-api      # ✅ 588.8KB bundle
+yarn run test:endpoints --workspace=@grounded/organization-api  # ✅ All pass
 ```
 
 ## Next Steps

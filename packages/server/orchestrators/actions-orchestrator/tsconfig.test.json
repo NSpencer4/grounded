@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": ".",
+    "types": [
+      "node",
+      "jest"
+    ],
+    "noEmit": true,
+    "paths": {
+      "@grounded/schemas/*": [
+        "../../../schemas/*"
+      ],
+      "@grounded/server-shared/*": [
+        "../../shared/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "__tests__/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

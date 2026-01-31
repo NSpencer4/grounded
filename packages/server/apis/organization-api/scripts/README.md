@@ -11,7 +11,7 @@ Populates the PostgreSQL database with realistic mock data for all resources.
 **Usage:**
 
 ```bash
-npm run db:seed-comprehensive
+yarn run db:seed-comprehensive
 ```
 
 Or directly:
@@ -67,7 +67,7 @@ DB_NAME=grounded        # Default: grounded
 1. PostgreSQL must be running
 2. Database migrations must be applied:
    ```bash
-   npm run db:migrate
+   yarn run db:migrate
    ```
 
 ### `clear-data.ts` - Clear Database
@@ -77,7 +77,7 @@ Removes all data from the database while preserving the schema structure.
 **Usage:**
 
 ```bash
-npm run db:clear
+yarn run db:clear
 ```
 
 Or directly:
@@ -101,16 +101,16 @@ To completely reset and re-seed the database:
 
 ```bash
 # Clear existing data
-npm run db:clear
+yarn run db:clear
 
 # Seed with fresh data
-npm run db:seed-comprehensive
+yarn run db:seed-comprehensive
 ```
 
 Or as a one-liner:
 
 ```bash
-npm run db:clear && npm run db:seed-comprehensive
+yarn run db:clear && yarn run db:seed-comprehensive
 ```
 
 ## Testing the API
@@ -148,7 +148,7 @@ If using the GraphQL Gateway API:
 ```bash
 # Start the gateway
 cd packages/server/apis/gateway-api
-npm run dev
+yarn run dev
 
 # Then use GraphQL queries
 curl -X POST http://localhost:8787/graphql \
@@ -163,7 +163,7 @@ curl -X POST http://localhost:8787/graphql \
 Drizzle Studio provides a web UI for browsing database content:
 
 ```bash
-npm run db:studio
+yarn run db:studio
 ```
 
 Then open https://local.drizzle.studio in your browser.
@@ -173,7 +173,7 @@ Then open https://local.drizzle.studio in your browser.
 Apply pending migrations:
 
 ```bash
-npm run db:migrate
+yarn run db:migrate
 ```
 
 ### Generate New Migrations
@@ -181,7 +181,7 @@ npm run db:migrate
 After schema changes:
 
 ```bash
-npm run db:generate
+yarn run db:generate
 ```
 
 ### Push Schema Changes (Development)
@@ -189,7 +189,7 @@ npm run db:generate
 For quick schema updates in development:
 
 ```bash
-npm run db:push
+yarn run db:push
 ```
 
 ## Troubleshooting
@@ -208,13 +208,14 @@ npm run db:push
 **Error:** `relation "..." does not exist`
 
 **Solution:**
-1. Run migrations: `npm run db:migrate`
+
+1. Run migrations: `yarn run db:migrate`
 2. If issues persist, drop and recreate database:
    ```bash
    dropdb grounded
    createdb grounded
-   npm run db:migrate
-   npm run db:seed-comprehensive
+   yarn run db:migrate
+   yarn run db:seed-comprehensive
    ```
 
 ### Foreign Key Violations

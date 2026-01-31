@@ -1557,7 +1557,7 @@ All mutations and queries follow a consistent error pattern. Errors are returned
 
 ```bash
 cd packages/server/apis/gateway-api
-npm run dev
+yarn run dev
 ```
 
 This starts the Wrangler dev server with hot reload.
@@ -1565,20 +1565,20 @@ This starts the Wrangler dev server with hot reload.
 ### Type Checking
 
 ```bash
-npm run typecheck
+yarn run typecheck
 ```
 
 ### Linting
 
 ```bash
-npm run lint
-npm run lint:fix
+yarn run lint
+yarn run lint:fix
 ```
 
 ### Deployment
 
 ```bash
-npm run deploy
+yarn run deploy
 ```
 
 ---

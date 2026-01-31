@@ -6,7 +6,7 @@
  * for testing and development purposes.
  *
  * Usage:
- *   npm run seed (if added to package.json)
+ *   yarn run seed (if added to package.json)
  *   npx tsx scripts/seed-data.ts
  *
  * Environment Variables:

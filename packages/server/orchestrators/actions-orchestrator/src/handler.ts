@@ -2,7 +2,7 @@ import type { Context, MSKEvent, MSKRecord } from 'aws-lambda'
 import { produceMessage, shutdownProducers } from '@grounded/server-shared/event-producer'
 import { ConversationInitiatedEventSchema } from '@grounded/schemas/events/conversation-initiated'
 import { MessageReceivedEventSchema } from '@grounded/schemas/events/message-received'
-import type { ConversationCommandEvent, ProcessingResult } from './types.js'
+import type { ProcessingResult } from './types.js'
 import { evaluateConversation } from './evaluator.js'
 import {
   createInitialState,
@@ -11,6 +11,7 @@ import {
   saveEvent,
   updateConversationState,
 } from './state.js'
+import { type ConversationCommandEvent } from '@grounded/schemas/events'
 
 const KAFKA_BROKER = process.env.KAFKA_BROKER || 'localhost:9092'
 const EVALUATION_TOPIC = 'conversation-evaluations'

@@ -18,7 +18,7 @@ This directory contains Postman collections for testing the Grounded APIs.
 **Quick Start:**
 ```bash
 cd packages/server/apis/gateway-api
-npm run dev
+yarn run dev
 ```
 
 Then open Postman and start making GraphQL queries to `http://localhost:8787/graphql`!
@@ -54,7 +54,7 @@ docker-compose up organization-api -d
 
 # Or run locally
 cd packages/server/apis/organization-api
-npm run start:dev
+yarn run start:dev
 ```
 
 **🔐 JWT Authentication Setup:**

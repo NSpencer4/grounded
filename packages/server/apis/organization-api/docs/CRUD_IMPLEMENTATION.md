@@ -399,7 +399,7 @@ const result = await executeHandler(
 ### Endpoint Test Script
 
 ```bash
-npm run test:endpoints
+yarn run test:endpoints
 ```
 
 Tests all read endpoints:
@@ -437,7 +437,7 @@ Tests all read endpoints:
 
 ```bash
 # Start API locally
-npm run dev
+yarn run dev
 
 # Test endpoints
 curl http://localhost:3000/health
@@ -855,9 +855,9 @@ export async function getDb(credentials: DbCredentials): Promise<Database> {
 ### 1. Test All Endpoints
 
 ```bash
-npm run db:migrate
-npm run db:seed
-npm run test:endpoints
+yarn run db:migrate
+yarn run db:seed
+yarn run test:endpoints
 ```
 
 ### 2. Add Authentication
@@ -871,7 +871,7 @@ Use these controllers as data sources for GraphQL resolvers.
 ### 4. Deploy to AWS
 
 ```bash
-npm run build:zip
+yarn run build:zip
 # Upload function.zip to Lambda
 ```
 
