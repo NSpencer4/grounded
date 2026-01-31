@@ -62,15 +62,15 @@ module Schemas
 
     def build_message
       {
-        "id" => message[:id],
+        "id" => message["id"],
         "conversation" => {
           "id" => conversation_id
         },
         "createdAt" => @timestamp,
         "updatedAt" => @timestamp,
-        "sender" => message[:sender],
+        "sender" => message["sender"],
         "details" => {
-          "content" => message[:content]
+          "content" => message["content"]
         }
       }
     end

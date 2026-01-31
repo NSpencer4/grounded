@@ -236,17 +236,17 @@
   ],
   "variable": [
     {
-      "id": "42120ccd-969a-4a93-a2bc-405c4c4b5f86",
+      "id": "8ef24af6-2acf-471b-808d-ff2bc97c1802",
       "key": "conversation_commands_url",
       "value": "http://localhost:3001"
     },
     {
-      "id": "5580d4eb-6e7b-43df-b959-9c2485287f26",
+      "id": "d5ee2511-81a7-467e-8723-6b1ec405e552",
       "key": "jwt_token",
       "value": ""
     },
     {
-      "id": "850238c7-d34c-4122-84cd-d2c12633ab58",
+      "id": "a83f4bf4-d926-41ee-971d-a230189fb481",
       "key": "jwt_secret",
       "value": ""
     }

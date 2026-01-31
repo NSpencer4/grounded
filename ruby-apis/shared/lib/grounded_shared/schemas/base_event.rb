@@ -13,7 +13,7 @@ module Schemas
 
       @pk = pk
       @sk = sk
-      @gsi1pk = gsi1_pk
+      @gsi1_pk = gsi1_pk
       @event = {
         "id" => SecureRandom.uuid,
         "type" => event_type,
