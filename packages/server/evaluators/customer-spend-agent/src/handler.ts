@@ -5,7 +5,7 @@ import { produceMessage } from '@grounded/server-shared/event-producer'
 import { analyzeCustomerSpend, fetchCustomerSpendData } from './agent.js'
 
 const KAFKA_BROKER = process.env.KAFKA_BROKER || 'localhost:9092'
-const OUTPUT_TOPIC = 'agent-results'
+const OUTPUT_TOPIC = 'conversation-assertions'
 const CLIENT_ID = 'customer-spend-agent'
 
 const kafkaConfig = {

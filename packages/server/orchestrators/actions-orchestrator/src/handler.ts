@@ -1,13 +1,16 @@
 import type { Context, MSKEvent, MSKRecord } from 'aws-lambda'
+import { randomUUID } from 'crypto'
 import { produceMessage, shutdownProducers } from '@grounded/server-shared/event-producer'
 import { ConversationInitiatedEventSchema } from '@grounded/schemas/events/conversation-initiated'
 import { MessageReceivedEventSchema } from '@grounded/schemas/events/message-received'
-import type { ProcessingResult } from './types.js'
+import type { ActionRecord, DecisionRecord, DecisionType, ProcessingResult } from './types.js'
 import { evaluateConversation } from './evaluator.js'
 import {
   createInitialState,
   getConversationState,
+  saveActionRecord,
   saveConversationState,
+  saveDecisionRecord,
   saveEvent,
   updateConversationState,
 } from './state.js'
@@ -50,6 +53,17 @@ function parseConversationCommandEvent(record: MSKRecord): ConversationCommandEv
   }
 }
 
+function mapAgentToDecisionType(agent: string): DecisionType {
+  switch (agent) {
+    case 'customer-spend-agent':
+      return 'EVALUATE_CUSTOMER_SPEND'
+    case 'response-recommendation-agent':
+      return 'EVALUATE_RESPONSE_RECOMMENDATION'
+    default:
+      return 'EVALUATE_RESPONSE_RECOMMENDATION'
+  }
+}
+
 async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
   const startTime = Date.now()
   const event = parseConversationCommandEvent(record)
@@ -60,12 +74,17 @@ async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
       conversationId: 'unknown',
       evaluationType: 'unknown',
       agentsTriggered: [],
+      decisionsCreated: [],
+      actionsCreated: [],
       processingTimeMs: Date.now() - startTime,
       error: 'Failed to parse event',
     }
   }
 
   const conversationId = event.conversation.id
+  const now = new Date().toISOString()
+  const decisionsCreated: string[] = []
+  const actionsCreated: string[] = []
 
   try {
     console.log('Processing conversation command event:', {
@@ -90,12 +109,31 @@ async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
         status: event.conversation.state.status,
         messageCount: hasMessage ? state.messageCount + 1 : state.messageCount,
         lastEventType: event.event.type,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: now,
       })
     }
 
     // Evaluate the conversation and determine next actions
     const evaluationResult = evaluateConversation(event)
+
+    // Create decision records for each agent that should be triggered
+    const decisionIds: string[] = []
+    for (const agent of evaluationResult.agentsToTrigger) {
+      const decisionId = randomUUID()
+      const decision: DecisionRecord = {
+        id: decisionId,
+        conversationId,
+        type: mapAgentToDecisionType(agent),
+        status: 'PENDING',
+        triggerEventId: event.event.id,
+        reasoning: evaluationResult.event.evaluation.reasoning,
+        createdAt: now,
+      }
+      await saveDecisionRecord(decision)
+      decisionIds.push(decisionId)
+      decisionsCreated.push(decisionId)
+      console.log('Created decision record:', { decisionId, type: decision.type, conversationId })
+    }
 
     // Produce evaluation event to Kafka
     await produceMessage(
@@ -106,11 +144,30 @@ async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
       JSON.stringify(evaluationResult.event),
     )
 
-    console.log('Produced evaluation event:', {
+    // Create action record for producing the evaluation event
+    const actionId = randomUUID()
+    const action: ActionRecord = {
+      id: actionId,
+      conversationId,
+      type: 'PRODUCE_EVENT',
+      decisionIds,
+      details: {
+        topic: EVALUATION_TOPIC,
+        evaluationType: evaluationResult.event.evaluation.type,
+        agentsToTrigger: evaluationResult.agentsToTrigger,
+      },
+      createdAt: now,
+    }
+    await saveActionRecord(action)
+    actionsCreated.push(actionId)
+
+    console.log('Produced evaluation event and recorded action:', {
+      actionId,
       evaluationType: evaluationResult.event.evaluation.type,
       conversationId,
       shouldTriggerAgents: evaluationResult.shouldTriggerAgents,
       agentsToTrigger: evaluationResult.agentsToTrigger,
+      decisionIds,
     })
 
     return {
@@ -118,6 +175,8 @@ async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
       conversationId,
       evaluationType: evaluationResult.event.evaluation.type,
       agentsTriggered: evaluationResult.agentsToTrigger,
+      decisionsCreated,
+      actionsCreated,
       processingTimeMs: Date.now() - startTime,
     }
   } catch (error) {
@@ -127,6 +186,8 @@ async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
       conversationId,
       evaluationType: 'unknown',
       agentsTriggered: [],
+      decisionsCreated,
+      actionsCreated,
       processingTimeMs: Date.now() - startTime,
       error: error instanceof Error ? error.message : String(error),
     }
@@ -158,11 +219,15 @@ export async function handler(event: MSKEvent, context: Context): Promise<void> 
 
     const successful = results.filter((r) => r.success).length
     const failed = results.filter((r) => !r.success).length
+    const totalDecisions = results.reduce((sum, r) => sum + r.decisionsCreated.length, 0)
+    const totalActions = results.reduce((sum, r) => sum + r.actionsCreated.length, 0)
 
     console.log('Processing complete', {
       totalRecords,
       successful,
       failed,
+      totalDecisions,
+      totalActions,
       totalProcessingTimeMs: Date.now() - startTime,
     })
 

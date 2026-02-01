@@ -32,8 +32,8 @@ export async function getConversationState(
   const command = new GetCommand({
     TableName: TABLE_NAME,
     Key: {
-      PK: `CONVERSATION#${conversationId}`,
-      SK: 'STATE#CURRENT',
+      PK: `conversation#${conversationId}`,
+      SK: 'state#CURRENT',
     },
   })
 
@@ -50,8 +50,8 @@ export async function saveConversationState(state: ConversationState): Promise<v
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${state.conversationId}`,
-      SK: 'STATE#CURRENT',
+      PK: `conversation#${state.conversationId}`,
+      SK: 'state#CURRENT',
       GSI1PK: `STATUS#${state.status}`,
       GSI1SK: state.updatedAt,
       ...state,
@@ -89,8 +89,8 @@ export async function updateConversationState(
   const command = new UpdateCommand({
     TableName: TABLE_NAME,
     Key: {
-      PK: `CONVERSATION#${conversationId}`,
-      SK: 'STATE#CURRENT',
+      PK: `conversation#${conversationId}`,
+      SK: 'state#CURRENT',
     },
     UpdateExpression: `SET ${updateExpressions.join(', ')}`,
     ExpressionAttributeNames: expressionAttributeNames,
@@ -113,7 +113,7 @@ export async function saveAssertionEvent(
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${conversationId}`,
+      PK: `conversation#${conversationId}`,
       SK: `ASSERTION#${now}#${event.event.id}`,
       GSI1PK: `CORRELATION#${event.metadata.correlationId}`,
       GSI1SK: now,
@@ -144,7 +144,7 @@ export async function saveUpdateEvent(
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${conversationId}`,
+      PK: `conversation#${conversationId}`,
       SK: `UPDATE#${now}#${event.event.id}`,
       GSI1PK: `CORRELATION#${event.metadata.correlationId}`,
       GSI1SK: now,
@@ -173,7 +173,7 @@ export async function saveDecisionEvent(
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${conversationId}`,
+      PK: `conversation#${conversationId}`,
       SK: `DECISION#${now}#${event.event.id}`,
       GSI1PK: `CORRELATION#${event.metadata.correlationId}`,
       GSI1SK: now,

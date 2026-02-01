@@ -12,9 +12,9 @@ Follow the single-table design patterns:
 
 | Entity | PK | SK | GSI1PK | GSI1SK |
 |--------|----|----|--------|--------|
-| Conversation State | `conversation#<id>` | `STATE` | `organization#<org_id>` | ISO timestamp |
+| Conversation State | `conversation#<id>` | `state#current` | `organization#<org_id>` | ISO timestamp |
 | Message | `conversation#<id>` | `message#<ts>#<id>` | `user#<user_id>` | ISO timestamp |
-| Process State | `conversation#<id>` | `PROC#<ts>#<type>` | - | - |
+| Process State | `conversation#<id>` | `action<ts>#<type>` | - | - |
 
 ## Query Examples
 
@@ -24,7 +24,7 @@ const { Item } = await dynamoClient.get({
   TableName: DYNAMO_TABLE_NAME,
   Key: {
     PK: `conversation#${conversationId}`,
-    SK: 'STATE',
+    SK: 'state#CURRENT',
   },
 });
 

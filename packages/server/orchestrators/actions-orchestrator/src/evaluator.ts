@@ -18,21 +18,26 @@ interface EvaluationDecision {
 function determineEvaluation(event: ConversationCommandEvent): EvaluationDecision {
   const hasMessage = 'message' in event && event.message !== undefined
   const isNewConversation = event.event.type === 'CONVERSATION_INITIATED'
-  const messageContent = hasMessage ? event.message?.details.content.toLowerCase() : ''
+  const messageContent =
+    hasMessage && event.message ? event.message.details.content.toLowerCase() : ''
 
   // Check for urgent keywords that require immediate action
   const urgentKeywords = ['urgent', 'emergency', 'asap', 'immediately', 'critical']
-  const isUrgent = urgentKeywords.some((keyword) => messageContent.includes(keyword))
+  const isUrgent = messageContent
+    ? urgentKeywords.some((keyword) => messageContent.includes(keyword))
+    : false
 
   // Check for billing/payment related keywords
   const billingKeywords = ['bill', 'charge', 'payment', 'refund', 'invoice', 'subscription']
-  const isBillingRelated = billingKeywords.some((keyword) => messageContent.includes(keyword))
+  const isBillingRelated = messageContent
+    ? billingKeywords.some((keyword) => messageContent.includes(keyword))
+    : false
 
   // Check for cancellation intent
   const cancellationKeywords = ['cancel', 'terminate', 'close account', 'stop service']
-  const hasCancellationIntent = cancellationKeywords.some((keyword) =>
-    messageContent.includes(keyword),
-  )
+  const hasCancellationIntent = messageContent
+    ? cancellationKeywords.some((keyword) => messageContent.includes(keyword))
+    : false
 
   // Determine evaluators to trigger
   const agentsToTrigger: AgentType[] = []

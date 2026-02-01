@@ -200,24 +200,37 @@ See `packages/server/apis/gateway-api/API-REFERENCE.md` for complete documentati
 
 **DynamoDB (Single Table Design):**
 
-| Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1PK           | GSI1SK          | Purpose                      |
-|:-------------------------|:-------------------|:-------------------|:-----------------|:----------------|:-----------------------------|
-| **Conversation State**   | `conversation#<id>`        | `STATE`            | `organization#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
-| **Conversation Message** | `conversation#<id>`        | `message#<ts>#<id>`    | `user#<user_id>` | `2026-01-20...` | Threaded chat + User history |
-| **Process State**        | `conversation#<id>`        | `PROC#<ts>#<type>` | -                | -               | State Machine Internal Data  |
+| Entity                   | PK (Partition Key)  | SK (Sort Key)        | GSI1PK                  | GSI1SK          | Purpose                           |
+|:-------------------------|:--------------------|:---------------------|:------------------------|:----------------|:----------------------------------|
+| **Conversation State**   | `conversation#<id>` | `state#CURRENT`      | `organization#<org_id>` | `2026-01-20...` | Latest state + Org-wide list      |
+| **Conversation Message** | `conversation#<id>` | `message#<ts>#<id>`  | `user#<user_id>`        | `2026-01-20...` | Threaded chat + User history      |
+| **Decision Record**      | `conversation#<id>` | `decision#<ts>#<id>` | -                       | -               | Tracks pending/resolved decisions |
+| **Action Record**        | `conversation#<id>` | `action#<ts>#<id>`   | -                       | -               | Actions taken based on decisions  |
+
+**Decision Record:** Tracks decisions that need to be made or have been resolved. AI agents query pending decisions to
+determine what to evaluate. Statuses: `PENDING` (awaiting agent evaluation) or `RESOLVED` (decision made).
+
+**Action Record:** Logs what actions the orchestrator took based on decision records. Links back to the decision(s) that
+triggered the action via `decisionIds`.
 
 **Primary Access Patterns:**
 
-- **Fetch Conversation by ID:** `GetItem(PK: conversation#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
+- **Fetch Conversation by ID:** `GetItem(PK: conversation#<id>, SK: state#CURRENT)`. (Clean lookup, no timestamp
+  needed).
 - **List Org Conversations by Date:** `Query(GSI1PK: organization#<org_id>, ScanIndexForward: false)`.
 - **List User Conversations by Date:** `Query(GSI1PK: user#<user_id>, ScanIndexForward: false)`.
 - **Fetch Message History:** `Query(PK: conversation#<id>, SK begins_with: message#)`.
+- **Fetch All Decisions:** `Query(PK: conversation#<id>, SK begins_with: DECISION#)`. (Evaluate what agents should look
+  at).
+- **Fetch All Actions:** `Query(PK: conversation#<id>, SK begins_with: ACTION#)`. (Audit trail of orchestrator actions).
 
 **Persistence Responsibilities:**
 
-- **Conversation Commands API:** Writes the initial `message#` record and the initial `STATE` record.
-- **Actions Orchestrator:** Updates `STATE` and appends `PROC#` logs.
-- **Responder Lambda:** Updates `STATE`, manages `GSI1` attributes, and appends new `message#` (AI responses).
+- **Conversation Commands API:** Writes the initial `message#` record and the initial `state` record.
+- **Actions Orchestrator:** Updates `state`, creates `decision#` records (pending decisions), and creates `action#`
+  records (actions taken).
+- **Responder Lambda:** Updates `state`, manages `GSI1` attributes, resolves `decision#` records, and appends new
+  `message#` (AI responses).
 - **Conversation Updates API:** Read-only (no persistence).
 
 ## Infrastructure (Terraform)
