@@ -1,4 +1,3 @@
-/* eslint-env node */
 import { CompressionTypes, Kafka as KafkaClient, KafkaConfig, logLevel, Producer } from 'kafkajs'
 import type { Message, MessageType } from '@bufbuild/protobuf'
 import {

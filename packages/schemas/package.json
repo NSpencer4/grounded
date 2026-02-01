@@ -9,9 +9,9 @@
     "build": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "proto:generate": "buf generate proto",
-    "proto:lint": "buf lint proto",
-    "proto:breaking": "buf breaking proto --against .git#branch=main"
+    "proto:generate": "buf generate",
+    "proto:lint": "buf lint",
+    "proto:breaking": "buf breaking --against .git#branch=main"
   },
   "exports": {
     ".": "./index.ts",
@@ -21,13 +21,15 @@
     "./test-data/events": "./test-data/events/index.ts",
     "./test-data/events/*": "./test-data/events/*.ts",
     "./proto": "./generated/ts/index.ts",
-    "./proto/*": "./generated/ts/*.ts"
+    "./proto/*": "./generated/ts/*.ts",
+    "./proto-derived": "./proto-derived/index.ts"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^2.2.3"
+    "@bufbuild/protobuf": "^2.2.3",
+    "ts-proto-descriptors": "^2.0.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.47.2",
-    "@bufbuild/protoc-gen-es": "^2.2.3"
+    "@bufbuild/buf": "^1.47.2"
   }
 }

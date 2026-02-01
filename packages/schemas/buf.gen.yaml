@@ -2,10 +2,16 @@ version: v2
 managed:
   enabled: true
 plugins:
-  - local: protoc-gen-es
+  - remote: buf.build/community/stephenh-ts-proto
     out: generated/ts
     opt:
-      - target=ts
-      - import_extension=.js
+      - esModuleInterop=true
+      - importSuffix=.js
+      - env=node
+      - useOptionals=messages
+      - oneof=unions
+      - unrecognizedEnum=false
+      - outputJsonMethods=true
+      - stringEnums=true
 inputs:
   - directory: proto
