@@ -4,6 +4,7 @@
   "description": "AI agent for analyzing customer spending data",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",

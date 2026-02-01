@@ -4,6 +4,7 @@
   "description": "Lambda responder for processing conversation assertions and producing updates",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",

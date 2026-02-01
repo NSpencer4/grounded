@@ -4,6 +4,7 @@
   "description": "AI agent for generating customer service response recommendations",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",

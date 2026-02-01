@@ -4,6 +4,7 @@
   "description": "Lambda orchestrator for processing conversation command events",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",

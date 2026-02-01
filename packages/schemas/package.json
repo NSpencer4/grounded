@@ -4,6 +4,7 @@
   "description": "Shared schemas for Grounded",
   "type": "module",
   "main": "./index.ts",
+  "private": true,
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
