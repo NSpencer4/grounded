@@ -10,7 +10,7 @@ module Schemas
       conversation_id:,
       customer:,
       action_by:,
-      message: nil,
+      message:,
       conversation_status: ConversationStatus::ACTIVE,
       correlation_id: nil,
       outbox_status: OutboxStatus::PENDING
@@ -39,9 +39,9 @@ module Schemas
 
     def entity_attributes
       attrs = {
-        "conversation" => build_conversation
+        "conversation" => build_conversation,
+        "conversation" => build_message
       }
-      attrs["message"] = build_message if message
       attrs
     end
 

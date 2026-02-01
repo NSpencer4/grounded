@@ -7,6 +7,6 @@ export const ConversationInitiatedEventSchema = BaseEventSchema.extend({
     type: z.literal(EventTypeSchema.enum.CONVERSATION_INITIATED),
   }),
   conversation: ConversationSchema,
-  message: MessageSchema.optional(),
+  message: MessageSchema,
 })
 export type ConversationInitiatedEvent = z.infer<typeof ConversationInitiatedEventSchema>
