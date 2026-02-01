@@ -4,15 +4,20 @@
   "description": "Lambda orchestrator for processing conversation command events",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "package": "npm run build && cd dist && zip -r function.zip .",
+    "package": "yarn run build && cd dist && zip -r function.zip .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@grounded/schemas": "*",
     "@grounded/server-shared": "*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/jest": "^30.0.0"
   }
 }

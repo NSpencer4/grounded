@@ -254,6 +254,17 @@ resource "aws_security_group" "grounded_kafka_cluster_sg" {
     ]
   }
 
+  # Schema Registry HTTP API
+  ingress {
+    from_port = 8081
+    to_port   = 8081
+    protocol  = "tcp"
+    cidr_blocks = [
+      aws_subnet.private_primary.cidr_block,
+      aws_subnet.private_secondary.cidr_block
+    ]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

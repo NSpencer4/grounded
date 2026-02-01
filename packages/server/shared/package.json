@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Shared server utilities",
   "type": "module",
+  "private": true,
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
@@ -13,10 +14,12 @@
     "./postgres": "./postgres/index.ts",
     "./event-producer": "./event-producer/index.ts",
     "./secrets-manager": "./secrets-manager/index.ts",
-    "./supabase": "./supabase/index.ts"
+    "./supabase": "./supabase/index.ts",
+    "./schema-registry": "./schema-registry/index.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
-    "@aws-sdk/client-secrets-manager": "^3.0.0"
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@bufbuild/protobuf": "^2.2.3"
   }
 }

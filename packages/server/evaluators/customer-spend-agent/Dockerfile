@@ -23,10 +23,10 @@ COPY packages/server/evaluators/shared ./packages/server/evaluators/shared/
 COPY packages/server/evaluators/customer-spend-agent ./packages/server/evaluators/customer-spend-agent/
 
 # Build all packages
-RUN npm run build --workspace=@grounded/schemas && \
-    npm run build --workspace=@grounded/server-shared && \
-    npm run build --workspace=@grounded/agents-shared && \
-    npm run build --workspace=customer-spend-agent
+RUN yarn run build --workspace=@grounded/schemas && \
+    yarn run build --workspace=@grounded/server-shared && \
+    yarn run build --workspace=@grounded/agents-shared && \
+    yarn run build --workspace=customer-spend-agent
 
 # Production image
 FROM public.ecr.aws/lambda/nodejs:20

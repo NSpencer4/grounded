@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 namespace :kafka do
-  desc "Start the Kafka consumer for conversation events"
+  desc "Start the Kafka consumer for conversation update events"
   task consume: :environment do
-    group_id = ENV.fetch("KAFKA_CONSUMER_GROUP_ID", "conversation-updates")
-    topics = ENV.fetch("KAFKA_TOPICS", "conversation-commands,conversation-replies").split(",").map(&:strip)
+    group_id = ENV.fetch("KAFKA_CONSUMER_GROUP_ID", "conversation-commands")
+    topics = ENV.fetch("KAFKA_TOPICS", "conversation-updates").split(",").map(&:strip)
 
     puts "Starting Kafka consumer..."
     puts "  Group ID: #{group_id}"
@@ -18,7 +18,7 @@ namespace :kafka do
     ) do |message|
       puts "[Consumer] Received message: key=#{message[:key]}, topic=#{message[:topic]}"
 
-      ConversationCommandsEventHandler.new(message[:value]).call
+      ConversationUpdatesEventHandler.new(message[:value]).call
     end
   end
 end

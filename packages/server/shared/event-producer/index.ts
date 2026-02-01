@@ -1,5 +1,11 @@
 /* eslint-env node */
 import { CompressionTypes, Kafka as KafkaClient, KafkaConfig, logLevel, Producer } from 'kafkajs'
+import type { Message, MessageType } from '@bufbuild/protobuf'
+import {
+  encodeWithSchemaId,
+  getSchemaId,
+  registerSchema,
+} from '@grounded/server-shared/schema-registry'
 
 interface ProducerState {
   producer: Producer
@@ -205,7 +211,9 @@ export async function produceMessages(
   topicName: string,
   messages: MessagePayload[],
 ): Promise<void> {
-  if (messages.length === 0) return
+  if (messages.length === 0) {
+    return
+  }
 
   const state = await getOrCreateProducer(config, clientId)
 
@@ -339,9 +347,133 @@ export async function shutdownProducers(): Promise<void> {
  */
 export function isProducerHealthy(clientId: string): boolean {
   const state = producerPool.get(clientId)
-  if (!state) return false
+  if (!state) {
+    return false
+  }
 
   return state.isConnected && Date.now() - state.lastUsed < IDLE_TIMEOUT
+}
+
+// ============================================================================
+// Protobuf Support
+// ============================================================================
+
+// Cache for proto schema content by message type name
+const protoSchemaCache = new Map<string, string>()
+
+/**
+ * Register a proto schema for a message type
+ * Call this at application startup to pre-register schemas
+ */
+export function registerProtoSchema(messageTypeName: string, protoContent: string): void {
+  protoSchemaCache.set(messageTypeName, protoContent)
+}
+
+/**
+ * Produce a protobuf message to a Kafka topic
+ *
+ * This function:
+ * 1. Serializes the message using @bufbuild/protobuf
+ * 2. Looks up or registers the schema with Schema Registry
+ * 3. Wraps the payload in Confluent wire format
+ * 4. Sends via the existing producer infrastructure
+ *
+ * @param clientId - Kafka client ID for connection pooling
+ * @param config - Kafka configuration
+ * @param topicName - Destination Kafka topic
+ * @param key - Message key for partitioning
+ * @param message - The protobuf message instance
+ * @param messageType - The protobuf message type (for serialization)
+ */
+export async function produceProtobufMessage<T extends Message>(
+  clientId: string,
+  config: ProducerConfig,
+  topicName: string,
+  key: string,
+  message: T,
+  messageType: MessageType<T>,
+): Promise<void> {
+  // 1. Serialize to protobuf bytes
+  const bytes = message.toBinary()
+
+  // 2. Get or register schema
+  const subject = `${topicName}-value`
+  let schemaId = await getSchemaId(subject)
+
+  if (!schemaId) {
+    // Get the proto schema from cache
+    const protoSchema = protoSchemaCache.get(messageType.typeName)
+    if (!protoSchema) {
+      throw new Error(
+        `Proto schema not found for type "${messageType.typeName}". ` +
+          `Call registerProtoSchema() first or ensure schema is pre-registered.`,
+      )
+    }
+
+    schemaId = await registerSchema(subject, protoSchema)
+  }
+
+  // 3. Encode with Confluent wire format
+  const encoded = encodeWithSchemaId(schemaId, bytes)
+
+  // 4. Send via existing producer with content-type header
+  await produceMessage(clientId, config, topicName, key, encoded.toString('base64'), {
+    'content-type': 'application/x-protobuf',
+  })
+
+  console.log(
+    `[EventProducer] Protobuf message produced to "${topicName}" with key "${key}" (schema ID: ${schemaId})`,
+  )
+}
+
+/**
+ * Produce multiple protobuf messages in a batch
+ */
+export async function produceProtobufMessages<T extends Message>(
+  clientId: string,
+  config: ProducerConfig,
+  topicName: string,
+  messages: Array<{ key: string; message: T }>,
+  messageType: MessageType<T>,
+): Promise<void> {
+  if (messages.length === 0) {
+    return
+  }
+
+  // Get or register schema (once for the batch)
+  const subject = `${topicName}-value`
+  let schemaId = await getSchemaId(subject)
+
+  if (!schemaId) {
+    const protoSchema = protoSchemaCache.get(messageType.typeName)
+    if (!protoSchema) {
+      throw new Error(
+        `Proto schema not found for type "${messageType.typeName}". ` +
+          `Call registerProtoSchema() first.`,
+      )
+    }
+    schemaId = await registerSchema(subject, protoSchema)
+  }
+
+  // Encode all messages
+  const encodedMessages: MessagePayload[] = messages.map(({ key, message }) => {
+    const bytes = message.toBinary()
+    const encoded = encodeWithSchemaId(schemaId!, bytes)
+    return {
+      key,
+      value: encoded.toString('base64'),
+      headers: {
+        'content-type': 'application/x-protobuf',
+      },
+    }
+  })
+
+  // Send via existing batch producer
+  await produceMessages(clientId, config, topicName, encodedMessages)
+
+  console.log(
+    `[EventProducer] Batch of ${messages.length} protobuf messages produced to "${topicName}" (schema ID: ${schemaId})`,
+  )
 }
 
 // Re-export types for consumers

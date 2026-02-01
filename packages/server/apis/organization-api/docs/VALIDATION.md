@@ -277,7 +277,7 @@ data.sentiment    // string | undefined
 
 ### Test Valid Requests
 ```bash
-npm run test:endpoints
+yarn run test:endpoints
 ```
 
 ### Test Invalid Requests

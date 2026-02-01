@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grounded.models;
+
+import "google/protobuf/timestamp.proto";
+import "grounded/models/user.proto";
+
+option java_package = "com.grounded.models";
+
+// Information about the message sender
+message MessageSender {
+  UserSummary user = 1;
+}
+
+// Message content details
+message MessageDetails {
+  string content = 1;
+}
+
+// A message in a conversation
+message Message {
+  string id = 1;                    // UUID
+  string conversation_id = 2;       // Reference to parent conversation
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  MessageSender sender = 5;
+  MessageDetails details = 6;
+}

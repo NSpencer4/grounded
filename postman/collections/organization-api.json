@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "f7e8d9c6-5a4b-3c2d-1e9f-8a7b6c5d4e3f",
     "name": "Organization API (NestJS)",
-    "description": "REST API for managing organization data via NestJS.\n\n## Local Development\n- URL: http://localhost:3001\n- All requests use standard HTTP methods (GET, POST, PATCH, DELETE)\n\n## Authentication\nMost endpoints require a JWT token in the Authorization header. Generate one with:\n```bash\nnpm run jwt:generate --workspace=@grounded/organization-api\n```",
+    "description": "REST API for managing organization data via NestJS.\n\n## Local Development\n- URL: http://localhost:3001\n- All requests use standard HTTP methods (GET, POST, PATCH, DELETE)\n\n## Authentication\nMost endpoints require a JWT token in the Authorization header. Generate one with:\n```bash\nyarn run jwt:generate --workspace=@grounded/organization-api\n```",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -1868,7 +1868,7 @@
       "key": "jwt_token",
       "value": "",
       "description": {
-        "content": "JWT token for authentication. Generate with: npm run jwt:generate --workspace=@grounded/organization-api",
+        "content": "JWT token for authentication. Generate with: yarn run jwt:generate --workspace=@grounded/organization-api",
         "type": "text/plain"
       }
     },

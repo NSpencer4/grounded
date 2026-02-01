@@ -3,10 +3,10 @@
 # ==============================================================================
 #
 # This configuration manages DNS and custom domain setup for the customer UI.
-# The actual Worker deployment is handled by Wrangler CLI (npm run deploy).
+# The actual Worker deployment is handled by Wrangler CLI (yarn run deploy).
 #
 # Deployment workflow:
-# 1. Build and deploy worker: cd packages/ui/customer-ui && npm run deploy
+# 1. Build and deploy worker: cd packages/ui/customer-ui && yarn run deploy
 # 2. Apply Terraform to set up custom domain: terraform apply
 #
 # ==============================================================================
@@ -18,7 +18,7 @@ data "cloudflare_worker_script" "customer_ui" {
 
   depends_on = [
     # This data source expects the worker to be deployed via Wrangler first
-    # Run: cd packages/ui/customer-ui && npm run deploy
+    # Run: cd packages/ui/customer-ui && yarn run deploy
   ]
 }
 
@@ -66,7 +66,7 @@ output "customer_ui_deployment_instructions" {
     
     1. Build and deploy the Worker:
        cd packages/ui/customer-ui
-       npm run deploy
+       yarn run deploy
     
     2. Verify deployment:
        wrangler deployments list

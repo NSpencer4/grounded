@@ -23,10 +23,10 @@ COPY packages/server/evaluators/shared ./packages/server/evaluators/shared/
 COPY packages/server/evaluators/response-recommendation-agent ./packages/server/evaluators/response-recommendation-agent/
 
 # Build all packages
-RUN npm run build --workspace=@grounded/schemas && \
-    npm run build --workspace=@grounded/server-shared && \
-    npm run build --workspace=@grounded/agents-shared && \
-    npm run build --workspace=response-recommendation-agent
+RUN yarn run build --workspace=@grounded/schemas && \
+    yarn run build --workspace=@grounded/server-shared && \
+    yarn run build --workspace=@grounded/agents-shared && \
+    yarn run build --workspace=response-recommendation-agent
 
 # Production image
 FROM public.ecr.aws/lambda/nodejs:20

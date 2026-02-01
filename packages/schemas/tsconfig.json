@@ -2,12 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": ".",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "target": "ES2022",
-    "declaration": true,
-    "declarationMap": true
+    "rootDir": "."
   },
   "include": [
     "**/*.ts"

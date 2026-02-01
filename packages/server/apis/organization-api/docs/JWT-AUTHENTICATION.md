@@ -65,7 +65,7 @@ For local development and testing, use the JWT generator script:
 ### Basic Usage
 
 ```bash
-npm run jwt:generate
+yarn run jwt:generate
 ```
 
 This generates a token with default values:
@@ -79,16 +79,16 @@ This generates a token with default values:
 
 ```bash
 # Generate token for specific user and organization
-npm run jwt:generate --userId=alice-123 --orgId=acme-corp-456
+yarn run jwt:generate --userId=alice-123 --orgId=acme-corp-456
 
 # Generate admin token
-npm run jwt:generate --role=ADMIN --userId=admin-789
+yarn run jwt:generate --role=ADMIN --userId=admin-789
 
 # Generate token with custom expiration
-npm run jwt:generate --expiresIn=7d --userId=user-123
+yarn run jwt:generate --expiresIn=7d --userId=user-123
 
 # Full example
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=john-doe-123 \
   --orgId=org-456 \
   --email=john@example.com \
@@ -229,7 +229,7 @@ GET /health
 ### 1. Generate a Test Token
 
 ```bash
-npm run jwt:generate --userId=test-user --orgId=acme-corp
+yarn run jwt:generate --userId=test-user --orgId=acme-corp
 ```
 
 Copy the generated token.
@@ -277,12 +277,12 @@ curl http://localhost:9005/.../organizations/different-org/users \
 
 ## Integration with Seeded Data
 
-When using the seeded data from `npm run db:seed-comprehensive`, generate tokens for specific users:
+When using the seeded data from `yarn run db:seed-comprehensive`, generate tokens for specific users:
 
 ### Acme Corp Admin
 
 ```bash
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=<admin-user-id-from-seed> \
   --orgId=<acme-org-id-from-seed> \
   --role=ADMIN \
@@ -293,7 +293,7 @@ npm run jwt:generate \
 ### Acme Corp Representative
 
 ```bash
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=<rep-user-id> \
   --orgId=<acme-org-id> \
   --role=REPRESENTATIVE \
@@ -304,7 +304,7 @@ npm run jwt:generate \
 ### Acme Corp Customer
 
 ```bash
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=<customer-user-id> \
   --orgId=<acme-org-id> \
   --role=CUSTOMER \
@@ -408,7 +408,7 @@ For production, implement token revocation:
 
 ```bash
 export JWT_SECRET=your-secret-key
-npm run dev
+yarn run dev
 ```
 
 Or add to `local.env`:
@@ -424,7 +424,7 @@ JWT_SECRET=your-secret-key
 **Solution:**
 - Ensure token is properly formatted
 - Check for extra spaces or characters
-- Regenerate token with `npm run jwt:generate`
+- Regenerate token with `yarn run jwt:generate`
 
 ### "Token has expired"
 
@@ -433,7 +433,7 @@ JWT_SECRET=your-secret-key
 **Solution:** Generate a new token with a longer expiration:
 
 ```bash
-npm run jwt:generate --expiresIn=7d
+yarn run jwt:generate --expiresIn=7d
 ```
 
 ### "Organization access denied"
@@ -459,7 +459,7 @@ npm run jwt:generate --expiresIn=7d
 
 ```bash
 # 1. Generate token
-TOKEN=$(npm run jwt:generate --userId=test-123 --orgId=org-456 | grep -A 1 "JWT Token:" | tail -1)
+TOKEN=$(yarn run jwt:generate --userId=test-123 --orgId=org-456 | grep -A 1 "JWT Token:" | tail -1)
 
 # 2. Health check (no auth)
 curl http://localhost:9005/2015-03-31/functions/function/invocations/health

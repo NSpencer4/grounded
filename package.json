@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A POC of what a customer service feature could look like for AI SaaS companies",
   "homepage": "https://github.com/NSpencer4/grounded#readme",
+  "private": true,
   "bugs": {
     "url": "https://github.com/NSpencer4/grounded/issues"
   },
@@ -18,13 +19,13 @@
     "doc": "docs"
   },
   "scripts": {
-    "clean.deps": "lerna clean -y && rm -rf node_modules",
-    "clean.reinstall.deps": "npm run clean.deps && npm i",
+    "clean:deps": "lerna clean -y && rm -rf node_modules",
+    "clean:reinstall:deps": "yarn run clean:deps && npm i",
     "build": "lerna run build",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
     "format": "prettier --write .",
-    "format.check": "prettier --check .",
+    "format:check": "prettier --check .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
@@ -50,6 +51,8 @@
     "jest": "^30.2.0",
     "lerna": "^9.0.3",
     "prettier": "^3.8.0",
+    "ts-jest": "^29.4.6",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.3.0"
   },

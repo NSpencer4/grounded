@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package grounded.events;
+
+import "grounded/common/types.proto";
+import "grounded/models/conversation.proto";
+
+option java_package = "com.grounded.events";
+
+// Decision event details (separate from base event to allow literal type)
+message DecisionEventDetails {
+  string id = 1;                    // UUID
+  string type = 2;                  // Literal: "CONVERSATION_DECISION"
+  string schema_version = 3;
+}
+
+// Decision metadata (uses string timestamp for ISO8601 compatibility)
+message DecisionMetadata {
+  string correlation_id = 1;
+  string created_at = 2;            // ISO8601 string
+}
+
+// Decision made by the responder based on assertions
+message Decision {
+  grounded.common.DecisionType type = 1;
+  string reasoning = 2;
+  repeated string assertions_considered = 3;  // IDs of assertions that informed this decision
+  repeated string next_actions = 4;
+}
+
+// Event produced by responder with decision for orchestrator feedback loop
+message ConversationDecisionEvent {
+  DecisionEventDetails event = 1;
+  grounded.models.ConversationRef conversation = 2;
+  Decision decision = 3;
+  DecisionMetadata metadata = 4;
+}

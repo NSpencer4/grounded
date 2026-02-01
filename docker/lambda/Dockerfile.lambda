@@ -29,7 +29,7 @@ COPY ${LAMBDA_PACKAGE_PATH} ./${LAMBDA_PACKAGE_PATH}/
 
 # Build the lambda
 WORKDIR /var/task/${LAMBDA_PACKAGE_PATH}
-RUN npm run build
+RUN yarn run build
 
 # Production stage
 FROM public.ecr.aws/lambda/nodejs:${NODE_VERSION}

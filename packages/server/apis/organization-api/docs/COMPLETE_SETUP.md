@@ -149,13 +149,13 @@ docker run --name grounded-postgres \
 cd packages/server/apis/organization-api
 
 # Run migrations
-npm run db:migrate
+yarn run db:migrate
 
 # Seed data
-npm run db:seed
+yarn run db:seed
 
 # Test endpoints
-npm run test:endpoints
+yarn run test:endpoints
 ```
 
 Expected output:
@@ -182,7 +182,7 @@ Expected output:
 ### 3. Start Development Server
 
 ```bash
-npm run dev
+yarn run dev
 ```
 
 ## 🎨 Endpoint Examples
@@ -270,24 +270,24 @@ curl -X PATCH http://localhost:3000/organizations/$ORG_ID/decision-rules/$RULE_I
 
 ```bash
 # Development
-npm run dev              # Start dev server
-npm run typecheck        # Type check
-npm run lint             # Lint code
-npm run lint:fix         # Auto-fix lint issues
+yarn run dev              # Start dev server
+yarn run typecheck        # Type check
+yarn run lint             # Lint code
+yarn run lint:fix         # Auto-fix lint issues
 
 # Database
-npm run db:generate      # Generate migration
-npm run db:migrate       # Run migrations
-npm run db:push          # Push schema (dev only)
-npm run db:studio        # Open Drizzle Studio
-npm run db:seed          # Seed sample data
+yarn run db:generate      # Generate migration
+yarn run db:migrate       # Run migrations
+yarn run db:push          # Push schema (dev only)
+yarn run db:studio        # Open Drizzle Studio
+yarn run db:seed          # Seed sample data
 
 # Testing
-npm run test:endpoints   # Test all endpoints
+yarn run test:endpoints   # Test all endpoints
 
 # Production
-npm run build            # Build for Lambda
-npm run build:zip        # Create deployment package
+yarn run build            # Build for Lambda
+yarn run build:zip        # Create deployment package
 ```
 
 ## ✨ Key Features
@@ -359,8 +359,8 @@ docker restart grounded-postgres
 docker exec -it grounded-postgres psql -U postgres -c "DROP DATABASE grounded; CREATE DATABASE grounded;"
 
 # Re-run setup
-npm run db:migrate
-npm run db:seed
+yarn run db:migrate
+yarn run db:seed
 ```
 
 ### Build Issues
@@ -369,14 +369,14 @@ npm run db:seed
 # Clean and rebuild
 rm -rf dist node_modules
 npm install
-npm run build
+yarn run build
 ```
 
 ### Type Errors
 
 ```bash
 # Check types
-npm run typecheck
+yarn run typecheck
 
 # Check specific file
 npx tsc --noEmit src/controllers/tickets.ts
@@ -465,7 +465,7 @@ Run through this checklist to verify everything works:
 Best way to explore data:
 
 ```bash
-npm run db:studio
+yarn run db:studio
 ```
 
 Browse tables, run queries, view relationships.
@@ -579,7 +579,7 @@ Your UI can now:
 
 ### Next Steps
 
-1. **Deploy to AWS:** Run `npm run build:zip` and upload to Lambda
+1. **Deploy to AWS:** Run `yarn run build:zip` and upload to Lambda
 2. **Connect GraphQL:** Use controllers as data sources
 3. **Update UI:** Replace mock data with API calls
 4. **Add Auth:** Implement authentication middleware

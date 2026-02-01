@@ -21,9 +21,9 @@ COPY packages/server/shared ./packages/server/shared/
 COPY packages/server/orchestrators/conversation-responder ./packages/server/orchestrators/conversation-responder/
 
 # Build all packages
-RUN npm run build --workspace=@grounded/schemas && \
-    npm run build --workspace=@grounded/server-shared && \
-    npm run build --workspace=conversations-responder || true
+RUN yarn run build --workspace=@grounded/schemas && \
+    yarn run build --workspace=@grounded/server-shared && \
+    yarn run build --workspace=conversations-responder || true
 
 # Production image
 FROM public.ecr.aws/lambda/nodejs:20

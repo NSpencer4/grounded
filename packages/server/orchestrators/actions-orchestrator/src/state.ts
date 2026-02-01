@@ -1,6 +1,11 @@
 import { DynamoDbConnection } from '@grounded/server-shared/dynamo'
-import { GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
-import type { ConversationCommandEvent, ConversationState } from './types.js'
+import { GetCommand, PutCommand, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb'
+import type {
+  ActionRecord,
+  ConversationCommandEvent,
+  ConversationState,
+  DecisionRecord,
+} from './types.js'
 
 const TABLE_NAME = process.env.DYNAMO_TABLE_NAME || 'grounded-datastore'
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1'
@@ -24,8 +29,8 @@ export async function getConversationState(
   const command = new GetCommand({
     TableName: TABLE_NAME,
     Key: {
-      PK: `CONVERSATION#${conversationId}`,
-      SK: 'STATE#CURRENT',
+      PK: `conversation#${conversationId}`,
+      SK: 'state#CURRENT',
     },
   })
 
@@ -39,9 +44,9 @@ export async function saveConversationState(state: ConversationState): Promise<v
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${state.conversationId}`,
-      SK: 'STATE#CURRENT',
-      GSI1: `STATUS#${state.status}`,
+      PK: `conversation#${state.conversationId}`,
+      SK: 'state#CURRENT',
+      GSI1: `status#${state.status}`,
       ...state,
     },
   })
@@ -67,13 +72,15 @@ export async function updateConversationState(
     }
   })
 
-  if (updateExpressions.length === 0) return
+  if (updateExpressions.length === 0) {
+    return
+  }
 
   const command = new UpdateCommand({
     TableName: TABLE_NAME,
     Key: {
-      PK: `CONVERSATION#${conversationId}`,
-      SK: 'STATE#CURRENT',
+      PK: `conversation#${conversationId}`,
+      SK: 'state#CURRENT',
     },
     UpdateExpression: `SET ${updateExpressions.join(', ')}`,
     ExpressionAttributeNames: expressionAttributeNames,
@@ -93,9 +100,8 @@ export async function saveEvent(
   const command = new PutCommand({
     TableName: TABLE_NAME,
     Item: {
-      PK: `CONVERSATION#${conversationId}`,
-      SK: `EVENT#${now}#${event.event.id}`,
-      GSI1: `CORRELATION#${event.metadata.correlationId}`,
+      PK: `conversation#${conversationId}`,
+      SK: `action#${now}#${event.event.id}`,
       eventType: event.event.type,
       eventId: event.event.id,
       correlationId: event.metadata.correlationId,
@@ -117,4 +123,108 @@ export function createInitialState(event: ConversationCommandEvent): Conversatio
     lastUpdated: now,
     createdAt: now,
   }
+}
+
+// Decision Record Functions
+
+export async function saveDecisionRecord(decision: DecisionRecord): Promise<void> {
+  const connection = getDynamoConnection()
+
+  const command = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: `conversation#${decision.conversationId}`,
+      SK: `decision#${decision.createdAt}#${decision.id}`,
+      ...decision,
+    },
+  })
+
+  await connection.ddbDoc.send(command)
+}
+
+export async function getDecisionsByConversation(
+  conversationId: string,
+): Promise<DecisionRecord[]> {
+  const connection = getDynamoConnection()
+
+  const command = new QueryCommand({
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+    ExpressionAttributeValues: {
+      ':pk': `conversation#${conversationId}`,
+      ':sk': 'decision#',
+    },
+  })
+
+  const response = await connection.ddbDoc.send(command)
+  return (response.Items || []) as DecisionRecord[]
+}
+
+export async function getPendingDecisions(conversationId: string): Promise<DecisionRecord[]> {
+  const decisions = await getDecisionsByConversation(conversationId)
+  return decisions.filter((d) => d.status === 'PENDING')
+}
+
+export async function resolveDecision(
+  conversationId: string,
+  decisionId: string,
+  createdAt: string,
+  resolution: string,
+): Promise<void> {
+  const connection = getDynamoConnection()
+  const now = new Date().toISOString()
+
+  const command = new UpdateCommand({
+    TableName: TABLE_NAME,
+    Key: {
+      PK: `conversation#${conversationId}`,
+      SK: `decision#${createdAt}#${decisionId}`,
+    },
+    UpdateExpression: 'SET #status = :status, #resolvedAt = :resolvedAt, #resolution = :resolution',
+    ExpressionAttributeNames: {
+      '#status': 'status',
+      '#resolvedAt': 'resolvedAt',
+      '#resolution': 'resolution',
+    },
+    ExpressionAttributeValues: {
+      ':status': 'RESOLVED',
+      ':resolvedAt': now,
+      ':resolution': resolution,
+    },
+  })
+
+  await connection.ddbDoc.send(command)
+}
+
+// Action Record Functions
+
+export async function saveActionRecord(action: ActionRecord): Promise<void> {
+  const connection = getDynamoConnection()
+
+  const command = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: `conversation#${action.conversationId}`,
+      SK: `action#${action.createdAt}#${action.id}`,
+      ...action,
+    },
+  })
+
+  await connection.ddbDoc.send(command)
+}
+
+export async function getActionsByConversation(conversationId: string): Promise<ActionRecord[]> {
+  const connection = getDynamoConnection()
+
+  const command = new QueryCommand({
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+    ExpressionAttributeValues: {
+      ':pk': `conversation#${conversationId}`,
+      ':sk': 'action#',
+    },
+  })
+
+  const response = await connection.ddbDoc.send(command)
+  return (response.Items || []) as ActionRecord[]
 }

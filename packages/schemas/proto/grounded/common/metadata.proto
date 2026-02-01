@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package grounded.common;
+
+import "google/protobuf/timestamp.proto";
+import "grounded/common/types.proto";
+
+option java_package = "com.grounded.common";
+
+// Event identification details
+message EventDetails {
+  string id = 1;                    // UUID
+  EventType type = 2;
+  string schema_version = 3;
+}
+
+// Event timing and correlation information
+message EventMetadata {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string correlation_id = 3;        // UUID for distributed tracing
+}
+
+// Context about what triggered the event
+message ActionContext {
+  Action action = 1;
+  string action_by = 2;             // User or system ID that performed the action
+}

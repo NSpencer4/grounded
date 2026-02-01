@@ -17,23 +17,23 @@ DynamoDB + Kafka (Backend)
 npm install
 
 # Root-level commands
-npm run build        # Build all packages
-npm run lint         # Lint all packages
-npm run typecheck    # TypeScript check all packages
-npm run format       # Prettier format
+yarn run build        # Build all packages
+yarn run lint         # Lint all packages
+yarn run typecheck    # TypeScript check all packages
+yarn run format       # Prettier format
 
 # Development (from packages/ui/customer-ui)
-npm run dev          # Start Remix dev server with Vite
+yarn run dev          # Start Remix dev server with Vite
 
 # Production (from packages/ui/customer-ui)
-npm run build        # Build for production
-npm run serve        # Run production build
+yarn run build        # Build for production
+yarn run serve        # Run production build
 
 # GraphQL Gateway API (from packages/server/apis/gateway-api)
-npm run dev          # Start Wrangler dev server (port 8787)
-npm run build        # Build for production (dry-run)
-npm run deploy       # Deploy to Cloudflare Workers
-npm run typecheck    # Type check without emitting
+yarn run dev          # Start Wrangler dev server (port 8787)
+yarn run build        # Build for production (dry-run)
+yarn run deploy       # Deploy to Cloudflare Workers
+yarn run typecheck    # Type check without emitting
 ```
 
 ## Monorepo Structure
@@ -200,24 +200,37 @@ See `packages/server/apis/gateway-api/API-REFERENCE.md` for complete documentati
 
 **DynamoDB (Single Table Design):**
 
-| Entity                   | PK (Partition Key) | SK (Sort Key)      | GSI1PK           | GSI1SK          | Purpose                      |
-|:-------------------------|:-------------------|:-------------------|:-----------------|:----------------|:-----------------------------|
-| **Conversation State**   | `CONV#<id>`        | `STATE`            | `ORG#<org_id>`   | `2026-01-20...` | Latest state + Org-wide list |
-| **Conversation Message** | `CONV#<id>`        | `MSG#<ts>#<id>`    | `USER#<user_id>` | `2026-01-20...` | Threaded chat + User history |
-| **Process State**        | `CONV#<id>`        | `PROC#<ts>#<type>` | -                | -               | State Machine Internal Data  |
+| Entity                   | PK (Partition Key)  | SK (Sort Key)        | GSI1PK                  | GSI1SK          | Purpose                           |
+|:-------------------------|:--------------------|:---------------------|:------------------------|:----------------|:----------------------------------|
+| **Conversation State**   | `conversation#<id>` | `state#CURRENT`      | `organization#<org_id>` | `2026-01-20...` | Latest state + Org-wide list      |
+| **Conversation Message** | `conversation#<id>` | `message#<ts>#<id>`  | `user#<user_id>`        | `2026-01-20...` | Threaded chat + User history      |
+| **Decision Record**      | `conversation#<id>` | `decision#<ts>#<id>` | -                       | -               | Tracks pending/resolved decisions |
+| **Action Record**        | `conversation#<id>` | `action#<ts>#<id>`   | -                       | -               | Actions taken based on decisions  |
+
+**Decision Record:** Tracks decisions that need to be made or have been resolved. AI agents query pending decisions to
+determine what to evaluate. Statuses: `PENDING` (awaiting agent evaluation) or `RESOLVED` (decision made).
+
+**Action Record:** Logs what actions the orchestrator took based on decision records. Links back to the decision(s) that
+triggered the action via `decisionIds`.
 
 **Primary Access Patterns:**
 
-- **Fetch Conversation by ID:** `GetItem(PK: CONV#<id>, SK: STATE)`. (Clean lookup, no timestamp needed).
-- **List Org Conversations by Date:** `Query(GSI1PK: ORG#<org_id>, ScanIndexForward: false)`.
-- **List User Conversations by Date:** `Query(GSI1PK: USER#<user_id>, ScanIndexForward: false)`.
-- **Fetch Message History:** `Query(PK: CONV#<id>, SK begins_with: MSG#)`.
+- **Fetch Conversation by ID:** `GetItem(PK: conversation#<id>, SK: state#CURRENT)`. (Clean lookup, no timestamp
+  needed).
+- **List Org Conversations by Date:** `Query(GSI1PK: organization#<org_id>, ScanIndexForward: false)`.
+- **List User Conversations by Date:** `Query(GSI1PK: user#<user_id>, ScanIndexForward: false)`.
+- **Fetch Message History:** `Query(PK: conversation#<id>, SK begins_with: message#)`.
+- **Fetch All Decisions:** `Query(PK: conversation#<id>, SK begins_with: decision#)`. (Evaluate what agents should look
+  at).
+- **Fetch All Actions:** `Query(PK: conversation#<id>, SK begins_with: action#)`. (Audit trail of orchestrator actions).
 
 **Persistence Responsibilities:**
 
-- **Conversation Commands API:** Writes the initial `MSG#` record and the initial `STATE` record.
-- **Actions Orchestrator:** Updates `STATE` and appends `PROC#` logs.
-- **Responder Lambda:** Updates `STATE`, manages `GSI1` attributes, and appends new `MSG#` (AI responses).
+- **Conversation Commands API:** Writes the initial `message#` record and the initial `state` record.
+- **Actions Orchestrator:** Updates `state`, creates `decision#` records (pending decisions), and creates `action#`
+  records (actions taken).
+- **Responder Lambda:** Updates `state`, manages `GSI1` attributes, resolves `decision#` records, and appends new
+  `message#` (AI responses).
 - **Conversation Updates API:** Read-only (no persistence).
 
 ## Infrastructure (Terraform)

@@ -3,10 +3,10 @@
  * Run with: tsx src/test-endpoints.ts
  *
  * Note: This bypasses JWT authentication for local testing.
- * For testing with JWT, use Postman or generate tokens with npm run jwt:generate
+ * For testing with JWT, use Postman or generate tokens with yarn run jwt:generate
  */
 import { getDb } from './db'
-import { matchRoute, executeHandler } from './router'
+import { executeHandler, matchRoute } from './router'
 import { RouteContext } from './types'
 import { AuthContext } from './middleware/auth'
 
@@ -24,7 +24,7 @@ async function testEndpoints() {
   // Get seeded org ID
   const org = await db.query.organizations.findFirst()
   if (!org) {
-    console.error('❌ No organization found. Run npm run db:seed first.')
+    console.error('❌ No organization found. Run yarn run db:seed first.')
     process.exit(1)
   }
 

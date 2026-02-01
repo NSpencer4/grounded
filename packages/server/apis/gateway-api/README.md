@@ -57,7 +57,7 @@ Or update `wrangler.jsonc` for deployment:
 Start the development server with hot reload:
 
 ```bash
-npm run dev
+yarn run dev
 ```
 
 The GraphQL API will be available at:
@@ -175,15 +175,15 @@ packages/server/apis/gateway-api/
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production (dry-run) |
-| `npm run deploy` | Deploy to Cloudflare Workers |
-| `npm run typecheck` | Run TypeScript type checking |
-| `npm run typegen` | Generate Cloudflare Worker types |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint errors |
+| Command              | Description                      |
+|----------------------|----------------------------------|
+| `yarn run dev`       | Start development server         |
+| `yarn run build`     | Build for production (dry-run)   |
+| `yarn run deploy`    | Deploy to Cloudflare Workers     |
+| `yarn run typecheck` | Run TypeScript type checking     |
+| `yarn run typegen`   | Generate Cloudflare Worker types |
+| `yarn run lint`      | Run ESLint                       |
+| `yarn run lint:fix`  | Fix ESLint errors                |
 
 ## Dependencies
 
@@ -216,7 +216,7 @@ packages/server/apis/gateway-api/
 
 3. Deploy:
    ```bash
-   npm run deploy
+   yarn run deploy
    ```
 
 ### Production Considerations
@@ -319,15 +319,15 @@ wrangler deploy
 
 Run type checking:
 ```bash
-npm run typecheck
+yarn run typecheck
 ```
 
 ## Contributing
 
 1. Make changes in `src/`
-2. Run type checking: `npm run typecheck`
-3. Run linting: `npm run lint:fix`
-4. Test locally: `npm run dev`
+2. Run type checking: `yarn run typecheck`
+3. Run linting: `yarn run lint:fix`
+4. Test locally: `yarn run dev`
 5. Update documentation if needed
 
 ## Related Documentation

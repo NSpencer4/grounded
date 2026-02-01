@@ -18,7 +18,7 @@ RUN npm ci
 
 # Build the organization-api
 WORKDIR /app/packages/server/apis/organization-api
-RUN npm run build
+RUN yarn run build
 
 # ===================================
 # Stage 2: Production

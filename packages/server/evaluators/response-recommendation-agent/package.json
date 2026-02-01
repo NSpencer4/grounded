@@ -4,10 +4,11 @@
   "description": "AI agent for generating customer service response recommendations",
   "type": "module",
   "main": "dist/handler.js",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "package": "npm run build && cd dist && zip -r function.zip .",
+    "package": "yarn run build && cd dist && zip -r function.zip .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

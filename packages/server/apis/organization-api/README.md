@@ -9,13 +9,13 @@ Node.js Lambda serving organizational data via PostgreSQL. Provides REST endpoin
 npm install
 
 # Run database migrations
-npm run db:migrate
+yarn run db:migrate
 
 # Seed database with mock data
-npm run db:seed-comprehensive
+yarn run db:seed-comprehensive
 
 # Start development server
-npm run dev
+yarn run dev
 
 # The API will be available at:
 # http://localhost:9005/2015-03-31/functions/function/invocations
@@ -44,23 +44,23 @@ npm run dev
 
 3. **Run migrations:**
    ```bash
-   npm run db:migrate
+   yarn run db:migrate
    ```
 
 4. **Seed with mock data:**
    ```bash
-   npm run db:seed-comprehensive
+   yarn run db:seed-comprehensive
    ```
 
 5. **Generate a test JWT token:**
    ```bash
-   npm run jwt:generate
+   yarn run jwt:generate
    ```
    Copy the generated token for API requests.
 
 6. **Start the API:**
    ```bash
-   npm run dev
+   yarn run dev
    ```
 
 You're ready! Test with Postman collection at `postman/collections/organization-api.json`
@@ -116,13 +116,13 @@ Comprehensive mock data for testing and development:
 
 ```bash
 # Seed database with realistic mock data (60+ records)
-npm run db:seed-comprehensive
+yarn run db:seed-comprehensive
 
 # Clear all data from database
-npm run db:clear
+yarn run db:clear
 
 # Complete reset: clear + seed
-npm run db:reset
+yarn run db:reset
 ```
 
 **What gets seeded:**
@@ -145,16 +145,16 @@ See `scripts/README.md` for detailed documentation.
 
 ```bash
 # Generate migrations from schema changes
-npm run db:generate
+yarn run db:generate
 
 # Run pending migrations
-npm run db:migrate
+yarn run db:migrate
 
 # Push schema changes (dev only)
-npm run db:push
+yarn run db:push
 
 # Open Drizzle Studio (visual database browser)
-npm run db:studio
+yarn run db:studio
 ```
 
 ### Basic Seed
@@ -162,53 +162,53 @@ npm run db:studio
 Simple seed with minimal data:
 
 ```bash
-npm run db:seed
+yarn run db:seed
 ```
 
 ## Development
 
 ```bash
 # Type check
-npm run typecheck
+yarn run typecheck
 
 # Lint
-npm run lint
+yarn run lint
 
 # Format
-npm run format
+yarn run format
 
 # Test endpoints (requires DB)
-npm run test:endpoints
+yarn run test:endpoints
 
 # Watch mode for development
-npm run dev
+yarn run dev
 ```
 
 ## Scripts Reference
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| **Development** | | |
-| Build | `npm run build` | Compile with esbuild |
-| Build ZIP | `npm run build:zip` | Create Lambda deployment package |
-| Dev Server | `npm run dev` | Start with hot reload |
-| Type Check | `npm run typecheck` | Run TypeScript compiler |
-| Lint | `npm run lint` | Run ESLint |
-| Lint Fix | `npm run lint:fix` | Auto-fix linting issues |
-| **Database** | | |
-| Generate Migration | `npm run db:generate` | Generate migration from schema |
-| Run Migrations | `npm run db:migrate` | Apply pending migrations |
-| Push Schema | `npm run db:push` | Push schema changes (dev) |
-| Drizzle Studio | `npm run db:studio` | Open visual database browser |
-| **Seeding** | | |
-| Basic Seed | `npm run db:seed` | Minimal seed data |
-| Full Seed | `npm run db:seed-comprehensive` | 60+ realistic records |
-| Clear Data | `npm run db:clear` | Remove all data |
-| Reset | `npm run db:reset` | Clear + comprehensive seed |
-| **Authentication** | | |
-| Generate JWT | `npm run jwt:generate` | Create test JWT token |
-| **Testing** | | |
-| Test Endpoints | `npm run test:endpoints` | Test API endpoints |
+| Script             | Command                          | Description                      |
+|--------------------|----------------------------------|----------------------------------|
+| **Development**    |                                  |                                  |
+| Build              | `yarn run build`                 | Compile with esbuild             |
+| Build ZIP          | `yarn run build:zip`             | Create Lambda deployment package |
+| Dev Server         | `yarn run dev`                   | Start with hot reload            |
+| Type Check         | `yarn run typecheck`             | Run TypeScript compiler          |
+| Lint               | `yarn run lint`                  | Run ESLint                       |
+| Lint Fix           | `yarn run lint:fix`              | Auto-fix linting issues          |
+| **Database**       |                                  |                                  |
+| Generate Migration | `yarn run db:generate`           | Generate migration from schema   |
+| Run Migrations     | `yarn run db:migrate`            | Apply pending migrations         |
+| Push Schema        | `yarn run db:push`               | Push schema changes (dev)        |
+| Drizzle Studio     | `yarn run db:studio`             | Open visual database browser     |
+| **Seeding**        |                                  |                                  |
+| Basic Seed         | `yarn run db:seed`               | Minimal seed data                |
+| Full Seed          | `yarn run db:seed-comprehensive` | 60+ realistic records            |
+| Clear Data         | `yarn run db:clear`              | Remove all data                  |
+| Reset              | `yarn run db:reset`              | Clear + comprehensive seed       |
+| **Authentication** |                                  |                                  |
+| Generate JWT       | `yarn run jwt:generate`          | Create test JWT token            |
+| **Testing**        |                                  |                                  |
+| Test Endpoints     | `yarn run test:endpoints`        | Test API endpoints               |
 
 ## Environment Variables
 

@@ -154,7 +154,7 @@ Quick reference:
 ```bash
 # 1. Deploy worker via Wrangler
 cd ../packages/ui/customer-ui
-npm run deploy:production
+yarn run deploy:production
 
 # 2. Configure custom domain via Terraform
 cd ../../terraform
@@ -192,7 +192,7 @@ terraform output supabase_credentials_secret_arn
 ```bash
 # Build Lambda
 cd ../packages/server/orchestrators/actions-orchestrator
-npm run build
+yarn run build
 
 # Package and deploy
 cd ../../../../terraform

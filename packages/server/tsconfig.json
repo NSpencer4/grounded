@@ -3,28 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "target": "ES2022",
-    "lib": ["ES2022"],
     "typeRoots": ["../../node_modules/@types"],
-    "types": ["node"],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@grounded/schemas": [
-        "../../packages/schemas/index.ts"
-      ],
-      "@grounded/schemas/*": [
-        "../../packages/schemas/*"
-      ],
-      "@grounded/server-shared/*": [
-        "./shared/*"
-      ],
-      "@grounded/agents-shared": [
-        "./evaluators/shared/src/index.ts"
-      ]
-    }
+    "types": [
+      "node"
+    ]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist", "**/dist"]

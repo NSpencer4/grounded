@@ -1,0 +1,87 @@
+# frozen_string_literal: true
+
+require "fileutils"
+
+PROTO_SOURCE_DIR = "../../packages/schemas/proto"
+PROTO_OUTPUT_DIR = "lib/grounded_shared/generated"
+
+namespace :proto do
+  desc "Generate Ruby protobuf classes from .proto files"
+  task :generate do
+    # Create output directory if it doesn't exist
+    FileUtils.mkdir_p(PROTO_OUTPUT_DIR)
+
+    # Find all .proto files
+    proto_files = Dir.glob("#{PROTO_SOURCE_DIR}/**/*.proto")
+
+    if proto_files.empty?
+      puts "No .proto files found in #{PROTO_SOURCE_DIR}"
+      exit 1
+    end
+
+    puts "Generating Ruby protobuf classes..."
+
+    # Generate Ruby files using protoc
+    # We need to specify the include path for google/protobuf imports
+    proto_files.each do |file|
+      relative_path = file.sub("#{PROTO_SOURCE_DIR}/", "")
+      puts "  Processing: #{relative_path}"
+
+      success = system(
+        "protoc",
+        "--ruby_out=#{PROTO_OUTPUT_DIR}",
+        "--proto_path=#{PROTO_SOURCE_DIR}",
+        file
+      )
+
+      unless success
+        puts "  ERROR: Failed to generate Ruby code for #{relative_path}"
+        exit 1
+      end
+    end
+
+    # Create an index file that requires all generated files
+    create_index_file
+
+    puts "Done! Generated files are in #{PROTO_OUTPUT_DIR}"
+  end
+
+  desc "Clean generated protobuf files"
+  task :clean do
+    if Dir.exist?(PROTO_OUTPUT_DIR)
+      FileUtils.rm_rf(PROTO_OUTPUT_DIR)
+      puts "Cleaned #{PROTO_OUTPUT_DIR}"
+    else
+      puts "Nothing to clean"
+    end
+  end
+
+  desc "Regenerate protobuf files (clean + generate)"
+  task regenerate: %i[clean generate]
+end
+
+def create_index_file
+  index_path = "#{PROTO_OUTPUT_DIR}/index.rb"
+
+  # Find all generated .rb files
+  rb_files = Dir.glob("#{PROTO_OUTPUT_DIR}/**/*_pb.rb")
+
+  File.open(index_path, "w") do |f|
+    f.puts "# frozen_string_literal: true"
+    f.puts ""
+    f.puts "# Auto-generated index file for protobuf classes"
+    f.puts "# Do not edit manually - run 'rake proto:generate' to regenerate"
+    f.puts ""
+
+    rb_files.sort.each do |file|
+      # Convert absolute path to relative require
+      relative_require = file.sub("#{PROTO_OUTPUT_DIR}/", "").sub(".rb", "")
+      f.puts "require_relative \"#{relative_require}\""
+    end
+  end
+
+  puts "  Created index file: #{index_path}"
+end
+
+# Default task
+task default: "proto:generate"

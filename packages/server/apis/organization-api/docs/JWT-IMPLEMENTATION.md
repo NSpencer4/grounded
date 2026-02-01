@@ -81,10 +81,10 @@ Command-line utility for generating test JWT tokens:
 
 ```bash
 # Basic usage
-npm run jwt:generate
+yarn run jwt:generate
 
 # With options
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=alice-123 \
   --orgId=acme-corp \
   --email=alice@example.com \
@@ -212,7 +212,7 @@ JWT_SECRET=dev-secret-key
 ### 2. Generate Test Token
 
 ```bash
-npm run jwt:generate --userId=test-user --orgId=acme-corp
+yarn run jwt:generate --userId=test-user --orgId=acme-corp
 ```
 
 ### 3. Use Token in Requests
@@ -226,9 +226,9 @@ curl http://localhost:9005/.../organizations/acme-corp/users \
 
 ## 📝 NPM Scripts
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| Generate JWT | `npm run jwt:generate` | Create test JWT token |
+| Script       | Command                 | Description           |
+|--------------|-------------------------|-----------------------|
+| Generate JWT | `yarn run jwt:generate` | Create test JWT token |
 
 ## 🧪 Testing
 
@@ -354,14 +354,14 @@ Before deploying to production:
 
 ### Generate Token for Seeded User
 
-After running `npm run db:seed-comprehensive`:
+After running `yarn run db:seed-comprehensive`:
 
 ```bash
 # Get user ID from seed output or Drizzle Studio
 ORG_ID="acme-org-id-from-seed"
 USER_ID="alice-user-id-from-seed"
 
-npm run jwt:generate \
+yarn run jwt:generate \
   --userId=$USER_ID \
   --orgId=$ORG_ID \
   --email=alice.johnson@customer.com \
@@ -373,7 +373,7 @@ npm run jwt:generate \
 
 ```bash
 # 1. Generate token
-TOKEN=$(npm run jwt:generate --userId=test-user | grep -A 1 "JWT Token:" | tail -1 | xargs)
+TOKEN=$(yarn run jwt:generate --userId=test-user | grep -A 1 "JWT Token:" | tail -1 | xargs)
 
 # 2. Test health (no auth)
 curl http://localhost:9005/.../health
@@ -407,13 +407,13 @@ Run these commands to verify implementation:
 
 ```bash
 # 1. Type checking passes
-npm run typecheck
+yarn run typecheck
 
 # 2. Linting passes
-npm run lint
+yarn run lint
 
 # 3. JWT generation works
-JWT_SECRET=test npm run jwt:generate
+JWT_SECRET=test yarn run jwt:generate
 
 # 4. Health check works without auth
 curl http://localhost:9005/.../health

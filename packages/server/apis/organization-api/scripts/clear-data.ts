@@ -6,7 +6,7 @@
  * the schema structure. Useful for resetting to a clean state before re-seeding.
  *
  * Usage:
- *   npm run db:clear (if added to package.json)
+ *   yarn run db:clear (if added to package.json)
  *   npx tsx scripts/clear-data.ts
  *
  * Environment Variables:
@@ -89,7 +89,7 @@ async function clearData() {
 
     console.log('\n✅ All data cleared successfully!')
     console.log('\n💡 You can now run the seed script to populate with fresh data:')
-    console.log('   npm run db:seed-comprehensive')
+    console.log('   yarn run db:seed-comprehensive')
   } catch (error) {
     console.error('\n❌ Error clearing database:', error)
     throw error

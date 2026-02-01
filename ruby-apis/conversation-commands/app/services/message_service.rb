@@ -9,6 +9,7 @@ class MessageService
     @current_user = current_user
     @conversation_id = conversation_id
     @content = content
+    @timestamp = Time.now.utc.iso8601
   end
 
   def call
@@ -27,10 +28,10 @@ class MessageService
       action_by: current_user_id
     )
 
-    persist_event(event)
+    persist_items(event, message)
     publish_event(event)
 
-    Result.new(success?: true, message_id: message[:id], conversation_id: @conversation_id)
+    Result.new(success?: true, message_id: message["id"], conversation_id: @conversation_id)
   rescue StandardError => e
     Rails.logger.error("MessageService error: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
     Result.new(success?: false, error: "Failed to create message")
@@ -62,7 +63,7 @@ class MessageService
       key_condition_expression: "PK = :pk AND begins_with(SK, :sk_prefix)",
       expression_attribute_values: {
         ":pk" => "conversation##{@conversation_id}",
-        ":sk_prefix" => "event##{EventTypes::CONVERSATION_INITIATED}"
+        ":sk_prefix" => "commandEvent##{EventTypes::CONVERSATION_INITIATED}"
       },
       limit: 1
     )
@@ -87,19 +88,41 @@ class MessageService
 
   def build_message(conversation)
     {
-      id: SecureRandom.uuid,
-      sender: build_sender,
-      details: {
+      "id" => SecureRandom.uuid,
+      "sender" => build_sender,
+      "details" => {
         "content" => @content
       }
     }
   end
 
-  def persist_event(event)
-    DynamoClient.put_item(
+  def persist_items(event, message)
+    items = [
+      event.to_item,
+      build_message_item(message)
+    ]
+
+    DynamoClient.batch_write_items(
       table_name: dynamo_table_name,
-      item: event.to_item
+      put_items: items
     )
+  end
+
+  def build_message_item(message)
+    message_id = message["id"]
+    {
+      "PK" => "conversation##{@conversation_id}",
+      "SK" => "message##{@timestamp}##{message_id}",
+      "GSI1PK" => "user##{current_user_id}",
+      "GSI1SK" => @timestamp,
+      "message" => {
+        "id" => message_id,
+        "conversationId" => @conversation_id,
+        "sender" => message["sender"],
+        "content" => message["details"]["content"],
+        "createdAt" => @timestamp
+      }
+    }
   end
 
   def publish_event(event)

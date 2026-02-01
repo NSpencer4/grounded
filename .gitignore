@@ -36,6 +36,10 @@ yarn-error.log*
 # dist directories
 dist
 
+# generated protobuf code
+packages/schemas/generated
+ruby-apis/shared/lib/grounded_shared/generated
+
 # logging
 logs
 *.log

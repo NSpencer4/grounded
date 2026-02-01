@@ -92,10 +92,10 @@ From the customer-ui directory:
 cd packages/ui/customer-ui
 
 # Build and deploy to production
-npm run deploy:production
+yarn run deploy:production
 
 # Or deploy to staging first
-npm run deploy:staging
+yarn run deploy:staging
 ```
 
 This will:
@@ -148,16 +148,16 @@ This will:
 ### Local Development
 ```bash
 cd packages/ui/customer-ui
-npm run dev          # Start local dev server
-npm run start        # Start with Wrangler dev server
+yarn run dev          # Start local dev server
+yarn run start        # Start with Wrangler dev server
 ```
 
 ### Production Deployment
 ```bash
 cd packages/ui/customer-ui
-npm run build                    # Build only
-npm run deploy:production        # Build and deploy to production
-npm run deploy:staging           # Build and deploy to staging
+yarn run build                    # Build only
+yarn run deploy:production        # Build and deploy to production
+yarn run deploy:staging           # Build and deploy to staging
 wrangler deployments list        # View deployment history
 ```
 
@@ -192,7 +192,7 @@ wrangler secret put SUPABASE_URL --env production
 ### Worker deployment fails
 - Ensure you're logged into Wrangler: `wrangler login`
 - Check account ID matches in wrangler.jsonc
-- Verify build completes successfully: `npm run build`
+- Verify build completes successfully: `yarn run build`
 
 ### Custom domain not working
 - Verify DNS records in Cloudflare dashboard

@@ -113,7 +113,7 @@ async function getConversationEvents(
     TableName: TABLE_NAME,
     KeyConditionExpression: 'PK = :pk',
     ExpressionAttributeValues: {
-      ':pk': `CONVERSATION#${conversationId}`,
+      ':pk': `conversation#${conversationId}`,
     },
     Limit: limit,
     ScanIndexForward: true, // chronological order
@@ -181,8 +181,8 @@ async function getConversationState(
     TableName: TABLE_NAME,
     KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
     ExpressionAttributeValues: {
-      ':pk': `CONVERSATION#${conversationId}`,
-      ':sk': 'STATE#',
+      ':pk': `conversation#${conversationId}`,
+      ':sk': 'state#CURRENT',
     },
     Limit: 1,
     ScanIndexForward: false, // get latest state

@@ -4,6 +4,7 @@
   "description": "MCP server for querying state machine events from DynamoDB",
   "type": "module",
   "main": "dist/index.js",
+  "private": true,
   "bin": {
     "state-machine-query-tools": "dist/index.js"
   },

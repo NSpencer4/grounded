@@ -11,4 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "aws-sdk-dynamodb", "~> 1.0"
   spec.add_dependency "ruby-kafka", "~> 1.5"
+  spec.add_dependency "google-protobuf", "~> 4.29"
+
+  spec.add_development_dependency "rake", "~> 13.0"
 end

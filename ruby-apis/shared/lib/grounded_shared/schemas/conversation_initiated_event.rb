@@ -12,17 +12,20 @@ module Schemas
       action_by:,
       message: nil,
       conversation_status: ConversationStatus::ACTIVE,
-      correlation_id: nil
+      correlation_id: nil,
+      outbox_status: OutboxStatus::PENDING
     )
       timestamp = Time.now.utc.iso8601
 
       super(
         pk: "conversation##{conversation_id}",
         sk: "commandEvent##{EventTypes::CONVERSATION_INITIATED}",
+        gsi1_pk: "outboxStatus##{OutboxStatus::PENDING}",
         event_type: EventTypes::CONVERSATION_INITIATED,
-        action: "CREATE",
+        action: ActionTypes::CREATE,
         action_by: action_by,
-        correlation_id: correlation_id
+        correlation_id: correlation_id,
+        outbox_status: outbox_status
       )
 
       @conversation_id = conversation_id
@@ -59,15 +62,15 @@ module Schemas
 
     def build_message
       {
-        "id" => message[:id],
+        "id" => message["id"],
         "conversation" => {
           "id" => conversation_id
         },
         "createdAt" => @timestamp,
         "updatedAt" => @timestamp,
-        "sender" => message[:sender],
+        "sender" => message["sender"],
         "details" => {
-          "content" => message[:content]
+          "content" => message["content"]
         }
       }
     end

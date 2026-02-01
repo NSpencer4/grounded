@@ -12,9 +12,9 @@ Follow the single-table design patterns:
 
 | Entity | PK | SK | GSI1PK | GSI1SK |
 |--------|----|----|--------|--------|
-| Conversation State | `CONV#<id>` | `STATE` | `ORG#<org_id>` | ISO timestamp |
-| Message | `CONV#<id>` | `MSG#<ts>#<id>` | `USER#<user_id>` | ISO timestamp |
-| Process State | `CONV#<id>` | `PROC#<ts>#<type>` | - | - |
+| Conversation State | `conversation#<id>` | `state#current` | `organization#<org_id>` | ISO timestamp |
+| Message | `conversation#<id>` | `message#<ts>#<id>` | `user#<user_id>` | ISO timestamp |
+| Process State | `conversation#<id>` | `action<ts>#<type>` | - | - |
 
 ## Query Examples
 
@@ -23,8 +23,8 @@ Follow the single-table design patterns:
 const { Item } = await dynamoClient.get({
   TableName: DYNAMO_TABLE_NAME,
   Key: {
-    PK: `CONV#${conversationId}`,
-    SK: 'STATE',
+    PK: `conversation#${conversationId}`,
+    SK: 'state#CURRENT',
   },
 });
 
@@ -34,7 +34,7 @@ const { Items } = await dynamoClient.query({
   IndexName: 'GSI1',
   KeyConditionExpression: 'GSI1PK = :orgId',
   ExpressionAttributeValues: {
-    ':orgId': `ORG#${orgId}`,
+    ':orgId': `organization#${orgId}`,
   },
   ScanIndexForward: false, // Descending order
 });
@@ -44,8 +44,8 @@ const { Items } = await dynamoClient.query({
   TableName: DYNAMO_TABLE_NAME,
   KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
   ExpressionAttributeValues: {
-    ':pk': `CONV#${conversationId}`,
-    ':prefix': 'MSG#',
+    ':pk': `conversation#${conversationId}`,
+    ':prefix': 'message#',
   },
 });
 ```

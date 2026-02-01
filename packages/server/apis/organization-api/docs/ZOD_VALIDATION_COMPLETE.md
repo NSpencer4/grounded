@@ -649,7 +649,7 @@ const SlugSchema = z.string()
 ## Next Steps
 
 1. ✅ **Validation complete** - no more manual type assertions
-2. **Test endpoints** - Run `npm run test:endpoints`
+2. **Test endpoints** - Run `yarn run test:endpoints`
 3. **Update UI** - Use typed request interfaces
 4. **Deploy** - Production-ready with validated contracts
 

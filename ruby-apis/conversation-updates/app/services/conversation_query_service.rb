@@ -10,7 +10,7 @@ class ConversationQueryService
       state = DynamoClient.get_item(
         table_name: table_name,
         key: {
-          "PK" => "CONV##{conversation_id}",
+          "PK" => "conversation##{conversation_id}",
           "SK" => "STATE"
         }
       )
@@ -29,7 +29,7 @@ class ConversationQueryService
         index_name: "GSI1",
         key_condition_expression: "GSI1PK = :org_id",
         expression_attribute_values: {
-          ":org_id" => "ORG##{org_id}"
+          ":org_id" => "organization##{org_id}"
         },
         limit: limit,
         scan_index_forward: false # Newest first
@@ -53,7 +53,7 @@ class ConversationQueryService
         index_name: "GSI1",
         key_condition_expression: "GSI1PK = :user_id",
         expression_attribute_values: {
-          ":user_id" => "USER##{user_id}"
+          ":user_id" => "user##{user_id}"
         },
         limit: limit,
         scan_index_forward: false # Newest first
@@ -76,8 +76,8 @@ class ConversationQueryService
         table_name: table_name,
         key_condition_expression: "PK = :pk AND begins_with(SK, :prefix)",
         expression_attribute_values: {
-          ":pk" => "CONV##{conversation_id}",
-          ":prefix" => "MSG#"
+          ":pk" => "conversation##{conversation_id}",
+          ":prefix" => "message#"
         },
         limit: limit,
         scan_index_forward: true # Oldest first (chronological order)
@@ -132,7 +132,7 @@ class ConversationQueryService
     end
 
     def extract_message_id(sk)
-      # SK format: MSG#<timestamp>#<id>
+      # SK format: message#<timestamp>#<id>
       parts = sk&.split("#")
       parts&.last if parts&.length == 3
     end
