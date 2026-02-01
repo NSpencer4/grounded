@@ -1,0 +1,37 @@
+{
+  "_comment": "NOTE: ConversationActionEventSchema has no additional fields beyond base - this shows what could be added",
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440060",
+    "type": "MESSAGE_RECEIVED",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "actions-orchestrator"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:30:25.000Z",
+    "updatedAt": "2026-02-01T10:30:25.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "_proposed_additional_fields": {
+    "action": {
+      "id": "act-550e8400-e29b-41d4-a716-446655440061",
+      "conversationId": "conv-550e8400-e29b-41d4-a716-446655440002",
+      "type": "SEND_MESSAGE",
+      "decisionIds": [
+        "dec-550e8400-e29b-41d4-a716-446655440051"
+      ],
+      "payload": {
+        "messageId": "msg-550e8400-e29b-41d4-a716-446655440070",
+        "content": "Hi Jane, I'm so sorry to hear about the damage...",
+        "sender": {
+          "type": "AI",
+          "agentName": "response-recommendation-agent"
+        }
+      },
+      "status": "COMPLETED",
+      "completedAt": "2026-02-01T10:30:25.000Z"
+    }
+  }
+}

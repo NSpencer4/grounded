@@ -1,0 +1,99 @@
+{
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440040",
+    "type": "RESPONSE_RECOMMENDATION",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "response-recommendation-agent"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:30:15.000Z",
+    "updatedAt": "2026-02-01T10:30:15.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "conversation": {
+    "id": "conv-550e8400-e29b-41d4-a716-446655440002",
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "state": {
+      "status": "WAITING",
+      "closedAt": null
+    },
+    "customer": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "email": "jane.customer@example.com",
+        "role": "CUSTOMER"
+      }
+    },
+    "assignee": null
+  },
+  "message": {
+    "id": "msg-550e8400-e29b-41d4-a716-446655440004",
+    "conversation": {
+      "id": "conv-550e8400-e29b-41d4-a716-446655440002"
+    },
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "sender": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "role": "CUSTOMER"
+      }
+    },
+    "details": {
+      "content": "Hi, I've been experiencing issues with my AI assistant giving incorrect responses. I've wasted a lot of tokens on bad outputs and would like some kind of compensation."
+    }
+  },
+  "responseRecommendation": {
+    "result": {
+      "success": true,
+      "data": {
+        "response": {
+          "content": "Hi Jane, I'm really sorry to hear you've been experiencing issues with incorrect AI responses - that's definitely frustrating, especially when it's using up your tokens.\n\nI've reviewed your account and can see you're a valued PRO member with us. Based on your usage patterns and this issue, I'd like to offer you 5,000 tokens as a refund to your balance. This should cover the tokens lost to the problematic outputs.\n\nAlternatively, if you'd prefer, I can process a $10 refund to your original payment method instead.\n\nWhich option works better for you? And could you share a few examples of the incorrect responses? This will help our team investigate and improve the AI's accuracy.",
+          "tone": "EMPATHETIC",
+          "intent": "RESOLVE_WITH_COMPENSATION"
+        },
+        "responseOptions": [
+          {
+            "type": "PRIMARY",
+            "description": "Empathetic response offering token refund with alternative payment refund option"
+          },
+          {
+            "type": "ESCALATE",
+            "description": "If customer is dissatisfied, escalate to human representative",
+            "escalationReason": "CUSTOMER_REQUEST"
+          }
+        ],
+        "contextUsed": {
+          "customerTier": "PRO",
+          "customerStanding": "GOOD",
+          "spendAnalysisRecommendation": "PARTIAL_TOKEN_REFUND",
+          "suggestedTokenAmount": 5000,
+          "suggestedEquivalentValue": 10.00
+        },
+        "confidence": 0.91,
+        "reasoning": "Customer is reporting a legitimate service quality issue. Spend analysis indicates they are eligible for a partial token refund. Response acknowledges the issue, validates their frustration, offers the recommended compensation with an alternative, and requests more details to help improve service."
+      },
+      "error": null,
+      "metadata": {
+        "agentName": "response-recommendation-agent",
+        "executionTimeMs": 1850,
+        "modelUsed": "claude-sonnet-4-20250514",
+        "tokenUsage": {
+          "input": 1450,
+          "output": 420
+        },
+        "inputsReceived": [
+          "conversation-context",
+          "message-history",
+          "spend-analysis-result"
+        ]
+      }
+    }
+  }
+}

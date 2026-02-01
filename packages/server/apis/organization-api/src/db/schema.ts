@@ -57,6 +57,14 @@ export const accountStandingEnum = pgEnum('account_standing', [
 
 export const billingCycleEnum = pgEnum('billing_cycle', ['MONTHLY', 'QUARTERLY', 'YEARLY'])
 
+export const currencyEnum = pgEnum('currency', ['USD', 'EUR', 'GBP', 'CAD', 'AUD'])
+
+export const tokenUsageTrendEnum = pgEnum('token_usage_trend', [
+  'INCREASING',
+  'STABLE',
+  'DECREASING',
+])
+
 export const ticketStatusEnum = pgEnum('ticket_status', [
   'OPEN',
   'IN_PROGRESS',
@@ -115,6 +123,14 @@ export const refundStatusEnum = pgEnum('refund_status', [
   'APPROVED',
   'REJECTED',
   'COMPLETED',
+])
+
+export const refundTypeEnum = pgEnum('refund_type', [
+  'FULL_TOKEN_REFUND',
+  'PARTIAL_TOKEN_REFUND',
+  'FULL_PAYMENT_REFUND',
+  'PARTIAL_PAYMENT_REFUND',
+  'TOKEN_CREDIT',
 ])
 
 export const budgetTypeEnum = pgEnum('budget_type', [
@@ -247,11 +263,17 @@ export const customerProfiles = pgTable(
     nextBillingDate: timestamp('next_billing_date'),
     billingCycle: billingCycleEnum('billing_cycle'),
     billingAmount: decimal('billing_amount', { precision: 10, scale: 2 }),
+    billingCurrency: currencyEnum('billing_currency').notNull().default('USD'),
     // Usage stats
     tokenBalance: integer('token_balance').notNull().default(0),
     tokenLimit: integer('token_limit').notNull().default(1000),
     activeSites: integer('active_sites').notNull().default(0),
     sitesLimit: integer('sites_limit').notNull().default(1),
+    // Denormalized token usage tracking for spend analysis
+    tokensUsedCurrentPeriod: integer('tokens_used_current_period').notNull().default(0),
+    tokensUsedPreviousPeriod: integer('tokens_used_previous_period').notNull().default(0),
+    tokenUsageTrend: tokenUsageTrendEnum('token_usage_trend').notNull().default('STABLE'),
+    periodStartDate: timestamp('period_start_date').notNull().defaultNow(),
     // Context and preferences
     context: jsonb('context'),
     preferences: jsonb('preferences'),
@@ -356,11 +378,15 @@ export const refunds = pgTable(
     organizationId: uuid('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
-    orderId: varchar('order_id', { length: 255 }).notNull(),
+    orderId: varchar('order_id', { length: 255 }), // Optional - not needed for token credits
     customerId: uuid('customer_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    type: refundTypeEnum('type').notNull(),
+    // For payment refunds: dollar amount. For token refunds: equivalent dollar value
     amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
+    // For token refunds/credits: number of tokens
+    tokenAmount: integer('token_amount'),
     reason: refundReasonEnum('reason').notNull(),
     status: refundStatusEnum('status').notNull().default('PENDING'),
     notes: text('notes'),
@@ -373,6 +399,7 @@ export const refunds = pgTable(
     orderIdIdx: index('refunds_order_id_idx').on(table.orderId),
     customerIdIdx: index('refunds_customer_id_idx').on(table.customerId),
     statusIdx: index('refunds_status_idx').on(table.status),
+    typeIdx: index('refunds_type_idx').on(table.type),
     orgIdIdx: index('refunds_org_id_idx').on(table.organizationId),
     createdAtIdx: index('refunds_created_at_idx').on(table.createdAt),
   }),

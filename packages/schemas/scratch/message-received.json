@@ -1,0 +1,59 @@
+{
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440010",
+    "type": "MESSAGE_RECEIVED",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "customer-ui"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:35:00.000Z",
+    "updatedAt": "2026-02-01T10:35:00.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "conversation": {
+    "id": "conv-550e8400-e29b-41d4-a716-446655440002",
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:35:00.000Z",
+    "state": {
+      "status": "ACTIVE",
+      "closedAt": null
+    },
+    "customer": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "email": "jane.customer@example.com",
+        "role": "CUSTOMER"
+      }
+    },
+    "assignee": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440005",
+        "name": "Alex Representative",
+        "email": "alex.rep@company.com",
+        "role": "REPRESENTATIVE"
+      }
+    }
+  },
+  "message": {
+    "id": "msg-550e8400-e29b-41d4-a716-446655440011",
+    "conversation": {
+      "id": "conv-550e8400-e29b-41d4-a716-446655440002"
+    },
+    "createdAt": "2026-02-01T10:35:00.000Z",
+    "updatedAt": "2026-02-01T10:35:00.000Z",
+    "sender": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "role": "CUSTOMER"
+      }
+    },
+    "details": {
+      "content": "Yes, I have the photos of the damaged item. The box was crushed and the product inside was cracked."
+    }
+  }
+}

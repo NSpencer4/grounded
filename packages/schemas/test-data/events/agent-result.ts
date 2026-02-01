@@ -1,21 +1,26 @@
 /**
- * Sample AgentResultEvent test data
+ * Sample Agent Result Event test data
  */
 
-import type { AgentResultEvent, AgentResultType } from '../../events/agent-result'
-import { TEST_IDS } from './fixtures'
+import type {
+  CustomerSpendAnalysisEvent,
+  ResponseRecommendationEvent,
+} from '../../events/agent-result'
+import {
+  sampleConversationWaiting,
+  sampleCustomer1,
+  sampleCustomerMessage,
+  TEST_IDS,
+} from './fixtures'
 
 // ============================================================================
-// Sample Events
+// Sample Customer Spend Analysis Event
 // ============================================================================
 
-/**
- * Successful customer spend analysis result
- */
-export const agentResultSpendAnalysisSuccess: AgentResultEvent = {
+export const sampleSpendAnalysisEvent: CustomerSpendAnalysisEvent = {
   event: {
     id: TEST_IDS.event1,
-    type: 'AGENT_RESULT',
+    type: 'CUSTOMER_SPEND_ANALYSIS',
     schemaVersion: '1.0.0',
   },
   actionContext: {
@@ -27,44 +32,103 @@ export const agentResultSpendAnalysisSuccess: AgentResultEvent = {
     updatedAt: new Date('2024-01-15T10:01:00.000Z'),
     correlationId: TEST_IDS.correlation1,
   },
-  agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-  conversationId: TEST_IDS.conversation1,
-  messageId: TEST_IDS.message1,
-  result: {
-    success: true,
-    data: {
-      customerId: TEST_IDS.customerUser1,
-      totalSpend: 1250.0,
-      orderCount: 15,
-      averageOrderValue: 83.33,
-      customerTier: 'GOLD',
-      lastOrderDate: '2024-01-10',
-      refundHistory: {
-        totalRefunds: 2,
-        totalRefundAmount: 75.0,
-        refundRate: 0.06,
+  conversation: sampleConversationWaiting,
+  message: sampleCustomerMessage,
+  spendAnalysis: {
+    result: {
+      success: true,
+      data: {
+        customer: {
+          id: sampleCustomer1.id,
+          profileId: `prof-${sampleCustomer1.id}`,
+          tier: 'PRO',
+          standing: 'GOOD',
+          accountAgeMonths: 14,
+          joinedAt: new Date('2022-11-15T00:00:00.000Z'),
+        },
+        billing: {
+          lifetimeValue: 1680.0,
+          currency: 'USD',
+          billingCycle: 'MONTHLY',
+          currentBillingAmount: 120.0,
+          lastBillingDate: new Date('2024-01-01T00:00:00.000Z'),
+          nextBillingDate: new Date('2024-02-01T00:00:00.000Z'),
+        },
+        tokenUsage: {
+          currentBalance: 2500,
+          monthlyLimit: 50000,
+          tokensUsedCurrentPeriod: 47500,
+          tokensUsedPreviousPeriod: 42000,
+          usageTrend: 'INCREASING',
+          periodStartDate: new Date('2024-01-01T00:00:00.000Z'),
+        },
+        refundHistory: {
+          totalRefundsReceived: 1,
+          totalRefundAmount: 25.0,
+          totalTokensRefunded: 5000,
+          lastRefundDate: new Date('2023-08-10T00:00:00.000Z'),
+          lastRefundType: 'PARTIAL_TOKEN_REFUND',
+          refundReasons: ['SERVICE_DOWNTIME'],
+        },
+        recommendation: {
+          eligible: true,
+          type: 'PARTIAL_TOKEN_REFUND',
+          suggestedAmount: {
+            tokens: 5000,
+            equivalentValue: 10.0,
+          },
+          alternativeOptions: [
+            {
+              type: 'PARTIAL_PAYMENT_REFUND',
+              amount: 10.0,
+              description: 'Refund to original payment method',
+            },
+            {
+              type: 'TOKEN_CREDIT',
+              tokens: 6000,
+              equivalentValue: 12.0,
+              description: '10% bonus tokens as goodwill gesture',
+            },
+          ],
+          reasoning:
+            'Customer is a PRO tier member in good standing with 14 months tenure. High token usage suggests active engagement.',
+          confidence: 0.89,
+          factors: {
+            customerValue: 'HIGH',
+            churnRisk: 'MEDIUM',
+            refundRiskLevel: 'LOW',
+            budgetImpact: 'MINIMAL',
+          },
+        },
+        budgetCheck: {
+          organizationBudgetRemaining: 4500.0,
+          perUserLimitRemaining: 75.0,
+          withinBudget: true,
+        },
       },
-      recommendation: 'High-value customer with low refund rate. Consider priority support.',
-    },
-    metadata: {
-      agentName: 'customer-spend-agent',
-      executionTimeMs: 1234,
-      modelUsed: 'claude-3-5-sonnet-20241022',
-      tokenUsage: {
-        input: 1500,
-        output: 350,
+      error: null,
+      metadata: {
+        agentName: 'customer-spend-agent',
+        executionTimeMs: 1250,
+        modelUsed: 'claude-3-haiku-20240307',
+        tokenUsage: {
+          input: 850,
+          output: 320,
+        },
+        dataSourcesQueried: ['customer-profiles', 'refunds', 'budgets'],
       },
     },
   },
 }
 
-/**
- * Successful response recommendation result
- */
-export const agentResultResponseRecommendationSuccess: AgentResultEvent = {
+// ============================================================================
+// Sample Response Recommendation Event
+// ============================================================================
+
+export const sampleResponseRecommendationEvent: ResponseRecommendationEvent = {
   event: {
     id: TEST_IDS.event2,
-    type: 'AGENT_RESULT',
+    type: 'RESPONSE_RECOMMENDATION',
     schemaVersion: '1.0.0',
   },
   actionContext: {
@@ -76,40 +140,63 @@ export const agentResultResponseRecommendationSuccess: AgentResultEvent = {
     updatedAt: new Date('2024-01-15T10:01:30.000Z'),
     correlationId: TEST_IDS.correlation1,
   },
-  agentResultType: 'RESPONSE_RECOMMENDATION',
-  conversationId: TEST_IDS.conversation1,
-  messageId: TEST_IDS.message1,
-  result: {
-    success: true,
-    data: {
-      recommendedResponse:
-        "Hello Alice! I apologize for the delay with your order. I've checked the tracking and it shows your package is currently at the local distribution center. It should arrive by end of day tomorrow. As a gesture of goodwill for the inconvenience, I'd like to offer you a 15% discount on your next order. Would that work for you?",
-      confidence: 0.92,
-      reasoning:
-        'Customer is a high-value GOLD tier member with good history. Delay is carrier-related. Proactive compensation aligns with retention strategy.',
-      suggestedActions: ['apply_discount_code', 'flag_delivery_issue'],
-      tone: 'empathetic',
-      escalationRequired: false,
-    },
-    metadata: {
-      agentName: 'response-recommendation-agent',
-      executionTimeMs: 2150,
-      modelUsed: 'claude-3-5-sonnet-20241022',
-      tokenUsage: {
-        input: 2800,
-        output: 450,
+  conversation: sampleConversationWaiting,
+  message: sampleCustomerMessage,
+  responseRecommendation: {
+    result: {
+      success: true,
+      data: {
+        response: {
+          content:
+            "Hi Alice, I'm really sorry to hear about the issue you've been experiencing. I've reviewed your account and would like to offer you 5,000 tokens as compensation. Would that work for you?",
+          tone: 'EMPATHETIC',
+          intent: 'RESOLVE_WITH_COMPENSATION',
+        },
+        responseOptions: [
+          {
+            type: 'PRIMARY',
+            description: 'Empathetic response offering token refund',
+          },
+          {
+            type: 'ESCALATE',
+            description: 'If customer is dissatisfied, escalate to human representative',
+            escalationReason: 'CUSTOMER_REQUEST',
+          },
+        ],
+        contextUsed: {
+          customerTier: 'PRO',
+          customerStanding: 'GOOD',
+          spendAnalysisRecommendation: 'PARTIAL_TOKEN_REFUND',
+          suggestedTokenAmount: 5000,
+          suggestedEquivalentValue: 10.0,
+        },
+        confidence: 0.91,
+        reasoning:
+          'Customer is reporting a legitimate service quality issue. Spend analysis indicates they are eligible for a partial token refund.',
+      },
+      error: null,
+      metadata: {
+        agentName: 'response-recommendation-agent',
+        executionTimeMs: 1850,
+        modelUsed: 'claude-sonnet-4-20250514',
+        tokenUsage: {
+          input: 1450,
+          output: 420,
+        },
+        inputsReceived: ['conversation-context', 'message-history', 'spend-analysis-result'],
       },
     },
   },
 }
 
-/**
- * Failed agent result (error case)
- */
-export const agentResultError: AgentResultEvent = {
+// ============================================================================
+// Sample Error Events
+// ============================================================================
+
+export const sampleSpendAnalysisErrorEvent: CustomerSpendAnalysisEvent = {
   event: {
     id: TEST_IDS.event3,
-    type: 'AGENT_RESULT',
+    type: 'CUSTOMER_SPEND_ANALYSIS',
     schemaVersion: '1.0.0',
   },
   actionContext: {
@@ -121,251 +208,26 @@ export const agentResultError: AgentResultEvent = {
     updatedAt: new Date('2024-01-15T10:01:00.000Z'),
     correlationId: TEST_IDS.correlation2,
   },
-  agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-  conversationId: TEST_IDS.conversation2,
-  result: {
-    success: false,
-    error: 'Failed to retrieve customer data: Customer not found in database',
-    metadata: {
-      agentName: 'customer-spend-agent',
-      executionTimeMs: 250,
-    },
-  },
-}
-
-/**
- * Agent result without message ID (conversation-level analysis)
- */
-export const agentResultNoMessageId: AgentResultEvent = {
-  event: {
-    id: TEST_IDS.event4,
-    type: 'AGENT_RESULT',
-    schemaVersion: '1.0.0',
-  },
-  actionContext: {
-    action: 'CREATE',
-    actionBy: 'customer-spend-agent',
-  },
-  metadata: {
-    createdAt: new Date('2024-01-15T10:02:00.000Z'),
-    updatedAt: new Date('2024-01-15T10:02:00.000Z'),
-    correlationId: TEST_IDS.correlation1,
-  },
-  agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-  conversationId: TEST_IDS.conversation1,
-  result: {
-    success: true,
-    data: {
-      summary: 'Periodic customer analysis completed',
-      customerId: TEST_IDS.customerUser1,
-      totalSpend: 1250.0,
-    },
-    metadata: {
-      agentName: 'customer-spend-agent',
-      executionTimeMs: 890,
-    },
-  },
-}
-
-// ============================================================================
-// Factory Function
-// ============================================================================
-
-export interface CreateAgentResultEventOptions {
-  eventId?: string
-  correlationId?: string
-  schemaVersion?: string
-  timestamp?: Date
-  agentResultType: AgentResultType
-  conversationId?: string
-  messageId?: string
-  success: boolean
-  data?: unknown
-  error?: string
-  agentName?: string
-  executionTimeMs?: number
-  modelUsed?: string
-  tokenUsage?: { input: number; output: number }
-}
-
-/**
- * Factory to create AgentResultEvent with custom options
- */
-export function createAgentResultEvent(options: CreateAgentResultEventOptions): AgentResultEvent {
-  const {
-    eventId = crypto.randomUUID(),
-    correlationId = crypto.randomUUID(),
-    schemaVersion = '1.0.0',
-    timestamp = new Date(),
-    agentResultType,
-    conversationId = crypto.randomUUID(),
-    messageId,
-    success,
-    data,
-    error,
-    agentName = agentResultType === 'CUSTOMER_SPEND_ANALYSIS'
-      ? 'customer-spend-agent'
-      : 'response-recommendation-agent',
-    executionTimeMs = 1000,
-    modelUsed,
-    tokenUsage,
-  } = options
-
-  const event: AgentResultEvent = {
-    event: {
-      id: eventId,
-      type: 'AGENT_RESULT',
-      schemaVersion,
-    },
-    actionContext: {
-      action: 'CREATE',
-      actionBy: agentName,
-    },
-    metadata: {
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      correlationId,
-    },
-    agentResultType,
-    conversationId,
+  conversation: sampleConversationWaiting,
+  message: sampleCustomerMessage,
+  spendAnalysis: {
     result: {
-      success,
+      success: false,
+      error: 'Failed to retrieve customer data: Customer profile not found',
       metadata: {
-        agentName,
-        executionTimeMs,
-        ...(modelUsed && { modelUsed }),
-        ...(tokenUsage && { tokenUsage }),
+        agentName: 'customer-spend-agent',
+        executionTimeMs: 250,
       },
     },
-  }
-
-  if (messageId) {
-    event.messageId = messageId
-  }
-
-  if (success && data) {
-    event.result.data = data
-  }
-
-  if (!success && error) {
-    event.result.error = error
-  }
-
-  return event
+  },
 }
 
 // ============================================================================
-// Test Scenarios
+// Exports
 // ============================================================================
 
-/**
- * Collection of events for different test scenarios
- */
 export const agentResultScenarios = {
-  /** Successful spend analysis */
-  spendAnalysisSuccess: agentResultSpendAnalysisSuccess,
-
-  /** Successful response recommendation */
-  responseRecommendationSuccess: agentResultResponseRecommendationSuccess,
-
-  /** Error case */
-  error: agentResultError,
-
-  /** Without message ID */
-  noMessageId: agentResultNoMessageId,
-
-  /** High-value customer analysis */
-  highValueCustomer: createAgentResultEvent({
-    agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-    success: true,
-    data: {
-      customerId: 'high-value-customer-id',
-      totalSpend: 15000.0,
-      orderCount: 150,
-      averageOrderValue: 100.0,
-      customerTier: 'PLATINUM',
-      lifetimeValue: 25000.0,
-      recommendation: 'VIP customer. Prioritize for white-glove service.',
-    },
-    modelUsed: 'claude-3-5-sonnet-20241022',
-    tokenUsage: { input: 1200, output: 280 },
-  }),
-
-  /** New customer analysis */
-  newCustomer: createAgentResultEvent({
-    agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-    success: true,
-    data: {
-      customerId: 'new-customer-id',
-      totalSpend: 50.0,
-      orderCount: 1,
-      averageOrderValue: 50.0,
-      customerTier: 'STANDARD',
-      recommendation: 'New customer. Focus on positive first experience.',
-    },
-  }),
-
-  /** Escalation recommendation */
-  escalationRecommendation: createAgentResultEvent({
-    agentResultType: 'RESPONSE_RECOMMENDATION',
-    success: true,
-    data: {
-      recommendedResponse:
-        "I understand your frustration and I sincerely apologize for this experience. I'm escalating this to our senior support team who will reach out to you within the next 2 hours.",
-      confidence: 0.88,
-      reasoning:
-        'Customer sentiment is very negative. Multiple unresolved issues. Escalation recommended.',
-      escalationRequired: true,
-      escalationReason: 'Multiple complaints and negative sentiment',
-      priority: 'HIGH',
-    },
-    modelUsed: 'claude-3-5-sonnet-20241022',
-    tokenUsage: { input: 3500, output: 520 },
-  }),
-
-  /** Refund approval recommendation */
-  refundApproval: createAgentResultEvent({
-    agentResultType: 'RESPONSE_RECOMMENDATION',
-    success: true,
-    data: {
-      recommendedResponse:
-        "I've reviewed your request and I'm happy to process a full refund for order #12345. The refund of $89.99 will be credited to your original payment method within 3-5 business days.",
-      confidence: 0.95,
-      reasoning: 'Order within refund window. Customer has good history. Product issue confirmed.',
-      suggestedActions: ['process_refund', 'send_confirmation_email'],
-      refundAmount: 89.99,
-      refundApproved: true,
-    },
-  }),
-
-  /** Rate limit error */
-  rateLimitError: createAgentResultEvent({
-    agentResultType: 'RESPONSE_RECOMMENDATION',
-    success: false,
-    error: 'Rate limit exceeded. Please retry after 60 seconds.',
-    executionTimeMs: 150,
-  }),
-
-  /** Timeout error */
-  timeoutError: createAgentResultEvent({
-    agentResultType: 'CUSTOMER_SPEND_ANALYSIS',
-    success: false,
-    error: 'Request timed out after 30000ms',
-    executionTimeMs: 30000,
-  }),
-
-  /** Low confidence response */
-  lowConfidenceResponse: createAgentResultEvent({
-    agentResultType: 'RESPONSE_RECOMMENDATION',
-    success: true,
-    data: {
-      recommendedResponse:
-        'Thank you for your message. Let me look into this further and get back to you with more information.',
-      confidence: 0.45,
-      reasoning: 'Customer inquiry is ambiguous. Requesting clarification recommended.',
-      needsClarification: true,
-    },
-    modelUsed: 'claude-3-5-sonnet-20241022',
-    tokenUsage: { input: 1800, output: 180 },
-  }),
+  spendAnalysisSuccess: sampleSpendAnalysisEvent,
+  responseRecommendationSuccess: sampleResponseRecommendationEvent,
+  spendAnalysisError: sampleSpendAnalysisErrorEvent,
 }

@@ -5,18 +5,28 @@ export const AccountTierSchema = z.enum(['FREE', 'STARTER', 'PRO', 'ENTERPRISE']
 
 export const AccountStandingSchema = z.enum(['GOOD', 'WARNING', 'SUSPENDED', 'CLOSED'])
 
+export const CurrencySchema = z.enum(['USD', 'EUR', 'GBP', 'CAD', 'AUD'])
+
 export const BillingInfoSchema = z.object({
   lastBillingDate: z.date(),
   nextBillingDate: z.date(),
   billingCycle: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY']),
   amount: z.number().positive(),
+  currency: CurrencySchema,
 })
+
+export const TokenUsageTrendSchema = z.enum(['INCREASING', 'STABLE', 'DECREASING'])
 
 export const UsageStatsSchema = z.object({
   tokenBalance: z.number().int().min(0),
   tokenLimit: z.number().int().positive(),
   activeSites: z.number().int().min(0),
   sitesLimit: z.number().int().positive(),
+  // Denormalized token usage tracking for spend analysis
+  tokensUsedCurrentPeriod: z.number().int().min(0),
+  tokensUsedPreviousPeriod: z.number().int().min(0),
+  tokenUsageTrend: TokenUsageTrendSchema,
+  periodStartDate: z.date(),
 })
 
 export const CustomerContextSchema = z.object({
@@ -48,5 +58,7 @@ export type CustomerProfile = z.infer<typeof CustomerProfileSchema>
 export type AccountTier = z.infer<typeof AccountTierSchema>
 export type AccountStanding = z.infer<typeof AccountStandingSchema>
 export type BillingInfo = z.infer<typeof BillingInfoSchema>
+export type Currency = z.infer<typeof CurrencySchema>
 export type UsageStats = z.infer<typeof UsageStatsSchema>
+export type TokenUsageTrend = z.infer<typeof TokenUsageTrendSchema>
 export type CustomerContext = z.infer<typeof CustomerContextSchema>

@@ -1,0 +1,52 @@
+{
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "type": "CONVERSATION_INITIATED",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "customer-ui"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "conversation": {
+    "id": "conv-550e8400-e29b-41d4-a716-446655440002",
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "state": {
+      "status": "WAITING",
+      "closedAt": null
+    },
+    "customer": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "email": "jane.customer@example.com",
+        "role": "CUSTOMER"
+      }
+    },
+    "assignee": null
+  },
+  "message": {
+    "id": "msg-550e8400-e29b-41d4-a716-446655440004",
+    "conversation": {
+      "id": "conv-550e8400-e29b-41d4-a716-446655440002"
+    },
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "sender": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "role": "CUSTOMER"
+      }
+    },
+    "details": {
+      "content": "Hi, I need help with my recent order #12345. It arrived damaged and I'd like to request a replacement or refund."
+    }
+  }
+}

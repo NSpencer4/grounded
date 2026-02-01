@@ -1,0 +1,142 @@
+{
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440030",
+    "type": "CUSTOMER_SPEND_ANALYSIS",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "customer-spend-agent"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:30:10.000Z",
+    "updatedAt": "2026-02-01T10:30:10.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "conversation": {
+    "id": "conv-550e8400-e29b-41d4-a716-446655440002",
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "state": {
+      "status": "WAITING",
+      "closedAt": null
+    },
+    "customer": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "email": "jane.customer@example.com",
+        "role": "CUSTOMER"
+      }
+    },
+    "assignee": null
+  },
+  "message": {
+    "id": "msg-550e8400-e29b-41d4-a716-446655440004",
+    "conversation": {
+      "id": "conv-550e8400-e29b-41d4-a716-446655440002"
+    },
+    "createdAt": "2026-02-01T10:30:00.000Z",
+    "updatedAt": "2026-02-01T10:30:00.000Z",
+    "sender": {
+      "user": {
+        "id": "user-550e8400-e29b-41d4-a716-446655440003",
+        "name": "Jane Customer",
+        "role": "CUSTOMER"
+      }
+    },
+    "details": {
+      "content": "Hi, I need help with my recent order #12345. It arrived damaged and I'd like to request a replacement or refund."
+    }
+  },
+  "spendAnalysis": {
+    "result": {
+      "success": true,
+      "data": {
+        "customer": {
+          "id": "user-550e8400-e29b-41d4-a716-446655440003",
+          "profileId": "prof-550e8400-e29b-41d4-a716-446655440003",
+          "tier": "PRO",
+          "standing": "GOOD",
+          "accountAgeMonths": 14,
+          "joinedAt": "2024-12-01T00:00:00.000Z"
+        },
+        "billing": {
+          "lifetimeValue": 1680.00,
+          "currency": "USD",
+          "billingCycle": "MONTHLY",
+          "currentBillingAmount": 120.00,
+          "lastBillingDate": "2026-01-15T00:00:00.000Z",
+          "nextBillingDate": "2026-02-15T00:00:00.000Z"
+        },
+        "tokenUsage": {
+          "currentBalance": 2500,
+          "monthlyLimit": 50000,
+          "tokensUsedCurrentPeriod": 47500,
+          "tokensUsedPreviousPeriod": 42000,
+          "usageTrend": "INCREASING",
+          "periodStartDate": "2026-02-01T00:00:00.000Z"
+        },
+        "refundHistory": {
+          "totalRefundsReceived": 1,
+          "totalRefundAmount": 25.00,
+          "totalTokensRefunded": 5000,
+          "lastRefundDate": "2025-08-10T00:00:00.000Z",
+          "lastRefundType": "PARTIAL_TOKEN_REFUND",
+          "refundReasons": [
+            "SERVICE_DOWNTIME"
+          ]
+        },
+        "recommendation": {
+          "eligible": true,
+          "type": "PARTIAL_TOKEN_REFUND",
+          "suggestedAmount": {
+            "tokens": 5000,
+            "equivalentValue": 10.00
+          },
+          "alternativeOptions": [
+            {
+              "type": "PARTIAL_PAYMENT_REFUND",
+              "amount": 10.00,
+              "description": "Refund to original payment method"
+            },
+            {
+              "type": "TOKEN_CREDIT",
+              "tokens": 6000,
+              "equivalentValue": 12.00,
+              "description": "10% bonus tokens as goodwill gesture"
+            }
+          ],
+          "reasoning": "Customer is a PRO tier member in good standing with 14 months tenure. High token usage (95% of limit) with INCREASING trend suggests active engagement. Only 1 prior refund for legitimate service issue. Budget allows this refund.",
+          "confidence": 0.89,
+          "factors": {
+            "customerValue": "HIGH",
+            "churnRisk": "MEDIUM",
+            "refundRiskLevel": "LOW",
+            "budgetImpact": "MINIMAL"
+          }
+        },
+        "budgetCheck": {
+          "organizationBudgetRemaining": 4500.00,
+          "perUserLimitRemaining": 75.00,
+          "withinBudget": true
+        }
+      },
+      "error": null,
+      "metadata": {
+        "agentName": "customer-spend-agent",
+        "executionTimeMs": 1250,
+        "modelUsed": "claude-3-haiku-20240307",
+        "tokenUsage": {
+          "input": 850,
+          "output": 320
+        },
+        "dataSourcesQueried": [
+          "customer-profiles",
+          "refunds",
+          "budgets"
+        ]
+      }
+    }
+  }
+}

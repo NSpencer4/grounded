@@ -14,6 +14,10 @@ export const EventTypeSchema = z.enum([
 
   // conversation evaluation events
   'CONVERSATION_EVALUATION',
+
+  // agent result events
+  'CUSTOMER_SPEND_ANALYSIS',
+  'RESPONSE_RECOMMENDATION',
 ])
 export type EventType = z.infer<typeof EventTypeSchema>
 

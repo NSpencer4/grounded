@@ -93,6 +93,7 @@ export const sampleConversationWaiting: Conversation = {
   customer: {
     user: sampleCustomer1,
   },
+  assignee: null,
 }
 
 export const sampleConversationActive: Conversation = {
@@ -216,6 +217,7 @@ export function createConversation(overrides: Partial<Conversation> = {}): Conve
     customer: {
       user: sampleCustomer1,
     },
+    assignee: null,
     ...overrides,
   }
 }

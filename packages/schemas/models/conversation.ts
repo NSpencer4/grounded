@@ -18,7 +18,7 @@ export const ConversationSchema = z.object({
     .object({
       user: UserSchema,
     })
-    .optional(),
+    .nullable(),
 })
 
 export type Conversation = z.infer<typeof ConversationSchema>

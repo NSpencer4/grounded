@@ -1,0 +1,36 @@
+{
+  "_comment": "NOTE: ConversationDecisionSchema is currently empty - this is a proposed structure",
+  "event": {
+    "id": "550e8400-e29b-41d4-a716-446655440050",
+    "type": "MESSAGE_RECEIVED",
+    "schemaVersion": "1.0.0"
+  },
+  "actionContext": {
+    "action": "CREATE",
+    "actionBy": "responder-lambda"
+  },
+  "metadata": {
+    "createdAt": "2026-02-01T10:30:20.000Z",
+    "updatedAt": "2026-02-01T10:30:20.000Z",
+    "correlationId": "corr-550e8400-e29b-41d4-a716-446655440001"
+  },
+  "decision": {
+    "_proposed_fields": {
+      "id": "dec-550e8400-e29b-41d4-a716-446655440051",
+      "conversationId": "conv-550e8400-e29b-41d4-a716-446655440002",
+      "type": "RESPOND_TO_CUSTOMER",
+      "status": "RESOLVED",
+      "triggeredBy": [
+        "agent-result-550e8400-e29b-41d4-a716-446655440030",
+        "agent-result-550e8400-e29b-41d4-a716-446655440040"
+      ],
+      "resolution": {
+        "action": "SEND_AI_RESPONSE",
+        "responseContent": "Hi Jane, I'm so sorry to hear about the damage...",
+        "confidence": 0.92
+      },
+      "createdAt": "2026-02-01T10:30:20.000Z",
+      "resolvedAt": "2026-02-01T10:30:20.000Z"
+    }
+  }
+}
