@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package grounded.events;
+
+import "google/protobuf/struct.proto";
+import "grounded/common/types.proto";
+import "grounded/models/conversation.proto";
+
+option java_package = "com.grounded.events";
+
+// Assertion event details (separate from base event to allow literal type)
+message AssertionEventDetails {
+  string id = 1;                    // UUID
+  string type = 2;                  // Literal: "CONVERSATION_ASSERTION"
+  string schema_version = 3;
+}
+
+// Assertion metadata (uses string timestamp for ISO8601 compatibility)
+message AssertionMetadata {
+  string correlation_id = 1;
+  string created_at = 2;            // ISO8601 string
+}
+
+// Assertion data from an evaluator agent
+message Assertion {
+  grounded.common.AssertionType type = 1;
+  string agent_id = 2;
+  double confidence = 3;            // 0.0 to 1.0
+  string reasoning = 4;
+  optional string recommendation = 5;
+  optional google.protobuf.Struct data = 6;  // Flexible key-value data
+}
+
+// Event produced by evaluator agents with their analysis results
+message ConversationAssertionEvent {
+  AssertionEventDetails event = 1;
+  grounded.models.ConversationRef conversation = 2;
+  Assertion assertion = 3;
+  AssertionMetadata metadata = 4;
+}

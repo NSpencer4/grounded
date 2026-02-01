@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package grounded.models;
+
+import "google/protobuf/timestamp.proto";
+import "grounded/common/types.proto";
+import "grounded/models/user.proto";
+
+option java_package = "com.grounded.models";
+
+// Conversation lifecycle state
+message ConversationState {
+  grounded.common.ConversationStatus status = 1;
+  optional google.protobuf.Timestamp closed_at = 2;
+}
+
+// Customer information wrapper
+message CustomerInfo {
+  User user = 1;
+}
+
+// Assignee (representative) information wrapper
+message AssigneeInfo {
+  User user = 1;
+}
+
+// A conversation between a customer and the support system
+message Conversation {
+  string id = 1;                    // UUID
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  ConversationState state = 4;
+  CustomerInfo customer = 5;
+  optional AssigneeInfo assignee = 6;
+}
+
+// Lightweight conversation reference for events
+message ConversationRef {
+  string id = 1;                    // UUID
+  string customer_id = 2;
+  string organization_id = 3;
+}

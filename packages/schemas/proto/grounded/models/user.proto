@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package grounded.models;
+
+import "grounded/common/types.proto";
+
+option java_package = "com.grounded.models";
+
+// A user in the system (customer, representative, or admin)
+message User {
+  string id = 1;                    // UUID
+  string name = 2;
+  string email = 3;
+  grounded.common.UserRole role = 4;
+}
+
+// Partial user info for sender context
+message UserSummary {
+  string id = 1;                    // UUID
+  string name = 2;
+  grounded.common.UserRole role = 3;
+}

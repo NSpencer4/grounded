@@ -46,7 +46,7 @@ export async function saveConversationState(state: ConversationState): Promise<v
     Item: {
       PK: `conversation#${state.conversationId}`,
       SK: 'state#CURRENT',
-      GSI1: `STATUS#${state.status}`,
+      GSI1: `status#${state.status}`,
       ...state,
     },
   })
@@ -134,7 +134,7 @@ export async function saveDecisionRecord(decision: DecisionRecord): Promise<void
     TableName: TABLE_NAME,
     Item: {
       PK: `conversation#${decision.conversationId}`,
-      SK: `DECISION#${decision.createdAt}#${decision.id}`,
+      SK: `decision#${decision.createdAt}#${decision.id}`,
       ...decision,
     },
   })
@@ -152,7 +152,7 @@ export async function getDecisionsByConversation(
     KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
     ExpressionAttributeValues: {
       ':pk': `conversation#${conversationId}`,
-      ':sk': 'DECISION#',
+      ':sk': 'decision#',
     },
   })
 
@@ -178,7 +178,7 @@ export async function resolveDecision(
     TableName: TABLE_NAME,
     Key: {
       PK: `conversation#${conversationId}`,
-      SK: `DECISION#${createdAt}#${decisionId}`,
+      SK: `decision#${createdAt}#${decisionId}`,
     },
     UpdateExpression: 'SET #status = :status, #resolvedAt = :resolvedAt, #resolution = :resolution',
     ExpressionAttributeNames: {
@@ -205,7 +205,7 @@ export async function saveActionRecord(action: ActionRecord): Promise<void> {
     TableName: TABLE_NAME,
     Item: {
       PK: `conversation#${action.conversationId}`,
-      SK: `ACTION#${action.createdAt}#${action.id}`,
+      SK: `action#${action.createdAt}#${action.id}`,
       ...action,
     },
   })
@@ -221,7 +221,7 @@ export async function getActionsByConversation(conversationId: string): Promise<
     KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
     ExpressionAttributeValues: {
       ':pk': `conversation#${conversationId}`,
-      ':sk': 'ACTION#',
+      ':sk': 'action#',
     },
   })
 

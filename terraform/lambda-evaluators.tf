@@ -70,9 +70,10 @@ module "customer_spend_agent" {
   }
 
   environment_variables = {
-    ENVIRONMENT  = var.environment
-    DYNAMO_TABLE = var.ddb_name
-    KAFKA_BROKER = aws_instance.kafka_cluster.private_ip
+    ENVIRONMENT         = var.environment
+    DYNAMO_TABLE        = var.ddb_name
+    KAFKA_BROKER        = aws_instance.kafka_cluster.private_ip
+    SCHEMA_REGISTRY_URL = "http://${aws_instance.kafka_cluster.private_ip}:8081"
   }
 
   tags = {
@@ -162,9 +163,10 @@ module "response_recommendation_agent" {
   }
 
   environment_variables = {
-    ENVIRONMENT  = var.environment
-    DYNAMO_TABLE = var.ddb_name
-    KAFKA_BROKER = aws_instance.kafka_cluster.private_ip
+    ENVIRONMENT         = var.environment
+    DYNAMO_TABLE        = var.ddb_name
+    KAFKA_BROKER        = aws_instance.kafka_cluster.private_ip
+    SCHEMA_REGISTRY_URL = "http://${aws_instance.kafka_cluster.private_ip}:8081"
   }
 
   tags = {

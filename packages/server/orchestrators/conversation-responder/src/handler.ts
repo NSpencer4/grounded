@@ -1,6 +1,10 @@
 import type { Context, MSKEvent, MSKRecord } from 'aws-lambda'
 import { produceMessage, shutdownProducers } from '@grounded/server-shared/event-producer'
+import { decodeWireFormat, getSchemaById } from '@grounded/server-shared/schema-registry'
 import { type AssertionEvent, AssertionEventSchema, type ProcessingResult } from './types.js'
+
+// Import generated protobuf types (uncomment when proto generation is run)
+// import { ConversationAssertionEvent as AssertionEventProto } from '@grounded/schemas/proto'
 import { analyzeAssertions, createDecisionEvent, createUpdateEvent } from './responder.js'
 import {
   addAssertionToState,
@@ -22,22 +26,92 @@ const kafkaConfig = {
 }
 
 /**
- * Parse assertion event from Kafka record
+ * Parse headers from MSK record
+ * MSK Lambda integration provides headers as base64 encoded values
  */
-function parseAssertionEvent(record: MSKRecord): AssertionEvent | null {
-  try {
-    const value = Buffer.from(record.value, 'base64').toString('utf-8')
-    const parsed = JSON.parse(value)
+function getRecordHeaders(record: MSKRecord): Record<string, string> {
+  const headers: Record<string, string> = {}
+  if (record.headers) {
+    for (const header of record.headers) {
+      for (const [key, value] of Object.entries(header)) {
+        // MSK Lambda sends header values as base64 encoded arrays
+        if (Array.isArray(value)) {
+          headers[key] = Buffer.from(value).toString('utf-8')
+        } else if (typeof value === 'string') {
+          headers[key] = Buffer.from(value, 'base64').toString('utf-8')
+        }
+      }
+    }
+  }
+  return headers
+}
 
-    const result = AssertionEventSchema.safeParse(parsed)
-    if (result.success) {
-      return result.data
+/**
+ * Parse assertion event from Kafka record
+ * Supports both JSON and Protobuf formats based on content-type header
+ */
+async function parseAssertionEvent(record: MSKRecord): Promise<AssertionEvent | null> {
+  try {
+    const headers = getRecordHeaders(record)
+    const contentType = headers['content-type']
+    const rawValue = Buffer.from(record.value, 'base64')
+
+    // Check if this is a protobuf message
+    if (contentType === 'application/x-protobuf') {
+      return await parseProtobufAssertionEvent(rawValue)
     }
 
-    console.error('Failed to parse assertion event:', result.error.message)
-    return null
+    // Default to JSON parsing
+    return parseJsonAssertionEvent(rawValue.toString('utf-8'))
   } catch (error) {
     console.error('Error parsing Kafka record:', error)
+    return null
+  }
+}
+
+/**
+ * Parse a JSON assertion event
+ */
+function parseJsonAssertionEvent(value: string): AssertionEvent | null {
+  const parsed = JSON.parse(value)
+
+  const result = AssertionEventSchema.safeParse(parsed)
+  if (result.success) {
+    return result.data
+  }
+
+  console.error('Failed to parse JSON assertion event:', result.error.message)
+  return null
+}
+
+/**
+ * Parse a Protobuf assertion event from the wire format buffer
+ */
+async function parseProtobufAssertionEvent(buffer: Buffer): Promise<AssertionEvent | null> {
+  try {
+    // Decode the Confluent wire format
+    const { schemaId, payload } = decodeWireFormat(buffer)
+
+    // Get the schema to determine the message type
+    const schema = await getSchemaById(schemaId)
+    if (!schema) {
+      console.error(`Schema not found for ID ${schemaId}`)
+      return null
+    }
+
+    // TODO: Replace with actual protobuf deserialization when generated code is available
+    // For now, log a warning and return null - dual format means JSON will still work
+    console.warn(
+      `Protobuf deserialization not yet implemented for assertions. Schema ID: ${schemaId}, Payload size: ${payload.length}`,
+    )
+
+    // Example of how this will work once generated code is available:
+    // const proto = AssertionEventProto.fromBinary(payload)
+    // return convertProtoToZod(proto)
+
+    return null
+  } catch (error) {
+    console.error('Error parsing protobuf assertion event:', error)
     return null
   }
 }
@@ -47,7 +121,7 @@ function parseAssertionEvent(record: MSKRecord): AssertionEvent | null {
  */
 async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
   const startTime = Date.now()
-  const assertion = parseAssertionEvent(record)
+  const assertion = await parseAssertionEvent(record)
 
   if (!assertion) {
     return {

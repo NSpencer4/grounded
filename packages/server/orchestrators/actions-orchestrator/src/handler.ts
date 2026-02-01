@@ -1,6 +1,7 @@
 import type { Context, MSKEvent, MSKRecord } from 'aws-lambda'
 import { randomUUID } from 'crypto'
 import { produceMessage, shutdownProducers } from '@grounded/server-shared/event-producer'
+import { decodeWireFormat, getSchemaById } from '@grounded/server-shared/schema-registry'
 import { ConversationInitiatedEventSchema } from '@grounded/schemas/events/conversation-initiated'
 import { MessageReceivedEventSchema } from '@grounded/schemas/events/message-received'
 import type { ActionRecord, DecisionRecord, DecisionType, ProcessingResult } from './types.js'
@@ -16,6 +17,10 @@ import {
 } from './state.js'
 import { type ConversationCommandEvent } from '@grounded/schemas/events'
 
+// Import generated protobuf types (uncomment when proto generation is run)
+// import { ConversationInitiatedEvent as ConversationInitiatedEventProto } from '@grounded/schemas/proto'
+// import { MessageReceivedEvent as MessageReceivedEventProto } from '@grounded/schemas/proto'
+
 const KAFKA_BROKER = process.env.KAFKA_BROKER || 'localhost:9092'
 const EVALUATION_TOPIC = 'conversation-evaluations'
 const CLIENT_ID = 'actions-orchestrator'
@@ -25,30 +30,112 @@ const kafkaConfig = {
   clientId: CLIENT_ID,
 }
 
-function parseConversationCommandEvent(record: MSKRecord): ConversationCommandEvent | null {
+/**
+ * Parse headers from MSK record
+ * MSK Lambda integration provides headers as base64 encoded values
+ */
+function getRecordHeaders(record: MSKRecord): Record<string, string> {
+  const headers: Record<string, string> = {}
+  if (record.headers) {
+    for (const header of record.headers) {
+      for (const [key, value] of Object.entries(header)) {
+        // MSK Lambda sends header values as base64 encoded arrays
+        if (Array.isArray(value)) {
+          headers[key] = Buffer.from(value).toString('utf-8')
+        } else if (typeof value === 'string') {
+          headers[key] = Buffer.from(value, 'base64').toString('utf-8')
+        }
+      }
+    }
+  }
+  return headers
+}
+
+/**
+ * Parse a conversation command event from an MSK record
+ * Supports both JSON and Protobuf formats based on content-type header
+ */
+async function parseConversationCommandEvent(
+  record: MSKRecord,
+): Promise<ConversationCommandEvent | null> {
   try {
-    const value = Buffer.from(record.value, 'base64').toString('utf-8')
-    const parsed = JSON.parse(value)
+    const headers = getRecordHeaders(record)
+    const contentType = headers['content-type']
+    const rawValue = Buffer.from(record.value, 'base64')
 
-    // Try parsing as ConversationInitiatedEvent first
-    const initiatedResult = ConversationInitiatedEventSchema.safeParse(parsed)
-    if (initiatedResult.success) {
-      return initiatedResult.data
+    // Check if this is a protobuf message
+    if (contentType === 'application/x-protobuf') {
+      return await parseProtobufEvent(rawValue)
     }
 
-    // Try parsing as MessageReceivedEvent
-    const messageResult = MessageReceivedEventSchema.safeParse(parsed)
-    if (messageResult.success) {
-      return messageResult.data
-    }
-
-    console.error('Failed to parse event as any known type:', {
-      initiatedError: initiatedResult.error?.message,
-      messageError: messageResult.error?.message,
-    })
-    return null
+    // Default to JSON parsing
+    return parseJsonEvent(rawValue.toString('utf-8'))
   } catch (error) {
     console.error('Error parsing Kafka record:', error)
+    return null
+  }
+}
+
+/**
+ * Parse a JSON event from the raw value
+ */
+function parseJsonEvent(value: string): ConversationCommandEvent | null {
+  const parsed = JSON.parse(value)
+
+  // Try parsing as ConversationInitiatedEvent first
+  const initiatedResult = ConversationInitiatedEventSchema.safeParse(parsed)
+  if (initiatedResult.success) {
+    return initiatedResult.data
+  }
+
+  // Try parsing as MessageReceivedEvent
+  const messageResult = MessageReceivedEventSchema.safeParse(parsed)
+  if (messageResult.success) {
+    return messageResult.data
+  }
+
+  console.error('Failed to parse JSON event as any known type:', {
+    initiatedError: initiatedResult.error?.message,
+    messageError: messageResult.error?.message,
+  })
+  return null
+}
+
+/**
+ * Parse a Protobuf event from the wire format buffer
+ */
+async function parseProtobufEvent(buffer: Buffer): Promise<ConversationCommandEvent | null> {
+  try {
+    // Decode the Confluent wire format
+    const { schemaId, payload } = decodeWireFormat(buffer)
+
+    // Get the schema to determine the message type
+    const schema = await getSchemaById(schemaId)
+    if (!schema) {
+      console.error(`Schema not found for ID ${schemaId}`)
+      return null
+    }
+
+    // Determine message type from schema content
+    // TODO: Replace with actual protobuf deserialization when generated code is available
+    // For now, log a warning and return null - dual format means JSON will still work
+    console.warn(
+      `Protobuf deserialization not yet implemented. Schema ID: ${schemaId}, Payload size: ${payload.length}`,
+    )
+
+    // Example of how this will work once generated code is available:
+    // if (schema.includes('ConversationInitiatedEvent')) {
+    //   const proto = ConversationInitiatedEventProto.fromBinary(payload)
+    //   return convertProtoToZod(proto)
+    // }
+    // if (schema.includes('MessageReceivedEvent')) {
+    //   const proto = MessageReceivedEventProto.fromBinary(payload)
+    //   return convertProtoToZod(proto)
+    // }
+
+    return null
+  } catch (error) {
+    console.error('Error parsing protobuf event:', error)
     return null
   }
 }
@@ -66,7 +153,7 @@ function mapAgentToDecisionType(agent: string): DecisionType {
 
 async function processRecord(record: MSKRecord): Promise<ProcessingResult> {
   const startTime = Date.now()
-  const event = parseConversationCommandEvent(record)
+  const event = await parseConversationCommandEvent(record)
 
   if (!event) {
     return {

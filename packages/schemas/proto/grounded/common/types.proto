@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package grounded.common;
+
+option java_package = "com.grounded.common";
+
+// User roles in the system
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_CUSTOMER = 1;
+  USER_ROLE_REPRESENTATIVE = 2;
+  USER_ROLE_ADMIN = 3;
+}
+
+// Conversation lifecycle status
+enum ConversationStatus {
+  CONVERSATION_STATUS_UNSPECIFIED = 0;
+  CONVERSATION_STATUS_WAITING = 1;
+  CONVERSATION_STATUS_ACTIVE = 2;
+  CONVERSATION_STATUS_CLOSED = 3;
+}
+
+// Event types for the event bus
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  EVENT_TYPE_CONVERSATION_INITIATED = 1;
+  EVENT_TYPE_MESSAGE_RECEIVED = 2;
+  EVENT_TYPE_CONVERSATION_EVALUATION = 3;
+  EVENT_TYPE_CONVERSATION_ASSERTION = 4;
+  EVENT_TYPE_CONVERSATION_DECISION = 5;
+  EVENT_TYPE_CONVERSATION_UPDATE = 6;
+}
+
+// Actions that can be performed on entities
+enum Action {
+  ACTION_UNSPECIFIED = 0;
+  ACTION_CREATE = 1;
+  ACTION_UPDATE = 2;
+  ACTION_DELETE = 3;
+}
+
+// Evaluation types from the actions orchestrator
+enum EvaluationType {
+  EVALUATION_TYPE_UNSPECIFIED = 0;
+  EVALUATION_TYPE_ACTION_REQUIRED = 1;
+  EVALUATION_TYPE_RESPONSE_RECOMMENDATION = 2;
+  EVALUATION_TYPE_NO_ACTION = 3;
+}
+
+// Assertion types from evaluator agents
+enum AssertionType {
+  ASSERTION_TYPE_UNSPECIFIED = 0;
+  ASSERTION_TYPE_CUSTOMER_SPEND_ANALYSIS = 1;
+  ASSERTION_TYPE_RESPONSE_RECOMMENDATION = 2;
+  ASSERTION_TYPE_ACTION_REQUIRED = 3;
+  ASSERTION_TYPE_NO_ACTION_NEEDED = 4;
+}
+
+// Decision types for the orchestrator feedback loop
+enum DecisionType {
+  DECISION_TYPE_UNSPECIFIED = 0;
+  DECISION_TYPE_RESPOND_TO_CUSTOMER = 1;
+  DECISION_TYPE_ESCALATE_TO_HUMAN = 2;
+  DECISION_TYPE_WAIT_FOR_MORE_INFO = 3;
+  DECISION_TYPE_CLOSE_CONVERSATION = 4;
+  DECISION_TYPE_NO_ACTION = 5;
+}
+
+// Update types for client streaming
+enum UpdateType {
+  UPDATE_TYPE_UNSPECIFIED = 0;
+  UPDATE_TYPE_AI_RESPONSE = 1;
+  UPDATE_TYPE_STATUS_CHANGE = 2;
+  UPDATE_TYPE_AGENT_INSIGHT = 3;
+}

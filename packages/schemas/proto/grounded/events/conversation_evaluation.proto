@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package grounded.events;
+
+import "grounded/common/metadata.proto";
+import "grounded/common/types.proto";
+import "grounded/models/conversation.proto";
+import "grounded/models/message.proto";
+
+option java_package = "com.grounded.events";
+
+// Evaluation request details
+message Evaluation {
+  grounded.common.EvaluationType type = 1;
+  optional string reasoning = 2;
+  repeated string suggested_actions = 3;
+}
+
+// Event produced by actions orchestrator to request evaluation from agents
+message ConversationEvaluationEvent {
+  grounded.common.EventDetails event = 1;
+  grounded.common.ActionContext action_context = 2;
+  grounded.common.EventMetadata metadata = 3;
+  grounded.models.Conversation conversation = 4;
+  optional grounded.models.Message message = 5;
+  Evaluation evaluation = 6;
+}

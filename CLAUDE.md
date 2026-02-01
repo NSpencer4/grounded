@@ -220,9 +220,9 @@ triggered the action via `decisionIds`.
 - **List Org Conversations by Date:** `Query(GSI1PK: organization#<org_id>, ScanIndexForward: false)`.
 - **List User Conversations by Date:** `Query(GSI1PK: user#<user_id>, ScanIndexForward: false)`.
 - **Fetch Message History:** `Query(PK: conversation#<id>, SK begins_with: message#)`.
-- **Fetch All Decisions:** `Query(PK: conversation#<id>, SK begins_with: DECISION#)`. (Evaluate what agents should look
+- **Fetch All Decisions:** `Query(PK: conversation#<id>, SK begins_with: decision#)`. (Evaluate what agents should look
   at).
-- **Fetch All Actions:** `Query(PK: conversation#<id>, SK begins_with: ACTION#)`. (Audit trail of orchestrator actions).
+- **Fetch All Actions:** `Query(PK: conversation#<id>, SK begins_with: action#)`. (Audit trail of orchestrator actions).
 
 **Persistence Responsibilities:**
 

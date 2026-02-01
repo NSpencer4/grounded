@@ -76,7 +76,8 @@ class KafkaConsumer
     end
 
     def process_message(consumer, message, &handler)
-      parsed_value = parse_message(message.value)
+      # Parse message based on content-type header (dual format support)
+      parsed_value = parse_message_with_format(message.value, message.headers)
 
       log_info("Received message from topic '#{message.topic}' partition #{message.partition} offset #{message.offset}")
 
@@ -96,12 +97,74 @@ class KafkaConsumer
       raise
     end
 
-    def parse_message(value)
+    # Parse message based on content-type header
+    # Supports both JSON and Protobuf formats
+    #
+    # @param value [String] The raw message value
+    # @param headers [Hash] Message headers
+    # @return [Hash, String, nil] Parsed value or raw value
+    def parse_message_with_format(value, headers = {})
       return nil if value.nil?
 
+      content_type = headers["content-type"]
+
+      if content_type == "application/x-protobuf"
+        parse_protobuf_message(value)
+      else
+        parse_json_message(value)
+      end
+    end
+
+    # Parse a JSON message
+    def parse_json_message(value)
       JSON.parse(value)
     rescue JSON::ParserError
       value # Return raw value if not valid JSON
+    end
+
+    # Parse a Protobuf message from Confluent wire format
+    #
+    # @param value [String] The wire format bytes
+    # @return [Hash] Parsed protobuf as a hash (for compatibility)
+    def parse_protobuf_message(value)
+      # Decode the Confluent wire format
+      decoded = GroundedShared::SchemaRegistry.decode_wire_format(value)
+      schema_id = decoded[:schema_id]
+      payload = decoded[:payload]
+
+      # Get the schema to determine the message type
+      schema = GroundedShared::SchemaRegistry.get_schema_by_id(schema_id: schema_id)
+
+      unless schema
+        log_error("Schema not found for ID #{schema_id}")
+        return { "_raw_protobuf" => true, "_schema_id" => schema_id, "_payload_size" => payload.bytesize }
+      end
+
+      # TODO: Replace with actual protobuf deserialization when generated code is available
+      # For now, return metadata about the protobuf message
+      log_info("Protobuf deserialization not yet implemented. Schema ID: #{schema_id}, Payload size: #{payload.bytesize}")
+
+      # Example of how this will work once generated code is available:
+      # if schema.include?("ConversationInitiatedEvent")
+      #   proto = Grounded::Events::ConversationInitiatedEvent.decode(payload)
+      #   return proto_to_hash(proto)
+      # end
+
+      # Return metadata for now - handlers can check _raw_protobuf flag
+      {
+        "_raw_protobuf" => true,
+        "_schema_id" => schema_id,
+        "_payload_size" => payload.bytesize,
+        "_payload" => payload
+      }
+    rescue StandardError => e
+      log_error("Error parsing protobuf message: #{e.message}")
+      { "_error" => e.message, "_raw_value" => value }
+    end
+
+    # Legacy method for backward compatibility
+    def parse_message(value)
+      parse_json_message(value)
     end
 
     # Configuration from environment variables

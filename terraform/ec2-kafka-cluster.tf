@@ -52,6 +52,16 @@ resource "aws_instance" "kafka_cluster" {
                     KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
                   ports:
                     - "9092:9092"
+                schema-registry:
+                  image: confluentinc/cp-schema-registry:7.5.0
+                  depends_on:
+                    - kafka
+                  environment:
+                    SCHEMA_REGISTRY_HOST_NAME: schema-registry
+                    SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+                    SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+                  ports:
+                    - "8081:8081"
               EOT
 
               cd /home/ec2-user/kafka
@@ -67,4 +77,8 @@ resource "aws_instance" "kafka_cluster" {
 # Output the internal IP so your Lambda/APIs can find it
 output "kafka_broker_address" {
   value = "${aws_instance.kafka_cluster.private_ip}:9092"
+}
+
+output "schema_registry_url" {
+  value = "http://${aws_instance.kafka_cluster.private_ip}:8081"
 }

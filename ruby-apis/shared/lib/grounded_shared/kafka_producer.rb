@@ -69,6 +69,123 @@ class KafkaProducer
       raise
     end
 
+    # ========================================================================
+    # Protobuf Support
+    # ========================================================================
+
+    # Cache for proto schema content by message type name
+    def proto_schema_cache
+      @proto_schema_cache ||= {}
+    end
+
+    # Register a proto schema for a message type
+    # Call this at application startup to pre-register schemas
+    # @param message_type_name [String] The protobuf message type name
+    # @param proto_content [String] The .proto file content
+    def register_proto_schema(message_type_name:, proto_content:)
+      proto_schema_cache[message_type_name] = proto_content
+    end
+
+    # Produce a protobuf message to a Kafka topic
+    #
+    # This method:
+    # 1. Serializes the message using google-protobuf
+    # 2. Looks up or registers the schema with Schema Registry
+    # 3. Wraps the payload in Confluent wire format
+    # 4. Sends via the existing producer infrastructure
+    #
+    # @param client_id [String] The client ID for the producer
+    # @param topic [String] The Kafka topic name
+    # @param key [String] The message key (used for partitioning)
+    # @param message [Google::Protobuf::MessageExts] The protobuf message instance
+    # @param message_class [Class] The protobuf message class (for type name lookup)
+    def produce_protobuf(client_id:, topic:, key:, message:, message_class:)
+      producer_instance = producer(client_id: client_id)
+
+      # 1. Serialize to protobuf bytes
+      payload = message_class.encode(message)
+
+      # 2. Get or register schema
+      subject = "#{topic}-value"
+      schema_id = GroundedShared::SchemaRegistry.get_schema_id(subject: subject)
+
+      unless schema_id
+        # Get the proto schema from cache
+        type_name = message_class.descriptor.name
+        proto_schema = proto_schema_cache[type_name]
+
+        raise "Proto schema not found for type '#{type_name}'. Call register_proto_schema first." unless proto_schema
+
+        schema_id = GroundedShared::SchemaRegistry.register_schema(
+          subject: subject,
+          schema: proto_schema
+        )
+      end
+
+      # 3. Encode with Confluent wire format
+      encoded = GroundedShared::SchemaRegistry.encode_with_schema_id(
+        schema_id: schema_id,
+        payload: payload
+      )
+
+      # 4. Send with content-type header
+      producer_instance.produce(
+        encoded,
+        topic: topic,
+        key: key,
+        headers: { "content-type" => "application/x-protobuf" }
+      )
+      producer_instance.deliver_messages
+
+      log_info("Protobuf message produced to topic '#{topic}' with key '#{key}' (schema ID: #{schema_id})")
+    rescue Kafka::Error => e
+      log_error("Failed to produce protobuf message by client '#{client_id}': #{e.message}")
+      raise
+    end
+
+    # Produce a protobuf message asynchronously (buffered)
+    # @param client_id [String] The client ID for the producer
+    # @param topic [String] The Kafka topic name
+    # @param key [String] The message key
+    # @param message [Google::Protobuf::MessageExts] The protobuf message instance
+    # @param message_class [Class] The protobuf message class
+    def produce_protobuf_async(client_id:, topic:, key:, message:, message_class:)
+      producer_instance = producer(client_id: client_id)
+
+      # Serialize and encode
+      payload = message_class.encode(message)
+
+      subject = "#{topic}-value"
+      schema_id = GroundedShared::SchemaRegistry.get_schema_id(subject: subject)
+
+      unless schema_id
+        type_name = message_class.descriptor.name
+        proto_schema = proto_schema_cache[type_name]
+
+        raise "Proto schema not found for type '#{type_name}'." unless proto_schema
+
+        schema_id = GroundedShared::SchemaRegistry.register_schema(
+          subject: subject,
+          schema: proto_schema
+        )
+      end
+
+      encoded = GroundedShared::SchemaRegistry.encode_with_schema_id(
+        schema_id: schema_id,
+        payload: payload
+      )
+
+      producer_instance.produce(
+        encoded,
+        topic: topic,
+        key: key,
+        headers: { "content-type" => "application/x-protobuf" }
+      )
+    rescue Kafka::Error => e
+      log_error("Failed to buffer protobuf message by client '#{client_id}': #{e.message}")
+      raise
+    end
+
     # Shutdown a specific producer
     # @param client_id [String] The client ID to shutdown
     def shutdown(client_id:)

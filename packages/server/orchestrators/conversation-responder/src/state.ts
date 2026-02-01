@@ -174,7 +174,7 @@ export async function saveDecisionEvent(
     TableName: TABLE_NAME,
     Item: {
       PK: `conversation#${conversationId}`,
-      SK: `DECISION#${now}#${event.event.id}`,
+      SK: `decision#${now}#${event.event.id}`,
       GSI1PK: `CORRELATION#${event.metadata.correlationId}`,
       GSI1SK: now,
       eventType: 'CONVERSATION_DECISION',
