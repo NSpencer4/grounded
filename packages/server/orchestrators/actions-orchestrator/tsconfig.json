@@ -2,17 +2,18 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
-    "paths": {
-      "@grounded/schemas/*": ["../../../schemas/*"],
-      "@grounded/server/shared/*": ["../../shared/*"]
-    }
+    "rootDir": ".",
+    "types": [
+      "node",
+      "jest"
+    ]
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "__tests__/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
-    "dist",
-    "__tests__"
+    "dist"
   ]
 }

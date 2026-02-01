@@ -1,4 +1,7 @@
-import { ConversationEvaluationEvent } from '@grounded/schemas/events/conversation-evaluation'
+import type { ConversationEvaluationEvent as ConversationEvaluationEventType } from '@grounded/schemas/events/conversation-evaluation'
+
+export type { ConversationEvaluationEvent } from '@grounded/schemas/events/conversation-evaluation'
+export type { ConversationCommandEvent } from '@grounded/schemas/events/conversation-command'
 
 export interface ProcessingContext {
   correlationId: string
@@ -7,7 +10,7 @@ export interface ProcessingContext {
 }
 
 export interface EvaluationResult {
-  event: ConversationEvaluationEvent
+  event: ConversationEvaluationEventType
   shouldTriggerAgents: boolean
   agentsToTrigger: AgentType[]
 }

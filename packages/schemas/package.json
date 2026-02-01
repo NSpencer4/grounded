@@ -12,6 +12,9 @@
   "exports": {
     ".": "./index.ts",
     "./events": "./events/index.ts",
-    "./events/*": "./events/*.ts"
+    "./events/*": "./events/*.ts",
+    "./test-data": "./test-data/index.ts",
+    "./test-data/events": "./test-data/events/index.ts",
+    "./test-data/events/*": "./test-data/events/*.ts"
   }
 }

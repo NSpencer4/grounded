@@ -49,7 +49,7 @@ export function createMskRecord(
     timestampType: 'CREATE_TIME',
     key: Buffer.from(event.conversation.id).toString('base64'),
     value: base64Value,
-    headers: {},
+    headers: [],
   }
 }
 
@@ -114,7 +114,7 @@ export function createInvalidMskRecord(
     timestampType: 'CREATE_TIME',
     key: Buffer.from('invalid-key').toString('base64'),
     value: Buffer.from(invalidValue).toString('base64'),
-    headers: {},
+    headers: [],
   }
 }
 

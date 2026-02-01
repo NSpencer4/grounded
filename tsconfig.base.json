@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@grounded/schemas": ["packages/schemas"],
-      "@grounded/server/shared/*": ["packages/server/shared/*"]
-    },
-    "composite": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": [
+      "ES2022"
+    ],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "declaration": true,
-    "declarationMap": true,
-    "strict": true
+    "declarationMap": true
   }
 }
